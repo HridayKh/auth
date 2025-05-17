@@ -1,0 +1,65 @@
+name: Java CI pipeline
+
+on:
+  push:
+    branches: [ "main" ]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+  
+      - name: Install and build React frontend
+        working-directory: auth-react
+        run: |
+          npm ci
+          npm run build
+  
+      - name: Copy React build to Java webapp
+        run: |
+          find auth/src/main/webapp -mindepth 1 -maxdepth 1 ! -name 'WEB-INF' -exec rm -rf {} +
+          cp -r auth-react/dist/* auth/src/main/webapp/
+        
+      - name: Set up JDK 22
+        uses: actions/setup-java@v4
+        with:
+          java-version: '22'
+          distribution: 'temurin'
+          cache: maven
+
+      - name: Build with Maven
+        run: |
+          cd auth
+          mvn clean package
+
+      - name: Upload Artifact
+        if: success()
+        uses: actions/upload-artifact@v4
+        with:
+          name: auth-war
+          path: auth/target/auth.war
+          if-no-files-found: error
+
+  deploy:
+    needs: build
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Download artifact
+        uses: actions/download-artifact@v4
+        with:
+          name: auth-war
+          path: ${{ github.workspace }}/auth/target/
+
+      - name: Deploy to Tomcat via Manager
+        run: curl -T "${{ github.workspace }}/auth/target/auth.war" --user "${{ secrets.TOMCAT_USER }}:${{ secrets.TOMCAT_PASS }}" "https://auth.hriday.tech/manager/text/deploy?path=/ROOT&update=true"
+
+
