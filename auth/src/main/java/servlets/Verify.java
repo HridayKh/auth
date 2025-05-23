@@ -10,6 +10,7 @@ import jakarta.servlet.http.HttpServletResponse;
 
 @WebServlet("/auth/verify")
 public class Verify extends HttpServlet {
+	private static final long serialVersionUID = 1L;
 
 	public void doPost(HttpServletRequest req, HttpServletResponse resp) throws IOException, ServletException {
 		String token = req.getParameter("token");

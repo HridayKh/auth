@@ -6,6 +6,8 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
+import entities.User;
+
 public class UsersDAO {
 
 	public static boolean userExists(String email) {
@@ -20,23 +22,20 @@ public class UsersDAO {
 		}
 	}
 
-	public static boolean insertUser(String id, String username, String email, String passwordHash, long createdAt) {
-		String sql = "INSERT INTO users (uuid, email, password_hash, is_verified, created_at) VALUES (?, ?, ?, ?, ?)";
-
-		try (Connection conn = dbAuth.getConnection();
-				PreparedStatement stmt = conn.prepareStatement(sql)) {
-
-			stmt.setString(1, id);
-			stmt.setString(2, username);
-			stmt.setString(3, email);
-			stmt.setString(4, passwordHash);
-			stmt.setLong(5, createdAt);
-
+	public static boolean insertUser(User user) {
+		String sql = "INSERT INTO users (uuid, email, password_hash, is_verified, created_at, updated_at, last_login) VALUES (?, ?, ?, ?, ?, ?, ?)";
+		try (Connection conn = dbAuth.getConnection(); PreparedStatement stmt = conn.prepareStatement(sql)) {
+			stmt.setString(1, user.uuid());
+			stmt.setString(2, user.email());
+			stmt.setString(3, user.password_hash());
+			stmt.setBoolean(4, user.is_verified());
+			stmt.setLong(5, user.created_at());
+			stmt.setLong(6, user.updated_at());
+			stmt.setLong(7, user.last_login());
 			int rowsInserted = stmt.executeUpdate();
 			return rowsInserted > 0;
-
 		} catch (SQLException e) {
-			e.printStackTrace(); // log properly in real apps
+			e.printStackTrace();
 			return false;
 		}
 	}
