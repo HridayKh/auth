@@ -8,13 +8,14 @@ import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 
-@WebServlet("/auth/update_password")
+@WebServlet("/update_password")
 public class Update extends HttpServlet {
+	private static final long serialVersionUID = 1L;
 
 	public void doPost(HttpServletRequest req, HttpServletResponse resp) throws IOException, ServletException {
-		String jwt = req.getHeader("Authorization").split(" ")[1];
-		String oldPass = req.getHeader("Authorization").split(" ")[1];
-		String newPass = req.getHeader("Authorization").split(" ")[1];
+//		String jwt = req.getHeader("Authorization").split(" ")[1];
+//		String oldPass = req.getHeader("Authorization").split(" ")[1];
+//		String newPass = req.getHeader("Authorization").split(" ")[1];
 		// verify jwt existence
 		// get user info
 	}

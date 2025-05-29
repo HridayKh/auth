@@ -2,7 +2,6 @@ package db;
 
 import java.sql.Connection;
 import java.sql.DriverManager;
-import java.sql.SQLException;
 
 public class dbAuth {
 
@@ -10,7 +9,8 @@ public class dbAuth {
 	public final static String DB_USER = System.getenv("REMOTE_TOMCAT_AUTH_DB_USER");
 	public final static String DB_PASSWORD = System.getenv("REMOTE_TOMCAT_AUTH_DB_PASSWORD");
 
-	public static Connection getConnection() throws SQLException {
+	public static Connection getConnection() throws Exception {
+		Class.forName("com.mysql.cj.jdbc.Driver");
 		return DriverManager.getConnection(dbAuth.DB_URL, dbAuth.DB_USER, dbAuth.DB_PASSWORD);
 	}
 //mysql> CREATE TABLE users (
