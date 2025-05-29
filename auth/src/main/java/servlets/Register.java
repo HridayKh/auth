@@ -66,7 +66,7 @@ public class Register extends HttpServlet {
 			if (req.getServerName().replace("localhost", "").equals(req.getServerName())) {
 				verificationLink = "https://auth.hriday.tech/verify?token=" + token;
 			} else {
-				verificationLink = "https://" + req.getServerName() + "/auth/verify?token=" + token;
+				verificationLink = "http://localhost:8080/auth/verify?token=" + token;
 			}
 			String htmlBody = "<!DOCTYPE html><html><head><meta charset=\"UTF-8\">"
 					+ "    <title>Please Verify your E-Mail for Hriday.Tech</title><style>"
@@ -82,7 +82,7 @@ public class Register extends HttpServlet {
 					+ "      <p style=\"font-size: 12px; color: #999;\">This link will expire in 24 hours.</p>"
 					+ "    </div>  </body></html>";
 
-			System.out.println(Mail.sendMail(email, "Please Verify your E-Mail for Hriday.Tech", htmlBody));
+			System.out.println(Mail.sendMail(email, "Verify your E-Mail for Hriday.Tech", htmlBody));
 
 			resp.setStatus(HttpServletResponse.SC_CREATED);
 			resp.setContentType("application/json");

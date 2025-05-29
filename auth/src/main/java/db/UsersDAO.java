@@ -33,9 +33,22 @@ public class UsersDAO {
 			int rowsInserted = stmt.executeUpdate();
 			return rowsInserted > 0;
 		} catch (Exception e) {
-		    System.err.println("insertUser failed for uuid: " + user.uuid());
-		    e.printStackTrace();
-		    return false;
+			System.err.println("insertUser failed for uuid: " + user.uuid());
+			e.printStackTrace();
+			return false;
+		}
+	}
+
+	public static boolean updateUserVerify(Connection conn, String userUuid) {
+		String sql = "UPDATE users SET is_verified = 1 WHERE uuid=?";
+		try (PreparedStatement stmt = conn.prepareStatement(sql)) {
+			stmt.setString(1, userUuid);
+			int rowsInserted = stmt.executeUpdate();
+			return rowsInserted > 0;
+		} catch (Exception e) {
+			System.err.println("insertUser failed for uuid: " + userUuid);
+			e.printStackTrace();
+			return false;
 		}
 	}
 

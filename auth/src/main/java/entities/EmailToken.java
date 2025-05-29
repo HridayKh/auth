@@ -1,4 +1,4 @@
 package entities;
 
-public record EmailToken(String user_uuid, String token, long expires_at) {
+public record EmailToken(String token, String user_uuid, long expires_at) {
 }
