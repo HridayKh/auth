@@ -19,8 +19,7 @@ public class Verify extends HttpServlet {
 	public void doGet(HttpServletRequest req, HttpServletResponse resp) throws IOException, ServletException {
 		String token = req.getParameter("token");
 		if (token == null || token.isEmpty()) {
-			resp.setStatus(HttpServletResponse.SC_BAD_REQUEST);
-			resp.getWriter().write("{\"type\":\"error\",\"message\":\"Missing token parameter.\"}");
+			resp.sendRedirect("register.jsp?type=error&msg=Missing token parameter");
 			return;
 		}
 
@@ -30,36 +29,32 @@ public class Verify extends HttpServlet {
 			String userUuid = EmailDAO.verifyToken(token, conn);
 			if (userUuid == null) {
 				conn.rollback();
-				resp.setStatus(HttpServletResponse.SC_BAD_REQUEST);
-				resp.getWriter()
-						.write("{\"type\":\"error\",\"message\":\"Invalid or Expired email verification token.\"}");
+				resp.sendRedirect("register.jsp?type=error&msg=Invalid or Expired email verification token");
 				return;
 			}
 
 			boolean userVerify = UsersDAO.updateUserVerify(conn, userUuid);
 			if (!userVerify) {
 				conn.rollback();
-				resp.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
-				resp.getWriter().write("{\"type\":\"error\",\"message\":\"Unable to verify user.\"}");
+				resp.sendRedirect("register.jsp?type=error&msg=Unable to verify user");
 				return;
 			}
 
 			boolean expireToken = EmailDAO.expireToken(token, conn);
 			if (!expireToken) {
 				conn.rollback();
-				resp.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
-				resp.getWriter().write("{\"type\":\"error\",\"message\":\"Unable to expire token.\"}");
+				resp.sendRedirect("register.jsp?type=error&msg=Unable to expire token");
 				return;
 			}
 
 			conn.commit();
-			resp.setStatus(HttpServletResponse.SC_OK);
-			resp.getWriter().write("{\"type\":\"success\",\"message\":\"Email verified successfully.\nPlease Login.\"}");
+			resp.sendRedirect("login.jsp?type=success&msg=Email verified successfully.\nPlease Login");
+			return;
 
 		} catch (Exception e) {
 			e.printStackTrace();
-			resp.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
-			resp.getWriter().write("{\"type\":\"error\",\"message\":\"Unexpected server error.\"}");
+			resp.sendRedirect("register.jsp?type=error&msg=Unexpected server error");
+			return;
 		}
 	}
 
