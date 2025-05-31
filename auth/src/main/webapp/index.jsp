@@ -41,7 +41,7 @@
     </script>
 </head>
 <body>
-    <h2>Generate Static QR Code</h2>
+    <h2>Generate Static QR CodeHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHH</h2>
     <form>
         <label for="data">Text to Encode:</label>
         <input type="text" id="data" name="data" value="Hello World"><br><br>
