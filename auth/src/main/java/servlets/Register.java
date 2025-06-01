@@ -43,7 +43,7 @@ public class Register extends HttpServlet {
 			boolean userInserted = UsersDAO.insertUser(conn,
 					new User(user_uuid, email, PassUtil.sha256Hash(pass), false, time, time, time));
 			if (!userInserted) {
-				conn.rollback();
+        conn.rollback();
 				resp.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
 				resp.getWriter()
 						.write("{\"type\":\"error\",\"message\":\"Failed to register user. Try again later.\"}");
