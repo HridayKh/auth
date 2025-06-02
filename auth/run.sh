@@ -15,5 +15,5 @@ echo "📦 Deploying new WAR..."
 # Use mv instead of rm+cp for atomic replace (if on same filesystem)
 mv -f "$TARGET_WAR" "$DEPLOY_PATH"
 
-echo "🚀 Starting Tomcat..."
-exec "$TOMCAT_HOME/bin/catalina.sh" run
+#echo "🚀 Starting Tomcat..."
+#exec "$TOMCAT_HOME/bin/catalina.sh" run

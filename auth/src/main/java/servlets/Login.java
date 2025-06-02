@@ -2,6 +2,7 @@ package servlets;
 
 import java.io.IOException;
 import java.sql.Connection;
+import java.util.Base64;
 
 import auth.PassUtil;
 import db.UsersDAO;
@@ -9,6 +10,7 @@ import db.dbAuth;
 import entities.User;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
+import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
@@ -36,17 +38,27 @@ public class Login extends HttpServlet {
             .write("{\"type\":\"error\",\"message\":\"Please verify your email\"}");
         return;
       }
-      String jwt = "{\"uuid\":\"" + user.uuid() + "\",\"sign\":\"" + PassUtil.signUUID(user.uuid()) + "\"}";
+      String jwt = user.uuid() + ":|:" + PassUtil.signUUID(user.uuid());
       // make client jwt
       // return jwt
       resp.setStatus(HttpServletResponse.SC_OK);
       resp.setContentType("application/json");
       resp.getWriter()
-          .write("{\"type\":\"success\",\"message\":\"Logged In Successfully!\",\"jwt\":" + jwt + "}");
+          .write("{\"type\":\"success\",\"message\":\"Logged In Successfully!\"}");
+
+      Cookie authCookie = new Cookie("hriday_tech_auth_token", Base64.getEncoder().encodeToString(jwt.getBytes()));
+      if (System.getenv("prod").equals("yes")) {
+        authCookie.setHttpOnly(true); // Can't be accessed by JavaScript
+        authCookie.setSecure(true); // Only sent over HTTPS
+        authCookie.setDomain("hriday.tech"); // Valid across all subdomains
+      }
+      authCookie.setMaxAge(60 * 60 * 24 * 7); // 7 days in seconds
+      authCookie.setPath("/"); // Valid for all paths
+      resp.addCookie(authCookie);
       return;
     } catch (Exception e) {
       e.printStackTrace();
-    resp.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
+      resp.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
       resp.setContentType("application/json");
       resp.getWriter()
           .write("{\"type\":\"error\",\"message\":\"Internal Server Error\"}");

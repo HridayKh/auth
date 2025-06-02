@@ -53,14 +53,6 @@
 				response.json();
 				msg.textContent = data.message || "No message received";
 				msg.style.color = data.type === "success" ? "green" : "red";
-			console.log(data.jwt);
-
-if (data.jwt) {
-  // Save JWT JSON string in cookie, expire in 1 hour
-  const expires = new Date(Date.now() + 7 * 24 * 60 * 60 * 1000).toUTCString();
-  document.cookie = `user_jwt=${encodeURIComponent(JSON.stringify(data.jwt))}; expires=${expires}; path=/; Secure; SameSite=Strict`;
-}
-
        } catch (e) {
 				msg.textContent = "Invalid response from server.";
 				msg.style.color = "red";

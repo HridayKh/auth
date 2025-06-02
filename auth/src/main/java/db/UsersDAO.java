@@ -77,5 +77,29 @@ public class UsersDAO {
       return null;
     }
   }
+public static User getUserByUUID(String email, Connection conn) {
+    String sql = "SELECT * FROM users WHERE email = ? LIMIT 1";
+    try (PreparedStatement stmt = conn.prepareStatement(sql)) {
+      stmt.setString(1, email);
+      ResultSet rs = stmt.executeQuery();
+      if (rs.next()) {
+        String uuid = rs.getString("uuid");
+        String EMAIL = rs.getString("email");
+        String passwordHash = rs.getString("password_hash");
+        boolean isVerified = rs.getBoolean("is_verified");
+        long createdAt = rs.getLong("created_at");
+        long updatedAt = rs.getLong("updated_at");
+        long lastLogin = rs.getLong("last_login");
+
+        User user = new User(uuid, EMAIL, passwordHash, isVerified, createdAt, updatedAt, lastLogin);
+        return user;
+      } else {
+        return null;
+      }
+    } catch (Exception e) {
+      e.printStackTrace();
+      return null;
+    }
+  }
 
 }
