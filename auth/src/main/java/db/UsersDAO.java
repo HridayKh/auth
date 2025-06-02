@@ -77,10 +77,10 @@ public class UsersDAO {
       return null;
     }
   }
-public static User getUserByUUID(String email, Connection conn) {
-    String sql = "SELECT * FROM users WHERE email = ? LIMIT 1";
+public static User getUserByUUID(String UUID, Connection conn) {
+    String sql = "SELECT * FROM users WHERE uuid = ? LIMIT 1";
     try (PreparedStatement stmt = conn.prepareStatement(sql)) {
-      stmt.setString(1, email);
+      stmt.setString(1, UUID);
       ResultSet rs = stmt.executeQuery();
       if (rs.next()) {
         String uuid = rs.getString("uuid");
