@@ -101,5 +101,17 @@ public static User getUserByUUID(String UUID, Connection conn) {
       return null;
     }
   }
-
+  public static boolean updateUserPassword(Connection conn, String userUuid, String passHash) {
+    String sql = "UPDATE users SET password_hash = ? WHERE uuid = ?";
+    try (PreparedStatement stmt = conn.prepareStatement(sql)) {
+      stmt.setString(1, passHash);
+      stmt.setString(2, userUuid);
+      int rowsInserted = stmt.executeUpdate();
+      return rowsInserted > 0;
+    } catch (Exception e) {
+      System.err.println("insertUser failed for uuid: " + userUuid);
+      e.printStackTrace();
+      return false;
+    }
+  }
 }
