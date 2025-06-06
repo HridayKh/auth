@@ -19,7 +19,7 @@ public class Verify extends HttpServlet {
 	public void doGet(HttpServletRequest req, HttpServletResponse resp) throws IOException, ServletException {
 		String token = req.getParameter("token");
 		if (token == null || token.isEmpty()) {
-			resp.sendRedirect("register.jsp?type=error&msg=Missing token parameter");
+			resp.sendRedirect(dbAuth.FRONT_HOST + "/index.html?site=register&type=error&msg=Missing token parameter");
 			return;
 		}
 
@@ -29,31 +29,31 @@ public class Verify extends HttpServlet {
 			String userUuid = EmailDAO.verifyToken(token, conn);
 			if (userUuid == null) {
 				conn.rollback();
-				resp.sendRedirect("register.jsp?type=error&msg=Invalid or Expired email verification token");
+				resp.sendRedirect(dbAuth.FRONT_HOST + "/index.html?site=register&type=error&msg=Invalid or Expired email verification token");
 				return;
 			}
 
 			boolean userVerify = UsersDAO.updateUserVerify(conn, userUuid);
 			if (!userVerify) {
 				conn.rollback();
-				resp.sendRedirect("register.jsp?type=error&msg=Unable to verify user");
+				resp.sendRedirect(dbAuth.FRONT_HOST + "/index.html?site=register&type=error&msg=Unable to verify user");
 				return;
 			}
 
 			boolean expireToken = EmailDAO.expireToken(token, conn);
 			if (!expireToken) {
 				conn.rollback();
-				resp.sendRedirect("register.jsp?type=error&msg=Unable to expire token");
+				resp.sendRedirect(dbAuth.FRONT_HOST + "/index.html?site=register&type=error&msg=Unable to expire token");
 				return;
 			}
 
 			conn.commit();
-			resp.sendRedirect("login.jsp?type=success&msg=Email verified successfully.\nPlease Login");
+			resp.sendRedirect(dbAuth.FRONT_HOST + "/index.html?site=login&type=success&msg=Email verified successfully.\nPlease Login");
 			return;
 
 		} catch (Exception e) {
 			e.printStackTrace();
-			resp.sendRedirect("register.jsp?type=error&msg=Unexpected server error");
+			resp.sendRedirect(dbAuth.FRONT_HOST + "/index.html?site=register&type=error&msg=Unexpected server error");
 			return;
 		}
 	}

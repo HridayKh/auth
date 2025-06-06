@@ -20,6 +20,9 @@ public class Login extends HttpServlet {
   private static final long serialVersionUID = 1L;
 
   public void doPost(HttpServletRequest req, HttpServletResponse resp) throws IOException, ServletException {
+    resp.setHeader("Access-Control-Allow-Origin", "http://localhost:5173");
+    resp.setHeader("Access-Control-Allow-Methods", "POST, OPTIONS");
+    resp.setHeader("Access-Control-Allow-Headers", "Content-Type");
     String email = req.getParameter("email");
     String pass = req.getParameter("pass");
     try (Connection conn = dbAuth.getConnection()) {
