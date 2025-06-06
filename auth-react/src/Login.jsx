@@ -4,9 +4,8 @@ import React, { useState } from "react";
 export default function Login(){
 
 
-const [email, setEmail] = useState("");
+  const [email, setEmail] = useState("");
   const [pass, setPass] = useState("");
-  const [confirmPass, setConfirmPass] = useState("");
   const [error, setError] = useState(null);
   const [responseMsg, setResponseMsg] = useState(null);
 
@@ -15,22 +14,24 @@ const [email, setEmail] = useState("");
     setError(null);
     setResponseMsg(null);
 
-    if (pass !== confirmPass) {
-      setError("Passwords do not match.");
-      return;
-    }
-
     try {
-      const res = await fetch(`localhost:8080/auth/login?email=${encodeURIComponent(email)}&pass=${encodeURIComponent(pass)}`, {
+      const res = await fetch(`http://localhost:8080/auth/login`, {
         method: "POST",
+credentials: "include",
+      body: JSON.stringify({ email, pass }),
       });
+const data = await res.json();
 
-      const text = await res.text();
-      if (!res.ok) throw new Error(text || "Something went wrong");
-
-      setResponseMsg("Login successful!");
+    if (data.type === "error") {
+      setError(data.message || "Login failed.");
+    } else if (data.type === "success") {
+      setResponseMsg(data.message || "Login successful!");
+    } else {
+      setError("Unexpected response from server.");
+    }
     } catch (err) {
-      setError(err.message);
+      setError("Network error or server not reachable!");
+      console.log(data);
     }
   };
 
@@ -55,14 +56,6 @@ return(  <>
         required
         value={pass}
         onChange={(e) => setPass(e.target.value)}
-      />
-
-      <input
-        type="password"
-        placeholder="Confirm Password"
-        required
-        value={confirmPass}
-        onChange={(e) => setConfirmPass(e.target.value)}
       />
 
       <button type="submit">Login</button>
