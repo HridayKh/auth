@@ -2,15 +2,13 @@ package servlets;
 
 import java.io.IOException;
 import java.sql.Connection;
-import java.util.Base64;
 
-import utils.PassUtil;
+import utils.AuthUtil;
 import db.EmailDAO;
 import db.UsersDAO;
 import db.dbAuth;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
-import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
@@ -39,7 +37,7 @@ public class Verify extends HttpServlet {
 				return;
 			}
 
-			boolean userVerify = UsersDAO.updateUserVerify(conn, userUuid);
+			boolean userVerify = UsersDAO.updateUserVerify(conn, userUuid, System.currentTimeMillis()/1000L);
 			if (!userVerify) {
 				conn.rollback();
 				resp.sendRedirect(dbAuth.FRONT_HOST + "/index.html?site=register&type=error&msg=Unable to verify user");
@@ -54,21 +52,10 @@ public class Verify extends HttpServlet {
 				return;
 			}
 
-			String jwt = userUuid + ":|:" + PassUtil.signUUID(userUuid);
-			Cookie authCookie = new Cookie("hriday_tech_auth_token",
-					Base64.getEncoder().encodeToString(jwt.getBytes()));
-			if (System.getenv("prod").equals("yes")) {
-				authCookie.setHttpOnly(true);
-				authCookie.setSecure(true);
-				authCookie.setDomain("hriday.tech");
-			}
-			authCookie.setMaxAge(60 * 60 * 24 * 7);
-			authCookie.setPath("/");
-			resp.addCookie(authCookie);
 			conn.commit();
+			AuthUtil.setAuthCookie(resp, userUuid);
 			resp.sendRedirect(redir + "?type=success&msg=Email verified successfully.");
 			return;
-
 		} catch (Exception e) {
 			e.printStackTrace();
 			resp.sendRedirect(dbAuth.FRONT_HOST + "/index.html?site=register&type=error&msg=Unexpected server error");

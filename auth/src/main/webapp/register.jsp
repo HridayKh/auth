@@ -1,64 +1,79 @@
-<%@ page language="java" contentType="text/html; charset=UTF-8"
-	pageEncoding="UTF-8"%>
+<%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
 <!DOCTYPE html>
 <html>
 <head>
-<meta charset="UTF-8">
-<title>Register</title>
+    <meta charset="UTF-8">
+    <title>Register - Test Page</title>
 </head>
 <body>
+    <h2>Register New User</h2>
+    <form id="registerForm">
+        <label>Email:</label><br>
+        <input type="email" id="email" required><br><br>
 
-	<%
-	String msg = request.getParameter("msg");
-	String type = request.getParameter("type");
-	String c = type.equals("error") ? "red" : "green";
-	if (msg != null && !msg.isEmpty() && type != null && !type.isEmpty()) {
-	%>
-	<div style="color: <%=c%>"><%=msg%></div>
-	<%
-	}
-	%>
+        <label>Password:</label><br>
+        <input type="password" id="pass" required><br><br>
 
+        <label>Full Name:</label><br>
+        <input type="text" id="fullName" required><br><br>
 
-	<form onsubmit="submitForm(event)">
-		<input type="email" name="email" placeholder="Email" required>
-		<input type="password" name="pass" placeholder="Password" required>
-		<button type="submit">Register</button>
-	</form>
+        <label>Redirect URL:</label><br>
+        <input type="text" id="redirect" value="http://localhost:8080/auth/app"><br><br>
 
-	<div id="msg"></div>
+        <button type="submit">Register</button>
+    </form>
 
-	<script>
-		async
-		function submitForm(event) {
-			event.preventDefault();
-			const form = event.target;
-			const email = form.email.value;
-			const pass = form.pass.value;
+    <!-- Message paragraph to show success/error -->
+    <p id="responseMsg"></p>
 
-			const response = await
-			fetch(
-					"register",
-					{
-						method : "POST",
-						headers : {
-							"Content-Type" : "application/x-www-form-urlencoded"
-						},
-						body : `email=${encodeURIComponent(email)}&pass=${encodeURIComponent(pass)}`
-					});
+    <script>
+        // Add an event listener for the form's submit event
+        document.getElementById("registerForm").addEventListener("submit", async function(e) {
+            // Prevent the form from actually submitting and refreshing the page
+            e.preventDefault();
+            
+            // Create a JS object similar to a Java POJO with the required fields
+            const payload = {
+                email: document.getElementById("email").value,
+                pass: document.getElementById("pass").value,
+                fullName: document.getElementById("fullName").value,
+                redirect: document.getElementById("redirect").value
+            };
 
-			const msg = document.getElementById("msg");
+            try {
+                // Use Fetch API to send a POST request to the /register servlet
+                const res = await fetch("<%=request.getContextPath()%>/register", {
+                    method: "POST", // HTTP method
+                    headers: {
+                        "Content-Type": "application/json" // Tell server it's JSON
+                    },
+                    body: JSON.stringify(payload) // Convert JS object to JSON string
+                });
 
-			try {
-				const data = await
-				response.json();
-				msg.textContent = data.message || "No message received";
-				msg.style.color = data.type === "success" ? "green" : "red";
-			} catch (e) {
-				msg.textContent = "Invalid response from server.";
-				msg.style.color = "red";
-			}
-		}
-	</script>
+                // Wait for the JSON response from the servlet
+                const json = await res.json();
+
+                // Grab the <p> element for displaying messages
+                const msgElem = document.getElementById("responseMsg");
+
+                // Show the message from the response JSON
+                msgElem.textContent = json.message || "Unknown response.";
+
+                // If type is "success", show in green, else show in red
+                if (json.type === "success") {
+                    msgElem.style.color = "green";
+                } else {
+                    msgElem.style.color = "red";
+                }
+			console.log(json);
+            } catch (err) {
+                // If fetch failed (server down, network error, etc.)
+                console.error(err); // Log error in browser console
+                const msgElem = document.getElementById("responseMsg");
+                msgElem.style.color = "red";
+                msgElem.textContent = "Network or server error.";
+            }
+        });
+    </script>
 </body>
 </html>

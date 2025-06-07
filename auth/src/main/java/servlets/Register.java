@@ -30,6 +30,8 @@ public class Register extends HttpServlet {
 		JSONObject body = HttpUtil.readBodyJSON(req);
 		String email = body.getString("email");
 		String pass = body.getString("pass");
+		String FullName = body.getString("fullName");
+		String redir = body.getString("redirect");
 
 		long time = System.currentTimeMillis() / 1000L;
 		String user_uuid = UUID.randomUUID().toString();
@@ -43,7 +45,8 @@ public class Register extends HttpServlet {
 			}
 			conn.setAutoCommit(false);
 
-			User user = new User(user_uuid, email, PassUtil.sha256Hash(pass), false, time, time, time);
+			User user = new User.Builder(user_uuid, email, PassUtil.sha256Hash(pass), time, time).fullName(FullName)
+					.build();
 			if (!UsersDAO.insertUser(conn, user)) {
 				conn.rollback();
 				HttpUtil.sendJson(resp, HttpServletResponse.SC_INTERNAL_SERVER_ERROR, "error",
@@ -60,7 +63,7 @@ public class Register extends HttpServlet {
 				return;
 			}
 
-			String verifyLink = System.getenv("BACK_HOST") + "/verify?token=" + token;
+			String verifyLink = System.getenv("BACK_HOST") + "/verify?token=" + token + "&redirect=" + redir;
 			Mail.sendMail(email, "Verify your E-Mail for Hriday.Tech", EmailTemplates.verifyMail(verifyLink));
 
 			conn.commit();

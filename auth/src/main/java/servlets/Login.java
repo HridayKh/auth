@@ -35,13 +35,13 @@ public class Login extends HttpServlet {
 				return;
 			}
 
-			if (!user.is_verified()) {
+			if (!user.isVerified()) {
 				HttpUtil.sendJson(resp, HttpServletResponse.SC_BAD_REQUEST, "error", "Please verify your email");
 				return;
 			}
 
-			UsersDAO.updateLastLogin(conn, user.uuid(), System.currentTimeMillis() / 1000L);
-
+			long unixTime = System.currentTimeMillis() / 1000L;
+			UsersDAO.updateLastLogin(conn, user.uuid(), unixTime);
 			AuthUtil.setAuthCookie(resp, user.uuid());
 
 			HttpUtil.sendJson(resp, HttpServletResponse.SC_OK, "success", "Logged In Successfully, redirecting....");

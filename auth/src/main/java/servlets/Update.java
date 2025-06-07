@@ -40,7 +40,7 @@ public class Update extends HttpServlet {
 			String newPass = PassUtil.sha256Hash(neW);
 			User user = UsersDAO.getUserByUUID(conn, uuid);
 
-			if (!oldPass.equals(user.password_hash())) {
+			if (!oldPass.equals(user.passwordHash())) {
 				HttpUtil.sendJson(resp, HttpServletResponse.SC_UNAUTHORIZED, "error", "Invalid Old Password!");
 				return;
 			}
