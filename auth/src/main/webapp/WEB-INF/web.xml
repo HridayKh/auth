@@ -3,5 +3,5 @@
  "http://java.sun.com/dtd/web-app_2_3.dtd" >
 
 <web-app>
-  <display-name>Qr tracker app</display-name>
+  <display-name>Auth App</display-name>
 </web-app>
