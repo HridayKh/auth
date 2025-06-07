@@ -2,12 +2,15 @@ package servlets;
 
 import java.io.IOException;
 import java.sql.Connection;
+import java.util.Base64;
 
+import utils.PassUtil;
 import db.EmailDAO;
 import db.UsersDAO;
 import db.dbAuth;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
+import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
@@ -18,18 +21,21 @@ public class Verify extends HttpServlet {
 
 	public void doGet(HttpServletRequest req, HttpServletResponse resp) throws IOException, ServletException {
 		String token = req.getParameter("token");
+		String redir = req.getParameter("redirect");
+
 		if (token == null || token.isEmpty()) {
-			resp.sendRedirect(dbAuth.FRONT_HOST + "/index.html?site=register&type=error&msg=Missing token parameter");
+			resp.sendRedirect(dbAuth.FRONT_HOST + "/index.html?site=register&type=error&msg=Missing/Invalid Token");
 			return;
 		}
 
 		try (Connection conn = dbAuth.getConnection()) {
 			conn.setAutoCommit(false);
 
-			String userUuid = EmailDAO.verifyToken(token, conn);
+			String userUuid = EmailDAO.verifyToken(conn, token);
 			if (userUuid == null) {
 				conn.rollback();
-				resp.sendRedirect(dbAuth.FRONT_HOST + "/index.html?site=register&type=error&msg=Invalid or Expired email verification token");
+				resp.sendRedirect(dbAuth.FRONT_HOST
+						+ "/index.html?site=register&type=error&msg=Invalid or Expired email verification token");
 				return;
 			}
 
@@ -40,15 +46,27 @@ public class Verify extends HttpServlet {
 				return;
 			}
 
-			boolean expireToken = EmailDAO.expireToken(token, conn);
+			boolean expireToken = EmailDAO.expireToken(conn, token);
 			if (!expireToken) {
 				conn.rollback();
-				resp.sendRedirect(dbAuth.FRONT_HOST + "/index.html?site=register&type=error&msg=Unable to expire token");
+				resp.sendRedirect(
+						dbAuth.FRONT_HOST + "/index.html?site=register&type=error&msg=Unable to expire token");
 				return;
 			}
 
+			String jwt = userUuid + ":|:" + PassUtil.signUUID(userUuid);
+			Cookie authCookie = new Cookie("hriday_tech_auth_token",
+					Base64.getEncoder().encodeToString(jwt.getBytes()));
+			if (System.getenv("prod").equals("yes")) {
+				authCookie.setHttpOnly(true);
+				authCookie.setSecure(true);
+				authCookie.setDomain("hriday.tech");
+			}
+			authCookie.setMaxAge(60 * 60 * 24 * 7);
+			authCookie.setPath("/");
+			resp.addCookie(authCookie);
 			conn.commit();
-			resp.sendRedirect(dbAuth.FRONT_HOST + "/index.html?site=login&type=success&msg=Email verified successfully.\nPlease Login");
+			resp.sendRedirect(redir + "?type=success&msg=Email verified successfully.");
 			return;
 
 		} catch (Exception e) {

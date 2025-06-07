@@ -8,7 +8,7 @@ import entities.EmailToken;
 
 public class EmailDAO {
 
-	public static boolean insertEmailToken(EmailToken et, Connection conn) {
+	public static boolean insertEmailToken(Connection conn, EmailToken et) {
 		String sql = "INSERT INTO email_tokens (token, user_uuid, expires_at) VALUES (?, ?, ?)";
 		try (PreparedStatement stmt = conn.prepareStatement(sql)) {
 			stmt.setString(1, et.token());
@@ -23,7 +23,7 @@ public class EmailDAO {
 		}
 	}
 
-	public static String verifyToken(String token, Connection conn) {
+	public static String verifyToken(Connection conn, String token) {
 		String sql = "SELECT user_uuid FROM email_tokens WHERE token = ? AND expires_at > (UNIX_TIMESTAMP() * 1000) LIMIT 1";
 		try (PreparedStatement stmt = conn.prepareStatement(sql)) {
 			stmt.setString(1, token);
@@ -35,7 +35,7 @@ public class EmailDAO {
 		}
 	}
 
-	public static boolean expireToken(String token, Connection conn) {
+	public static boolean expireToken(Connection conn, String token) {
 		String sql = "UPDATE email_tokens SET expires_at = (UNIX_TIMESTAMP() * 1000) WHERE token = ?";
 		try (PreparedStatement stmt = conn.prepareStatement(sql)) {
 			stmt.setString(1, token);

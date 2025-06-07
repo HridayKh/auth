@@ -4,7 +4,7 @@ import java.nio.charset.StandardCharsets;
 import java.sql.Connection;
 import java.util.Base64;
 
-import auth.PassUtil;
+import utils.PassUtil;
 import db.UsersDAO;
 import db.dbAuth;
 import entities.User;
@@ -64,7 +64,7 @@ public class getUser extends HttpServlet {
       }
 
       // Fetch user info by UUID
-      User user = UsersDAO.getUserByUUID(uuid, conn);
+      User user = UsersDAO.getUserByUUID(conn, uuid);
       if (user == null) {
         resp.setStatus(HttpServletResponse.SC_NOT_FOUND);
         resp.setContentType("application/json");
