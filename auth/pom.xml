@@ -31,6 +31,22 @@
 			<artifactId>mailgun-java</artifactId>
 			<version>1.1.6</version>
 		</dependency>
+		<dependency>
+			<groupId>com.google.api-client</groupId>
+			<artifactId>google-api-client</artifactId>
+			<version>2.4.0</version> <!-- Use the latest stable version -->
+		</dependency>
+		<dependency>
+			<groupId>com.google.oauth-client</groupId>
+			<artifactId>google-oauth-client-jetty</artifactId>
+			<version>1.36.0</version> <!-- Used for local testing, may not be
+			needed for servlets directly -->
+		</dependency>
+		<dependency>
+			<groupId>com.google.oauth-client</groupId>
+			<artifactId>google-oauth-client-servlet</artifactId>
+			<version>1.36.0</version> <!-- Essential for servlets -->
+		</dependency>
 	</dependencies>
 	<build>
 		<finalName>auth</finalName>
