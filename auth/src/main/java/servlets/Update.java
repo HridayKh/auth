@@ -17,7 +17,7 @@ import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 
-@WebServlet("/update_password")
+@WebServlet("/v1/update_password")
 public class Update extends HttpServlet {
 	private static final long serialVersionUID = 1L;
 

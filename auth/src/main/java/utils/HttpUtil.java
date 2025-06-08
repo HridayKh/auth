@@ -24,14 +24,24 @@ public class HttpUtil {
 		return new JSONObject(sb.toString());
 	}
 
-	public static void sendJson(HttpServletResponse resp, int statusCode, String type, String message)
-			throws IOException {
-		resp.setStatus(statusCode);
+	public static void sendJson(HttpServletResponse resp, int status, String type, String message) throws IOException {
+		resp.setStatus(status);
 		resp.setContentType("application/json");
 		JSONObject json = new JSONObject();
-		json.put("type", type);
 		json.put("message", message);
+		json.put("type", type);
 		resp.getWriter().write(json.toString());
+	}
+
+	public static void sendJson(HttpServletResponse res, int stat, String type, String message, boolean reverify)
+			throws IOException {
+		res.setStatus(stat);
+		res.setContentType("application/json");
+		JSONObject json = new JSONObject();
+		json.put("reverify", reverify);
+		json.put("message", message);
+		json.put("type", type);
+		res.getWriter().write(json.toString());
 	}
 
 	public static void sendUser(HttpServletResponse resp, User user) throws IOException {

@@ -6,11 +6,9 @@ import java.util.UUID;
 
 import org.json.JSONObject;
 
-import auth.Mail;
 import db.EmailDAO;
 import db.UsersDAO;
 import db.dbAuth;
-import entities.EmailTemplates;
 import entities.EmailToken;
 import entities.User;
 import jakarta.servlet.ServletException;
@@ -18,10 +16,11 @@ import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import utils.MailUtil;
 import utils.HttpUtil;
 import utils.PassUtil;
 
-@WebServlet("/register")
+@WebServlet("/v1/register")
 public class Register extends HttpServlet {
 	private static final long serialVersionUID = 1L;
 
@@ -38,11 +37,20 @@ public class Register extends HttpServlet {
 		String token = UUID.randomUUID().toString();
 
 		try (Connection conn = dbAuth.getConnection()) {
-			if (UsersDAO.userExists(conn, email)) {
+			
+			User oldUser = UsersDAO.getUserByEmail(conn, email);
+			if (oldUser != null && !oldUser.isVerified()) {
+				
 				HttpUtil.sendJson(resp, HttpServletResponse.SC_CONFLICT, "error",
-						"User with this email/username already exists");
+						"Unverified User with this email/username already exists", true);
+				return;
+				
+			} else if (oldUser != null && oldUser.isVerified()) {
+				HttpUtil.sendJson(resp, HttpServletResponse.SC_CONFLICT, "error",
+						"Verified User with this email/username already exists");
 				return;
 			}
+			
 			conn.setAutoCommit(false);
 
 			User user = new User.Builder(user_uuid, email, PassUtil.sha256Hash(pass), time, time).fullName(FullName)
@@ -54,8 +62,7 @@ public class Register extends HttpServlet {
 				return;
 			}
 
-			// Token valid for 24h = 72,600,000 ms
-			EmailToken emailToken = new EmailToken(token, user_uuid, System.currentTimeMillis() + 72_600_000);
+			EmailToken emailToken = new EmailToken(token, user_uuid, (System.currentTimeMillis()/1000L) + 86_400);
 			if (!EmailDAO.insertEmailToken(conn, emailToken)) {
 				conn.rollback();
 				HttpUtil.sendJson(resp, HttpServletResponse.SC_INTERNAL_SERVER_ERROR, "error",
@@ -63,8 +70,8 @@ public class Register extends HttpServlet {
 				return;
 			}
 
-			String verifyLink = System.getenv("BACK_HOST") + "/verify?token=" + token + "&redirect=" + redir;
-			Mail.sendMail(email, "Verify your E-Mail for Hriday.Tech", EmailTemplates.verifyMail(verifyLink));
+			String verifyLink = dbAuth.BACK_HOST + "/v1/verify?token=" + token + "&redirect=" + redir;
+			MailUtil.sendMail(email, "Verify your E-Mail for Hriday.Tech", MailUtil.templateVerifyMail(verifyLink));
 
 			conn.commit();
 			HttpUtil.sendJson(resp, HttpServletResponse.SC_CREATED, "success",

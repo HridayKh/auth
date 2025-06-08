@@ -17,7 +17,7 @@ import utils.AuthUtil;
 import utils.HttpUtil;
 import utils.PassUtil;
 
-@WebServlet("/login")
+@WebServlet("/v1/login")
 public class Login extends HttpServlet {
 	private static final long serialVersionUID = 1L;
 
@@ -27,7 +27,7 @@ public class Login extends HttpServlet {
 		String pass = body.getString("pass");
 
 		try (Connection conn = dbAuth.getConnection()) {
-			User user = UsersDAO.getUserByEmail(conn, email, PassUtil.sha256Hash(pass));
+			User user = UsersDAO.getUserByEmailPass(conn, email, PassUtil.sha256Hash(pass));
 
 			if (user == null) {
 				HttpUtil.sendJson(resp, HttpServletResponse.SC_BAD_REQUEST, "error",
@@ -44,7 +44,7 @@ public class Login extends HttpServlet {
 			UsersDAO.updateLastLogin(conn, user.uuid(), unixTime);
 			AuthUtil.setAuthCookie(resp, user.uuid());
 
-			HttpUtil.sendJson(resp, HttpServletResponse.SC_OK, "success", "Logged In Successfully, redirecting....");
+			HttpUtil.sendJson(resp, HttpServletResponse.SC_OK, "success", "Logged In Successfully, Redirecting....");
 			return;
 
 		} catch (Exception e) {

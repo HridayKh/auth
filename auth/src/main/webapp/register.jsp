@@ -1,79 +1,95 @@
-<%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
+<%@ page language="java" contentType="text/html; charset=UTF-8"
+	pageEncoding="UTF-8"%>
 <!DOCTYPE html>
 <html>
 <head>
-    <meta charset="UTF-8">
-    <title>Register - Test Page</title>
+<meta charset="UTF-8">
+<title>Register - Test Page</title>
 </head>
 <body>
-    <h2>Register New User</h2>
-    <form id="registerForm">
-        <label>Email:</label><br>
-        <input type="email" id="email" required><br><br>
+	<h2>Register New User</h2>
+	<form id="registerForm">
+		<label>Email:</label><br> <input type="email" id="email" required><br>
+		<br> s <label>Password:</label><br> <input type="password"
+			id="pass" required><br> <br> <label>Full
+			Name:</label><br> <input type="text" id="fullName" required><br>
+		<br> <label>Redirect URL:</label><br> <input type="text"
+			id="redirect" value="http://localhost:8080/auth/app"><br>
+		<br>
 
-        <label>Password:</label><br>
-        <input type="password" id="pass" required><br><br>
+		<button type="submit">Register</button>
+	</form>
 
-        <label>Full Name:</label><br>
-        <input type="text" id="fullName" required><br><br>
+	<!-- Message paragraph to show success/error -->
+	<p id="responseMsg"></p>
 
-        <label>Redirect URL:</label><br>
-        <input type="text" id="redirect" value="http://localhost:8080/auth/app"><br><br>
+	<script>
+    document.getElementById("registerForm").addEventListener("submit", async function(e) {
+        e.preventDefault();
 
-        <button type="submit">Register</button>
-    </form>
+        const payload = {
+            email: document.getElementById("email").value,
+            pass: document.getElementById("pass").value,
+            fullName: document.getElementById("fullName").value,
+            redirect: document.getElementById("redirect").value
+        };
 
-    <!-- Message paragraph to show success/error -->
-    <p id="responseMsg"></p>
+        try {
+            const res = await fetch("<%=request.getContextPath()%>/register", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify(payload)
+            });
 
-    <script>
-        // Add an event listener for the form's submit event
-        document.getElementById("registerForm").addEventListener("submit", async function(e) {
-            // Prevent the form from actually submitting and refreshing the page
-            e.preventDefault();
-            
-            // Create a JS object similar to a Java POJO with the required fields
-            const payload = {
-                email: document.getElementById("email").value,
-                pass: document.getElementById("pass").value,
-                fullName: document.getElementById("fullName").value,
-                redirect: document.getElementById("redirect").value
-            };
+            const json = await res.json();
+            const msgElem = document.getElementById("responseMsg");
 
-            try {
-                // Use Fetch API to send a POST request to the /register servlet
-                const res = await fetch("<%=request.getContextPath()%>/register", {
-                    method: "POST", // HTTP method
-                    headers: {
-                        "Content-Type": "application/json" // Tell server it's JSON
-                    },
-                    body: JSON.stringify(payload) // Convert JS object to JSON string
-                });
+            msgElem.textContent = json.message || "Unknown response.";
+            msgElem.style.color = json.type === "success" ? "green" : "red";
 
-                // Wait for the JSON response from the servlet
-                const json = await res.json();
-
-                // Grab the <p> element for displaying messages
-                const msgElem = document.getElementById("responseMsg");
-
-                // Show the message from the response JSON
-                msgElem.textContent = json.message || "Unknown response.";
-
-                // If type is "success", show in green, else show in red
-                if (json.type === "success") {
-                    msgElem.style.color = "green";
-                } else {
-                    msgElem.style.color = "red";
-                }
-			console.log(json);
-            } catch (err) {
-                // If fetch failed (server down, network error, etc.)
-                console.error(err); // Log error in browser console
-                const msgElem = document.getElementById("responseMsg");
-                msgElem.style.color = "red";
-                msgElem.textContent = "Network or server error.";
+            // Show the reverify button if "reverify" is true
+            if (json.reverify) {
+                showReverifyButton(payload.email, payload.redirect);
             }
-        });
-    </script>
+
+            console.log(json);
+        } catch (err) {
+            console.error(err);
+            const msgElem = document.getElementById("responseMsg");
+            msgElem.style.color = "red";
+            msgElem.textContent = "Network or server error.";
+        }
+    });
+
+    function showReverifyButton(email, redirect) {
+        // Avoid creating duplicates
+        if (document.getElementById("reverifyBtn")) return;
+
+        const btn = document.createElement("button");
+        btn.id = "reverifyBtn";
+        btn.textContent = "Resend Verification Email";
+        btn.style.display = "block";
+        btn.style.marginTop = "10px";
+
+        btn.onclick = async function() {
+            const res = await fetch("<%=request.getContextPath()%>/reVerify", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify({ email, redirect })
+            });
+            const json = await res.json();
+            const msgElem = document.getElementById("responseMsg");
+            msgElem.textContent = json.message || "Unknown response.";
+            msgElem.style.color = json.type === "success" ? "green" : "red";
+        };
+
+        document.body.appendChild(btn);
+    }
+</script>
+
 </body>
 </html>

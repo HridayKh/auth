@@ -3,6 +3,7 @@ package utils;
 import java.nio.charset.StandardCharsets;
 import java.util.Base64;
 
+import db.dbAuth;
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
@@ -14,7 +15,7 @@ public class AuthUtil {
 			String encodedJwt = Base64.getEncoder().encodeToString(jwt.getBytes());
 			Cookie authCookie = new Cookie("hriday_tech_auth_token", encodedJwt);
 
-			if ("yes".equals(System.getenv("prod"))) {
+			if ("yes".equals(dbAuth.PROD)) {
 				authCookie.setHttpOnly(true);
 				authCookie.setSecure(true);
 				authCookie.setDomain("hriday.tech");

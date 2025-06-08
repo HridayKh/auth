@@ -13,7 +13,7 @@ import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 
-@WebServlet("/verify")
+@WebServlet("/v1/verify")
 public class Verify extends HttpServlet {
 	private static final long serialVersionUID = 1L;
 
@@ -22,7 +22,8 @@ public class Verify extends HttpServlet {
 		String redir = req.getParameter("redirect");
 
 		if (token == null || token.isEmpty()) {
-			resp.sendRedirect(dbAuth.FRONT_HOST + "/index.html?site=register&type=error&msg=Missing/Invalid Token");
+			resp.sendRedirect(
+					dbAuth.FRONT_HOST + "/register?redirect=" + redir + "&type=error&msg=Missing/Invalid Token");
 			return;
 		}
 
@@ -32,15 +33,16 @@ public class Verify extends HttpServlet {
 			String userUuid = EmailDAO.verifyToken(conn, token);
 			if (userUuid == null) {
 				conn.rollback();
-				resp.sendRedirect(dbAuth.FRONT_HOST
-						+ "/index.html?site=register&type=error&msg=Invalid or Expired email verification token");
+				resp.sendRedirect(dbAuth.FRONT_HOST + "/register?redirect=" + redir
+						+ "&type=error&msg=Invalid or Expired email verification token");
 				return;
 			}
 
-			boolean userVerify = UsersDAO.updateUserVerify(conn, userUuid, System.currentTimeMillis()/1000L);
+			boolean userVerify = UsersDAO.updateUserVerify(conn, userUuid, System.currentTimeMillis() / 1000L);
 			if (!userVerify) {
 				conn.rollback();
-				resp.sendRedirect(dbAuth.FRONT_HOST + "/index.html?site=register&type=error&msg=Unable to verify user");
+				resp.sendRedirect(
+						dbAuth.FRONT_HOST + "/register?redirect=" + redir + "&type=error&msg=Unable to verify user");
 				return;
 			}
 
@@ -48,7 +50,7 @@ public class Verify extends HttpServlet {
 			if (!expireToken) {
 				conn.rollback();
 				resp.sendRedirect(
-						dbAuth.FRONT_HOST + "/index.html?site=register&type=error&msg=Unable to expire token");
+						dbAuth.FRONT_HOST + "/register?redirect=" + redir + "&type=error&msg=Unable to expire token");
 				return;
 			}
 
@@ -58,7 +60,8 @@ public class Verify extends HttpServlet {
 			return;
 		} catch (Exception e) {
 			e.printStackTrace();
-			resp.sendRedirect(dbAuth.FRONT_HOST + "/index.html?site=register&type=error&msg=Unexpected server error");
+			resp.sendRedirect(
+					dbAuth.FRONT_HOST + "/register?redirect=" + redir + "&type=error&msg=Unexpected server error");
 			return;
 		}
 	}

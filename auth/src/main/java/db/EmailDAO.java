@@ -47,4 +47,16 @@ public class EmailDAO {
 		}
 	}
 
+	public static boolean deleteEmailTokenByUser(Connection conn, String uuid) {
+		String sql = "DELETE FROM email_tokens WHERE user_uuid = ?";
+		try (PreparedStatement stmt = conn.prepareStatement(sql)) {
+			stmt.setString(1, uuid);
+			int affectedRows = stmt.executeUpdate();
+			return affectedRows > 0;
+		} catch (Exception e) {
+			e.printStackTrace();
+			return false;
+		}
+	}
+
 }
