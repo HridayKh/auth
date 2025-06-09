@@ -31,23 +31,20 @@ public class AuthUtil {
 	 * @param conn     The database connection.
 	 * @param userUuid The UUID of the user logging in.
 	 * @param req      The HttpServletRequest to get User-Agent.
-	 * @throws SQLException 
+	 * @throws SQLException
 	 */
 	public static void createAndSetAuthCookie(Connection conn, HttpServletRequest req, HttpServletResponse resp,
 			String userUuid) throws SQLException {
-		System.out.println("\ncreate cookie\nUUID: " + userUuid);
 		String userAgent = req.getHeader("User-Agent");
 
 		// 1. Create a new session record in the database
 		String sessionId = SessionDAO.createSession(conn, userUuid, userAgent, SESSION_EXPIRY_SECONDS);
-		System.out.println("Session ID: " + sessionId);
 		// 2. Sign the sessionId. Assuming PassUtil.signUUID can securely sign any
 		// string.
 		String signedSessionId = PassUtil.signUUID(sessionId);
 
 		// 3. Combine sessionId and signature for the cookie value
 		String jwt = sessionId + ":|:" + signedSessionId;
-		System.out.println("jwt: " + sessionId);
 		String encodedJwt = Base64.getEncoder().encodeToString(jwt.getBytes(StandardCharsets.UTF_8));
 
 		// 4. Set the HttpOnly auth cookie
@@ -127,15 +124,11 @@ public class AuthUtil {
 					SessionDAO.updateSessionLastAccessed(conn, sessionId, now, newExpiresAt);
 					return session.userUuid(); // Return the user UUID associated with this valid session
 				} else {
-					// Session is inactive or expired
-					System.out.println("AuthUtil: Session " + sessionId + " is inactive or expired. Active: "
-							+ session.isActive() + ", Expires At: " + session.expiresAt() + ", Now: " + now);
 					clearAuthCookie(resp); // Clear the client's cookie for the invalid session
 					return null;
 				}
 			} else {
 				// Session ID not found in DB (e.g., invalidated by "sign out other devices")
-				System.out.println("AuthUtil: Session ID " + sessionId + " not found in database.");
 				clearAuthCookie(resp); // Clear the client's cookie
 				return null;
 			}
@@ -167,5 +160,45 @@ public class AuthUtil {
 			authCookie.setSecure(true);
 		}
 		resp.addCookie(authCookie);
+	}
+
+	/**
+	 * Verifies an 'Authorization: Basic' HTTP header against a predefined static
+	 * password. This method is intended for authenticating requests from trusted
+	 * "other apps" or internal services that share a static secret. It extracts the
+	 * Base64-encoded credentials, decodes them, and checks if the extracted
+	 * password matches the `dbAuth.PASS` variable.
+	 *
+	 * Note: Storing sensitive passwords directly in code or simple configuration
+	 * files (like `dbAuth.PASS`) is generally not recommended for high-security
+	 * applications. Consider environment variables or a secrets management system
+	 * for production environments. This method assumes `dbAuth.PASS` holds the
+	 * static password to be checked.
+	 *
+	 * @param req The {@link HttpServletRequest} containing the HTTP headers.
+	 * @return {@code true} if the Basic Auth header is present and the password
+	 *         matches {@code dbAuth.PASS}, {@code false} otherwise.
+	 */
+	public static boolean verifyBasicAuthHeaderWithStaticPassword(HttpServletRequest req) {
+		// 1. Get the Authorization header from the request
+		String authHeader = req.getHeader("auth");
+
+		// 2. Check if the header exists and starts with "Basic "
+		if (authHeader == null) {
+			System.out.println("AuthUtil: No Auth header found.");
+			return false;
+		}
+
+		// 5. Convert decoded bytes to string
+		String credentials = authHeader.trim();
+
+		// 6. Compare the extracted password with the static password from dbAuth.PASS
+		if (credentials.equals(PassUtil.sha256Hash(dbAuth.DB_PASSWORD))) {
+			System.out.println("AuthUtil: Basic Auth header password matched static secret.");
+			return true; // Password matched
+		} else {
+			System.out.println("AuthUtil: Basic Auth header password mismatch.");
+			return false; // Password mismatch
+		}
 	}
 }

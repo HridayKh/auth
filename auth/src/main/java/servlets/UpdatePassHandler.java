@@ -34,14 +34,14 @@ public class UpdatePassHandler {
 
 			String oldPass = PassUtil.sha256Hash(old);
 			String newPass = PassUtil.sha256Hash(neW);
-			User user = UsersDAO.getUserByUUID(conn, uuid);
+			User user = UsersDAO.getUserByUuid(conn, uuid);
 
 			if (!oldPass.equals(user.passwordHash())) {
 				HttpUtil.sendJson(resp, HttpServletResponse.SC_UNAUTHORIZED, "error", "Invalid Old Password!");
 				return;
 			}
 
-			if (!UsersDAO.updateUserPassword(conn, uuid, newPass, System.currentTimeMillis() / 1000L)) {
+			if (!UsersDAO.updatePasswordAndAccType(conn, uuid, newPass, user.accType(), System.currentTimeMillis() / 1000L)) {
 				HttpUtil.sendJson(resp, HttpServletResponse.SC_INTERNAL_SERVER_ERROR, "error",
 						"Unknown error occured!");
 				return;

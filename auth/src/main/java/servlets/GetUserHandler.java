@@ -16,7 +16,7 @@ public class GetUserHandler {
 	public static void getUser(HttpServletRequest req, HttpServletResponse resp) throws IOException {
 		try (Connection conn = dbAuth.getConnection()) {
 			String uuid = AuthUtil.getUserUUIDFromAuthCookie(req, resp, conn);
-			User user = UsersDAO.getUserByUUID(conn, uuid);
+			User user = UsersDAO.getUserByUuid(conn, uuid);
 			if (user == null) {
 				HttpUtil.sendJson(resp, HttpServletResponse.SC_NOT_FOUND, "error", "User not found");
 				return;

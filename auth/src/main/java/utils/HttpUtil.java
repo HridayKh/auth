@@ -72,6 +72,9 @@ public class HttpUtil {
 		if (user.permissions() != null) {
 			json.put("permissions", user.permissions());
 		}
+		if (user.accType() != null) {
+			json.put("accType", user.accType());
+		}
 
 		resp.getWriter().write(json.toString());
 	}

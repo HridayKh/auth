@@ -128,7 +128,7 @@ public class User {
 
 		// Fields with defaults
 		private boolean isVerified = false;
-		private String accType = "both"; // Default value "both"
+		private String accType = "password"; // Default value "password"
 		private String profilePic = "https://i.pinimg.com/736x/2f/15/f2/2f15f2e8c688b3120d3d26467b06330c.jpg";
 		private JSONObject metadata = new JSONObject();
 		private JSONObject permissions = new JSONObject();

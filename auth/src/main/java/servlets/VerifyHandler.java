@@ -50,7 +50,6 @@ public class VerifyHandler {
 			if (userUuid == null) {
 				conn.rollback(); // Rollback transaction on failure
 				// Log for debugging (remove in production or use a logging framework)
-				System.out.println("Verification failed: Token " + token + " is invalid or expired.");
 				resp.sendRedirect(dbAuth.FRONT_HOST + "/register?redirect=" + redir
 						+ "&type=error&msg=Invalid or Expired email verification token");
 				return;
@@ -83,9 +82,6 @@ public class VerifyHandler {
 			// - Creating a Session object using the SessionDAO
 			// - Storing the Session object in the 'sessions' table
 			// - Setting an HTTP-only cookie with the session_id
-			System.out.println("\nverify");
-			System.out.println("token: " + token);
-			System.out.println("UUID: " + userUuid);
 			AuthUtil.createAndSetAuthCookie(conn, req, resp, userUuid);
 
 			// 5. Commit the transaction if all database operations are successful

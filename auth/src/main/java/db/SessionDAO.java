@@ -25,7 +25,6 @@ public class SessionDAO {
 	public static String createSession(Connection conn, String userUuid, String userAgent, int expiresInSeconds)
 			throws SQLException {
 		String sessionId = UUID.randomUUID().toString();
-		System.out.println("DAO Session ID: " + sessionId);
 		long now = System.currentTimeMillis() / 1000L; // Current time in seconds
 		long expiresAt = now + expiresInSeconds;
 
