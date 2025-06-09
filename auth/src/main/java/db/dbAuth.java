@@ -2,6 +2,7 @@ package db;
 
 import java.sql.Connection;
 import java.sql.DriverManager;
+import java.sql.SQLException;
 
 public class dbAuth {
 	public final static String DB_URL = "jdbc:mysql://db.hriday.tech:3306/Auth_Db";
@@ -14,8 +15,12 @@ public class dbAuth {
 	public final static String Mailgun = System.getenv("VITE_MAILGUN_KEY");
 	public final static String PROD = System.getenv("VITE_PROD");
 
-	public static Connection getConnection() throws Exception {
-		Class.forName("com.mysql.cj.jdbc.Driver");
+	public static Connection getConnection() throws SQLException {
+		try {
+			Class.forName("com.mysql.cj.jdbc.Driver");
+		} catch (ClassNotFoundException e) {
+			e.printStackTrace();
+		}
 		return DriverManager.getConnection(dbAuth.DB_URL, dbAuth.DB_USER, dbAuth.DB_PASSWORD);
 	}
 //mysql> CREATE TABLE users (

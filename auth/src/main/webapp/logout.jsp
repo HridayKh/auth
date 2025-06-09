@@ -13,7 +13,7 @@
 	<script>
         async function logoutUser() {
             try {
-                const res = await fetch("<%=request.getContextPath()%>/logout", {
+                const res = await fetch("<%=request.getContextPath()%>/v1/logout", {
                     method: "POST",
                     credentials: "include" // send cookies
                 });

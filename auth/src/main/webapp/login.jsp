@@ -34,7 +34,7 @@
 
             try {
                 // Use Fetch API to send a POST request to the /login servlet
-                const res = await fetch("<%=request.getContextPath()%>/login", {
+                const res = await fetch("<%=request.getContextPath()%>/v1/login", {
                     method: "POST", // HTTP method
                     headers: {
                         "Content-Type": "application/json" // Tell server it's JSON

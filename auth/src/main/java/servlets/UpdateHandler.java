@@ -12,16 +12,12 @@ import db.UsersDAO;
 import db.dbAuth;
 import entities.User;
 import jakarta.servlet.ServletException;
-import jakarta.servlet.annotation.WebServlet;
-import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 
-@WebServlet("/v1/update_password")
-public class Update extends HttpServlet {
-	private static final long serialVersionUID = 1L;
+public class UpdateHandler {
 
-	public void doPost(HttpServletRequest req, HttpServletResponse resp) throws IOException, ServletException {
+	public static void updateUser(HttpServletRequest req, HttpServletResponse resp) throws IOException, ServletException {
 
 		try (Connection conn = dbAuth.getConnection()) {
 

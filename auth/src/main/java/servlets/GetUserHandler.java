@@ -8,16 +8,12 @@ import utils.HttpUtil;
 import db.UsersDAO;
 import db.dbAuth;
 import entities.User;
-import jakarta.servlet.annotation.WebServlet;
-import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 
-@WebServlet("/v1/getUser")
-public class GetUser extends HttpServlet {
-	private static final long serialVersionUID = 1L;
+public class GetUserHandler {
 
-	protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws IOException {
+	public static void getUser(HttpServletRequest req, HttpServletResponse resp) throws IOException {
 		String uuid = AuthUtil.getUserUUIDFromCookie(req);
 
 		try (Connection conn = dbAuth.getConnection()) {

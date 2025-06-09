@@ -2,22 +2,20 @@ package servlets;
 
 import java.io.IOException;
 import java.sql.Connection;
+import java.sql.SQLException;
 
 import utils.AuthUtil;
 import db.EmailDAO;
 import db.UsersDAO;
 import db.dbAuth;
 import jakarta.servlet.ServletException;
-import jakarta.servlet.annotation.WebServlet;
-import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 
-@WebServlet("/v1/verify")
-public class Verify extends HttpServlet {
-	private static final long serialVersionUID = 1L;
+public class VerifyHandler {
 
-	public void doGet(HttpServletRequest req, HttpServletResponse resp) throws IOException, ServletException {
+	public static void verifyUser(HttpServletRequest req, HttpServletResponse resp)
+			throws IOException, ServletException {
 		String token = req.getParameter("token");
 		String redir = req.getParameter("redirect");
 
@@ -58,7 +56,7 @@ public class Verify extends HttpServlet {
 			AuthUtil.setAuthCookie(resp, userUuid);
 			resp.sendRedirect(redir + "?type=success&msg=Email verified successfully.");
 			return;
-		} catch (Exception e) {
+		} catch (SQLException e) {
 			e.printStackTrace();
 			resp.sendRedirect(
 					dbAuth.FRONT_HOST + "/register?redirect=" + redir + "&type=error&msg=Unexpected server error");

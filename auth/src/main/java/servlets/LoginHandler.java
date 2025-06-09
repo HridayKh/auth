@@ -8,20 +8,15 @@ import org.json.JSONObject;
 import db.UsersDAO;
 import db.dbAuth;
 import entities.User;
-import jakarta.servlet.ServletException;
-import jakarta.servlet.annotation.WebServlet;
-import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import utils.AuthUtil;
 import utils.HttpUtil;
 import utils.PassUtil;
 
-@WebServlet("/v1/login")
-public class Login extends HttpServlet {
-	private static final long serialVersionUID = 1L;
+public class LoginHandler {
 
-	public void doPost(HttpServletRequest req, HttpServletResponse resp) throws IOException, ServletException {
+	public static void loginUser(HttpServletRequest req, HttpServletResponse resp) throws IOException {
 		JSONObject body = HttpUtil.readBodyJSON(req);
 		String email = body.getString("email");
 		String pass = body.getString("pass");

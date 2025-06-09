@@ -11,19 +11,17 @@ import db.UsersDAO;
 import db.dbAuth;
 import entities.EmailToken;
 import entities.User;
-import jakarta.servlet.ServletException;
-import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import utils.HttpUtil;
 import utils.MailUtil;
 
-@WebServlet("/v1/reVerify")
-public class ReVerify extends HttpServlet {
+
+public class ReVerifyHandler extends HttpServlet {
 	private static final long serialVersionUID = 1L;
 
-	protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws IOException, ServletException {
+	public static void reVerifyUser(HttpServletRequest req, HttpServletResponse resp) throws IOException {
 		JSONObject body = HttpUtil.readBodyJSON(req);
 		String email = body.getString("email");
 		String redir = body.getString("redirect");

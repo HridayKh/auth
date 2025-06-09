@@ -35,7 +35,7 @@
         };
 
         try {
-            const res = await fetch("<%=request.getContextPath()%>/register", {
+            const res = await fetch("<%=request.getContextPath()%>/v1/register", {
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json"
@@ -74,7 +74,7 @@
         btn.style.marginTop = "10px";
 
         btn.onclick = async function() {
-            const res = await fetch("<%=request.getContextPath()%>/reVerify", {
+            const res = await fetch("<%=request.getContextPath()%>/v1/reVerify", {
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json"
