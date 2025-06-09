@@ -15,13 +15,13 @@ import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 
-public class UpdateHandler {
+public class UpdatePassHandler {
 
 	public static void updateUser(HttpServletRequest req, HttpServletResponse resp) throws IOException, ServletException {
 
 		try (Connection conn = dbAuth.getConnection()) {
 
-			String uuid = AuthUtil.getUserUUIDFromCookie(req);
+			String uuid = AuthUtil.getUserUUIDFromAuthCookie(req, resp, conn);
 
 			JSONObject body = HttpUtil.readBodyJSON(req);
 			String old = body.getString("old");

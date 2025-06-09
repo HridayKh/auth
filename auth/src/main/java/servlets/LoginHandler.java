@@ -37,7 +37,7 @@ public class LoginHandler {
 
 			long unixTime = System.currentTimeMillis() / 1000L;
 			UsersDAO.updateLastLogin(conn, user.uuid(), unixTime);
-			AuthUtil.setAuthCookie(resp, user.uuid());
+			AuthUtil.createAndSetAuthCookie(conn, req, resp, user.uuid());
 
 			HttpUtil.sendJson(resp, HttpServletResponse.SC_OK, "success", "Logged In Successfully, Redirecting....");
 			return;

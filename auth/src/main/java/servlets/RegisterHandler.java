@@ -49,8 +49,8 @@ public class RegisterHandler {
 
 			conn.setAutoCommit(false);
 
-			User user = new User.Builder(user_uuid, email, PassUtil.sha256Hash(pass), time, time).fullName(FullName)
-					.build();
+			User user = new User.Builder(user_uuid, email, time, time).passwordHash(PassUtil.sha256Hash(pass))
+					.fullName(FullName).build();
 			if (!UsersDAO.insertUser(conn, user)) {
 				conn.rollback();
 				HttpUtil.sendJson(resp, HttpServletResponse.SC_INTERNAL_SERVER_ERROR, "error",

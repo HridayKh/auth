@@ -1,60 +1,169 @@
+// utils/AuthUtil.java (UPDATED)
 package utils;
 
 import java.nio.charset.StandardCharsets;
+import java.sql.Connection;
+import java.sql.SQLException;
 import java.util.Base64;
+import java.util.concurrent.TimeUnit;
 
+import db.SessionDAO; // Import the updated SessionDAO
 import db.dbAuth;
+import entities.Session; // Import your Session record
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 
 public class AuthUtil {
-	public static void setAuthCookie(HttpServletResponse resp, String userUUID) {
-		try {
-			String jwt = userUUID + ":|:" + PassUtil.signUUID(userUUID);
-			String encodedJwt = Base64.getEncoder().encodeToString(jwt.getBytes());
-			Cookie authCookie = new Cookie("hriday_tech_auth_token", encodedJwt);
 
-			if ("yes".equals(dbAuth.PROD)) {
-				authCookie.setHttpOnly(true);
-				authCookie.setSecure(true);
-				authCookie.setDomain("hriday.tech");
-			}
-			authCookie.setMaxAge(60 * 60 * 24 * 7); // 7 days
-			authCookie.setPath("/");
-			resp.addCookie(authCookie);
-		} catch (Exception e) {
-			e.printStackTrace();
+	// Define your session expiry time in seconds (e.g., 7 days)
+	// Make this configurable if possible, maybe from dbAuth or a properties file
+	private static final int SESSION_EXPIRY_SECONDS = (int) TimeUnit.DAYS.toSeconds(7);
+	private static final String AUTH_COOKIE_NAME = "hriday_tech_auth_token";
+	private static final String COOKIE_DOMAIN = "hriday.tech"; // Your domain
+
+	/**
+	 * Creates a new server-side session, stores it in the database, and sets the
+	 * auth cookie. This method should be called after a successful login or email
+	 * verification.
+	 *
+	 * @param resp     The HttpServletResponse to add the cookie to.
+	 * @param conn     The database connection.
+	 * @param userUuid The UUID of the user logging in.
+	 * @param req      The HttpServletRequest to get User-Agent.
+	 * @throws SQLException 
+	 */
+	public static void createAndSetAuthCookie(Connection conn, HttpServletRequest req, HttpServletResponse resp,
+			String userUuid) throws SQLException {
+		String userAgent = req.getHeader("User-Agent");
+
+		// 1. Create a new session record in the database
+		String sessionId = SessionDAO.createSession(conn, userUuid, userAgent, SESSION_EXPIRY_SECONDS);
+
+		// 2. Sign the sessionId. Assuming PassUtil.signUUID can securely sign any
+		// string.
+		String signedSessionId = PassUtil.signUUID(sessionId);
+
+		// 3. Combine sessionId and signature for the cookie value
+		String jwt = sessionId + ":|:" + signedSessionId;
+		String encodedJwt = Base64.getEncoder().encodeToString(jwt.getBytes(StandardCharsets.UTF_8));
+
+		// 4. Set the HttpOnly auth cookie
+		Cookie authCookie = new Cookie(AUTH_COOKIE_NAME, encodedJwt);
+
+		if ("yes".equals(dbAuth.PROD)) {
+			authCookie.setSecure(true);
+			authCookie.setDomain(COOKIE_DOMAIN);
 		}
+		authCookie.setHttpOnly(true);
+		authCookie.setMaxAge(SESSION_EXPIRY_SECONDS);
+		authCookie.setPath("/");
+		resp.addCookie(authCookie);
 	}
 
-	public static String getUserUUIDFromCookie(HttpServletRequest req) {
+	/**
+	 * Validates the auth cookie, retrieves the session from the database, updates
+	 * its last access time, and returns the associated user UUID. This method
+	 * should be called by any secured endpoint or filter.
+	 *
+	 * @param req  The HttpServletRequest to get the cookie from.
+	 * @param resp The HttpServletResponse to clear the cookie if invalid.
+	 * @param conn The database connection.
+	 * @return The user UUID if the session is valid and active, null otherwise.
+	 * @throws SQLException If a database access error occurs during session
+	 *                      lookup/update.
+	 */
+	public static String getUserUUIDFromAuthCookie(HttpServletRequest req, HttpServletResponse resp, Connection conn)
+			throws SQLException {
 		Cookie[] cookies = req.getCookies();
-		if (cookies == null)
-			throw new IllegalArgumentException("No cookies");
+		if (cookies == null) {
+			return null; // No cookies present, user not logged in
+		}
 
 		String jwtEnc = null;
 		for (Cookie cookie : cookies) {
-			if ("hriday_tech_auth_token".equals(cookie.getName())) {
+			if (AUTH_COOKIE_NAME.equals(cookie.getName())) {
 				jwtEnc = cookie.getValue();
 				break;
 			}
 		}
-		if (jwtEnc == null)
-			throw new IllegalArgumentException("Not logged in");
+		if (jwtEnc == null) {
+			return null; // Auth cookie not found, user not logged in
+		}
 
-		byte[] decodedBytes = Base64.getDecoder().decode(jwtEnc);
-		String jwt = new String(decodedBytes, StandardCharsets.UTF_8);
-		String[] parts = jwt.split(":\\|:");
-		if (parts.length != 2)
-			throw new IllegalArgumentException("Invalid token format");
+		String sessionId = null;
+		try {
+			byte[] decodedBytes = Base64.getDecoder().decode(jwtEnc);
+			String jwt = new String(decodedBytes, StandardCharsets.UTF_8);
+			String[] parts = jwt.split(":\\|:");
+			if (parts.length != 2) {
+				System.err.println("AuthUtil: Invalid token format in cookie.");
+				clearAuthCookie(resp); // Clear malformed cookie
+				return null;
+			}
 
-		String uuid = parts[0];
-		String sign = parts[1];
+			sessionId = parts[0];
+			String receivedSignature = parts[1];
 
-		if (!PassUtil.signUUID(uuid).equals(sign))
-			throw new IllegalArgumentException("Invalid token signature");
+			// 1. Verify the signature of the sessionId
+			if (!PassUtil.signUUID(sessionId).equals(receivedSignature)) {
+				System.err.println("AuthUtil: Invalid session token signature for session ID: " + sessionId);
+				clearAuthCookie(resp); // Clear cookie with invalid signature
+				return null;
+			}
 
-		return uuid;
+			// 2. Look up the session in the database
+			Session session = SessionDAO.getSessionById(conn, sessionId);
+
+			if (session != null) {
+				long now = System.currentTimeMillis() / 1000L;
+
+				// 3. Check if session is active and not expired
+				if (session.isActive() && session.expiresAt() > now) {
+					// 4. Update last_accessed_at and re-extend expiration (rolling session)
+					long newExpiresAt = now + SESSION_EXPIRY_SECONDS;
+					SessionDAO.updateSessionLastAccessed(conn, sessionId, now, newExpiresAt);
+					return session.userUuid(); // Return the user UUID associated with this valid session
+				} else {
+					// Session is inactive or expired
+					System.out.println("AuthUtil: Session " + sessionId + " is inactive or expired. Active: "
+							+ session.isActive() + ", Expires At: " + session.expiresAt() + ", Now: " + now);
+					clearAuthCookie(resp); // Clear the client's cookie for the invalid session
+					return null;
+				}
+			} else {
+				// Session ID not found in DB (e.g., invalidated by "sign out other devices")
+				System.out.println("AuthUtil: Session ID " + sessionId + " not found in database.");
+				clearAuthCookie(resp); // Clear the client's cookie
+				return null;
+			}
+		} catch (IllegalArgumentException e) {
+			// This catches issues like Base64 decoding errors or split failures
+			System.err.println("AuthUtil: Cookie parsing error: " + e.getMessage());
+			clearAuthCookie(resp); // Clear potentially malicious or malformed cookie
+			return null;
+		} catch (SQLException e) {
+			// Re-throw SQL exceptions to be handled by the calling servlet/filter
+			System.err.println("AuthUtil: Database error during session lookup/update: " + e.getMessage());
+			throw e;
+		}
+	}
+
+	/**
+	 * Clears the authentication cookie from the client. This should be called on
+	 * logout or when an invalid/expired session is detected.
+	 *
+	 * @param resp The HttpServletResponse.
+	 */
+	public static void clearAuthCookie(HttpServletResponse resp) {
+		Cookie authCookie = new Cookie(AUTH_COOKIE_NAME, "");
+		authCookie.setMaxAge(0); // Set max age to 0 to delete the cookie
+		authCookie.setPath("/");
+		authCookie.setHttpOnly(true);
+		if ("yes".equals(dbAuth.PROD)) {
+			authCookie.setDomain(COOKIE_DOMAIN);
+			authCookie.setSecure(true);
+		}
+		resp.addCookie(authCookie);
 	}
 }

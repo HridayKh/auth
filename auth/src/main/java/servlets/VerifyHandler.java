@@ -53,7 +53,7 @@ public class VerifyHandler {
 			}
 
 			conn.commit();
-			AuthUtil.setAuthCookie(resp, userUuid);
+			AuthUtil.createAndSetAuthCookie(conn, req, resp, userUuid);
 			resp.sendRedirect(redir + "?type=success&msg=Email verified successfully.");
 			return;
 		} catch (SQLException e) {

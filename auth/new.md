@@ -48,8 +48,6 @@ This is a significant enhancement, moving from a stateless cookie-based system t
 
 * **`expires_at`**: The planned expiration timestamp for the session.
 
-* **`ip_address`**: The IP address from which the session was created.
-
 * **`user_agent`**: The browser/device string associated with the session.
 
 * **`is_active` (`BOOLEAN NOT NULL DEFAULT TRUE`)**: A flag that can be set to `FALSE` to immediately invalidate a session from the server-side, without waiting for its natural expiration.
