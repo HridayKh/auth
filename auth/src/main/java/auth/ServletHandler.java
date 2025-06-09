@@ -31,7 +31,7 @@ public class ServletHandler {
 
 		@Override
 		public void doPost(HttpServletRequest req, HttpServletResponse resp) throws IOException, ServletException {
-			servlets.RegisterHandler.registerUser(req, resp);
+			RegisterHandler.registerUser(req, resp);
 		}
 	}
 
@@ -40,8 +40,8 @@ public class ServletHandler {
 		private static final long serialVersionUID = 1L;
 
 		@Override
-		public void doPost(HttpServletRequest req, HttpServletResponse resp) throws IOException, ServletException {
-			servlets.VerifyHandler.verifyUser(req, resp);
+		public void doGet(HttpServletRequest req, HttpServletResponse resp) throws IOException, ServletException {
+			VerifyHandler.verifyUser(req, resp);
 		}
 	}
 
@@ -51,7 +51,7 @@ public class ServletHandler {
 
 		@Override
 		protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws IOException, ServletException {
-			servlets.ReVerifyHandler.reVerifyUser(req, resp);
+			ReVerifyHandler.reVerifyUser(req, resp);
 		}
 	}
 
@@ -70,7 +70,7 @@ public class ServletHandler {
 		private static final long serialVersionUID = 1L;
 
 		@Override
-		protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws IOException, ServletException {
+		protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws IOException, ServletException {
 			GetUserHandler.getUser(req, resp);
 		}
 	}

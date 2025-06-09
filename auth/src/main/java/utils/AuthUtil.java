@@ -35,17 +35,19 @@ public class AuthUtil {
 	 */
 	public static void createAndSetAuthCookie(Connection conn, HttpServletRequest req, HttpServletResponse resp,
 			String userUuid) throws SQLException {
+		System.out.println("\ncreate cookie\nUUID: " + userUuid);
 		String userAgent = req.getHeader("User-Agent");
 
 		// 1. Create a new session record in the database
 		String sessionId = SessionDAO.createSession(conn, userUuid, userAgent, SESSION_EXPIRY_SECONDS);
-
+		System.out.println("Session ID: " + sessionId);
 		// 2. Sign the sessionId. Assuming PassUtil.signUUID can securely sign any
 		// string.
 		String signedSessionId = PassUtil.signUUID(sessionId);
 
 		// 3. Combine sessionId and signature for the cookie value
 		String jwt = sessionId + ":|:" + signedSessionId;
+		System.out.println("jwt: " + sessionId);
 		String encodedJwt = Base64.getEncoder().encodeToString(jwt.getBytes(StandardCharsets.UTF_8));
 
 		// 4. Set the HttpOnly auth cookie
