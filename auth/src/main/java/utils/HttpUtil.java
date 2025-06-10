@@ -24,7 +24,6 @@ public class HttpUtil {
 			while ((line = reader.readLine()) != null)
 				sb.append(line);
 		} catch (IOException e) {
-			System.err.println("Unable to parse request body!");
 			e.printStackTrace();
 		}
 		return new JSONObject(sb.toString());

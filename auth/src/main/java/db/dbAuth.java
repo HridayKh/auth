@@ -6,13 +6,16 @@ import java.sql.SQLException;
 
 public class dbAuth {
 	public final static String DB_URL = "jdbc:mysql://db.hriday.tech:3306/Auth_Db";
-	public final static String DB_USER = System.getenv("VITE_AUTH_DB_USER");
-	public final static String DB_PASSWORD = System.getenv("VITE_AUTH_DB_PASSWORD");
+	public final static String DB_USER = System.getenv("AUTH_DB_USER");
+	public final static String DB_PASSWORD = System.getenv("AUTH_DB_PASSWORD");
+	
+	public static final String CLIENT_ID = System.getenv("GOOGLE_CLIENT_ID");
+	public static final String CLIENT_SECRET = System.getenv("GOOGLE_CLIENT_SECRET");
 
 	public final static String BACK_HOST = System.getenv("VITE_AUTH_BACKEND");
 	public final static String FRONT_HOST = System.getenv("VITE_AUTH_FRONTEND");
 
-	public final static String Mailgun = System.getenv("VITE_MAILGUN_KEY");
+	public final static String Mailgun = System.getenv("MAILGUN_KEY");
 	public final static String PROD = System.getenv("VITE_PROD");
 
 	public static Connection getConnection() throws SQLException {

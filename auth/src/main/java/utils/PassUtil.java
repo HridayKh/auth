@@ -31,7 +31,7 @@ public class PassUtil {
 		return hexString.toString();
 	}
 
-	public static String signUUID(String uuid) {
+	public static String signString(String uuid) {
 		Mac hmac = null;
 		try {
 			hmac = Mac.getInstance("HmacSHA256");

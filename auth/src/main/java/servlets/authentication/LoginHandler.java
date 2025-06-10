@@ -22,11 +22,18 @@ public class LoginHandler {
 		String pass = body.getString("pass");
 
 		try (Connection conn = dbAuth.getConnection()) {
-			User user = UsersDAO.getUserByEmailPass(conn, email.toLowerCase(), PassUtil.sha256Hash(pass));
+			User user = UsersDAO.getUserByEmail(conn, email.toLowerCase());
 
 			if (user == null) {
-				HttpUtil.sendJson(resp, HttpServletResponse.SC_BAD_REQUEST, "error",
-						"User with this email/password does not exist");
+				HttpUtil.sendJson(resp, HttpServletResponse.SC_BAD_REQUEST, "error", "Invalid email/password");
+				return;
+			}
+			if (user.accType().equals("google")) {
+				HttpUtil.sendJson(resp, HttpServletResponse.SC_BAD_REQUEST, "error", "Please use google login");
+				return;
+			}
+			if (!PassUtil.sha256Hash(pass).equals(user.passwordHash())) {
+				HttpUtil.sendJson(resp, HttpServletResponse.SC_BAD_REQUEST, "error", "Invalid email/password");
 				return;
 			}
 
@@ -35,8 +42,7 @@ public class LoginHandler {
 				return;
 			}
 
-			long unixTime = System.currentTimeMillis() / 1000L;
-			UsersDAO.updateLastLogin(conn, user.uuid(), unixTime);
+			UsersDAO.updateLastLogin(conn, user.uuid(), System.currentTimeMillis() / 1000L);
 			AuthUtil.createAndSetAuthCookie(conn, req, resp, user.uuid());
 
 			HttpUtil.sendJson(resp, HttpServletResponse.SC_OK, "success", "Logged In Successfully, Redirecting....");

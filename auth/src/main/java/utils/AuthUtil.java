@@ -41,7 +41,7 @@ public class AuthUtil {
 		String sessionId = SessionDAO.createSession(conn, userUuid, userAgent, SESSION_EXPIRY_SECONDS);
 		// 2. Sign the sessionId. Assuming PassUtil.signUUID can securely sign any
 		// string.
-		String signedSessionId = PassUtil.signUUID(sessionId);
+		String signedSessionId = PassUtil.signString(sessionId);
 
 		// 3. Combine sessionId and signature for the cookie value
 		String jwt = sessionId + ":|:" + signedSessionId;
@@ -96,7 +96,6 @@ public class AuthUtil {
 			String jwt = new String(decodedBytes, StandardCharsets.UTF_8);
 			String[] parts = jwt.split(":\\|:");
 			if (parts.length != 2) {
-				System.err.println("AuthUtil: Invalid token format in cookie.");
 				clearAuthCookie(resp); // Clear malformed cookie
 				return null;
 			}
@@ -105,8 +104,7 @@ public class AuthUtil {
 			String receivedSignature = parts[1];
 
 			// 1. Verify the signature of the sessionId
-			if (!PassUtil.signUUID(sessionId).equals(receivedSignature)) {
-				System.err.println("AuthUtil: Invalid session token signature for session ID: " + sessionId);
+			if (!PassUtil.signString(sessionId).equals(receivedSignature)) {
 				clearAuthCookie(resp); // Clear cookie with invalid signature
 				return null;
 			}
@@ -133,13 +131,9 @@ public class AuthUtil {
 				return null;
 			}
 		} catch (IllegalArgumentException e) {
-			// This catches issues like Base64 decoding errors or split failures
-			System.err.println("AuthUtil: Cookie parsing error: " + e.getMessage());
-			clearAuthCookie(resp); // Clear potentially malicious or malformed cookie
+			clearAuthCookie(resp);
 			return null;
 		} catch (SQLException e) {
-			// Re-throw SQL exceptions to be handled by the calling servlet/filter
-			System.err.println("AuthUtil: Database error during session lookup/update: " + e.getMessage());
 			throw e;
 		}
 	}
@@ -185,7 +179,6 @@ public class AuthUtil {
 
 		// 2. Check if the header exists and starts with "Basic "
 		if (authHeader == null) {
-			System.out.println("AuthUtil: No Auth header found.");
 			return false;
 		}
 
@@ -194,10 +187,8 @@ public class AuthUtil {
 
 		// 6. Compare the extracted password with the static password from dbAuth.PASS
 		if (credentials.equals(PassUtil.sha256Hash(dbAuth.DB_PASSWORD))) {
-			System.out.println("AuthUtil: Basic Auth header password matched static secret.");
 			return true; // Password matched
 		} else {
-			System.out.println("AuthUtil: Basic Auth header password mismatch.");
 			return false; // Password mismatch
 		}
 	}

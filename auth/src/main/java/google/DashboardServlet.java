@@ -1,4 +1,4 @@
-package test;
+package google;
 
 import java.io.IOException;
 
@@ -18,7 +18,6 @@ public class DashboardServlet extends HttpServlet {
 		HttpSession session = request.getSession(false);
 
 		if (session != null && Boolean.TRUE.equals(session.getAttribute("isLoggedIn"))) {
-			// User is logged in, display content
 			String userName = (String) session.getAttribute("userName");
 			response.getWriter().println("<h1>Welcome, " + userName + "!</h1>");
 			response.getWriter().println("<p>This is your protected dashboard.</p>");

@@ -17,7 +17,6 @@ public class EmailDAO {
 			int rowsInserted = stmt.executeUpdate();
 			return rowsInserted > 0;
 		} catch (Exception e) {
-			System.err.println("insertEmailTOken failed for uuid: " + et.user_uuid());
 			e.printStackTrace();
 			return false;
 		}

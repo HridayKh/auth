@@ -59,8 +59,7 @@ public class VerifyHandler {
 			// Using System.currentTimeMillis() / 1000L for epoch seconds
 			boolean userVerify = UsersDAO.updateUserVerify(conn, userUuid, Instant.now().getEpochSecond());
 			if (!userVerify) {
-				conn.rollback(); // Rollback transaction on failure
-				System.err.println("Failed to update user verification status for UUID: " + userUuid);
+				conn.rollback();
 				resp.sendRedirect(
 						dbAuth.FRONT_HOST + "/register?redirect=" + redir + "&type=error&msg=Unable to verify user");
 				return;
@@ -69,8 +68,7 @@ public class VerifyHandler {
 			// 3. Expire the used email verification token
 			boolean expireToken = EmailDAO.expireToken(conn, token);
 			if (!expireToken) {
-				conn.rollback(); // Rollback transaction on failure
-				System.err.println("Failed to expire email verification token: " + token);
+				conn.rollback();
 				resp.sendRedirect(
 						dbAuth.FRONT_HOST + "/register?redirect=" + redir + "&type=error&msg=Unable to expire token");
 				return;
@@ -91,9 +89,6 @@ public class VerifyHandler {
 			resp.sendRedirect(redir + "?type=success&msg=Email verified successfully.");
 			return;
 		} catch (SQLException e) {
-			// Catch any SQL exceptions during the transaction and rollback implicitly via
-			// try-with-resources if not committed
-			System.err.println("SQL error during user verification for token: " + token);
 			e.printStackTrace();
 			resp.sendRedirect(
 					dbAuth.FRONT_HOST + "/register?redirect=" + redir + "&type=error&msg=Unexpected server error");

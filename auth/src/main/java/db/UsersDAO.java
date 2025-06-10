@@ -55,9 +55,7 @@ public class UsersDAO {
 	 */
 	public static User getUserByEmail(Connection conn, String email) throws SQLException {
 		// Updated SQL query to use snake_case column names
-		String sql = "SELECT uuid, email, password_hash, is_verified, created_at, updated_at, last_login, "
-				+ "profile_pic, full_name, metadata, permissions, google_id, acc_type, refresh_token, refresh_token_expires_at "
-				+ "FROM users WHERE email = ? LIMIT 1"; // Limit 1 as email should be unique
+		String sql = "SELECT * FROM users WHERE email = ? LIMIT 1"; // Limit 1 as email should be unique
 		try (PreparedStatement stmt = conn.prepareStatement(sql)) {
 			stmt.setString(1, email);
 			try (ResultSet rs = stmt.executeQuery()) {
@@ -80,12 +78,34 @@ public class UsersDAO {
 	 */
 	public static User getUserByEmailPass(Connection conn, String email, String password_hash) throws SQLException {
 		// Updated SQL query to use snake_case column names
-		String sql = "SELECT uuid, email, password_hash, is_verified, created_at, updated_at, last_login, "
-				+ "profile_pic, full_name, metadata, permissions, google_id, acc_type, refresh_token, refresh_token_expires_at "
-				+ "FROM users WHERE email = ? AND password_hash = ? LIMIT 1"; // Fixed passwordHash to password_hash
+		String sql = "SELECT * FROM users WHERE email = ? AND password_hash = ? LIMIT 1"; // Fixed passwordHash to
+																							// password_hash
 		try (PreparedStatement stmt = conn.prepareStatement(sql)) {
 			stmt.setString(1, email);
 			stmt.setString(2, password_hash);
+			try (ResultSet rs = stmt.executeQuery()) {
+				return rs.next() ? parseUser(rs) : null; // Parse if a user is found
+			}
+		}
+	}
+
+	/**
+	 * Retrieves a {@link User} object by their email address. This method is
+	 * typically used during the login or registration process to check for the
+	 * existence of a user with a given email.
+	 *
+	 * @param conn  The active database connection.
+	 * @param email The email address of the user to retrieve.
+	 * @return A {@link User} object if a user with the specified email is found,
+	 *         otherwise returns {@code null}. Returns the first matching user if
+	 *         multiple exist (though email should be unique).
+	 * @throws SQLException If a database access error occurs.
+	 */
+	public static User getUserByGoogleID(Connection conn, String GoogleID) throws SQLException {
+		// Updated SQL query to use snake_case column names
+		String sql = "SELECT * FROM users WHERE google_id = ? LIMIT 1"; // Limit 1 as email should be unique
+		try (PreparedStatement stmt = conn.prepareStatement(sql)) {
+			stmt.setString(1, GoogleID);
 			try (ResultSet rs = stmt.executeQuery()) {
 				return rs.next() ? parseUser(rs) : null; // Parse if a user is found
 			}
@@ -106,11 +126,10 @@ public class UsersDAO {
 	 */
 	public static boolean insertUser(Connection conn, User user) throws SQLException {
 		// Updated SQL query to use snake_case column names
-		String sql = "INSERT INTO users (" + "uuid, email, password_hash, is_verified, created_at, updated_at, " // Fixed
-																													// here
-				+ "full_name, profile_pic, last_login, metadata, permissions, " // Fixed here
-				+ "acc_type, google_id, refresh_token, refresh_token_expires_at" // New columns
-				+ ") VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)"; // 15 placeholders
+		String sql = "INSERT INTO users (" + "uuid, email, password_hash, is_verified, created_at, updated_at, "
+				+ "full_name, profile_pic, last_login, metadata, permissions, "
+				+ "acc_type, google_id, refresh_token, refresh_token_expires_at"
+				+ ") VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
 
 		try (PreparedStatement stmt = conn.prepareStatement(sql)) {
 			stmt.setString(1, user.uuid());
@@ -464,5 +483,61 @@ public class UsersDAO {
 				.lastLogin(lastLogin).profilePic(profilePic).fullName(fullName).metadata(metadata)
 				.permissions(permissions).accType(accType).googleId(googleId).refreshToken(refreshToken)
 				.refreshTokenExpiresAt(refreshTokenExpiresAt).build();
+	}
+
+	
+	public static boolean updateUser(Connection conn, User user) throws SQLException {
+		// Updated SQL query to use snake_case column names
+		String sql = "UPDATE users SET " + "email = ?, " + "password_hash = ?, " + "is_verified = ?, "
+				+ "created_at = ?, " + "updated_at = ?, " + "last_login = ?, " + "acc_type = ?, " + "google_id = ?, "
+				+ "refresh_token = ?, " + "refresh_token_expires_at = ?, " + "profile_pic = ?, " + "full_name = ?, "
+				+ "metadata = ?, " + "permissions = ? " + "WHERE uuid = ?";
+
+		try (PreparedStatement pstmt = conn.prepareStatement(sql)) {
+			pstmt.setString(1, user.email());
+
+			// Handle nullable passwordHash
+			if (user.passwordHash() == null) {
+				pstmt.setNull(2, Types.VARCHAR);
+			} else {
+				pstmt.setString(2, user.passwordHash());
+			}
+
+			pstmt.setBoolean(3, user.isVerified());
+			pstmt.setLong(4, user.createdAt()); // Should not change, but included for completeness
+			pstmt.setLong(5, user.updatedAt());
+			pstmt.setObject(6, user.lastLogin(), Types.BIGINT); // Use setNull/setObject for nullable Long
+			pstmt.setString(7, user.accType());
+
+			// Handle nullable googleId
+			if (user.googleId() == null) {
+				pstmt.setNull(8, Types.VARCHAR);
+			} else {
+				pstmt.setString(8, user.googleId());
+			}
+
+			// Handle nullable refreshToken
+			if (user.refreshToken() == null) {
+				pstmt.setNull(9, Types.VARCHAR);
+			} else {
+				pstmt.setString(9, user.refreshToken());
+			}
+
+			// Handle nullable refreshTokenExpiresAt
+			if (user.refreshTokenExpiresAt() == null) {
+				pstmt.setNull(10, Types.BIGINT); // Use Types.BIGINT for Long
+			} else {
+				pstmt.setLong(10, user.refreshTokenExpiresAt());
+			}
+
+			pstmt.setString(11, user.profilePic());
+			pstmt.setString(12, user.fullName());
+			pstmt.setString(13, user.metadata().toString());
+			pstmt.setString(14, user.permissions().toString());
+			pstmt.setString(15, user.uuid());
+
+			int rowsUpdated = pstmt.executeUpdate();
+			return rowsUpdated > 0;
+		}
 	}
 }
