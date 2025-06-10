@@ -38,12 +38,12 @@ public class HttpUtil {
 		resp.getWriter().write(json.toString());
 	}
 
-	public static void sendJson(HttpServletResponse res, int stat, String type, String message, boolean reverify)
+	public static void sendJsonReVerify(HttpServletResponse res, int stat, String type, String message)
 			throws IOException {
 		res.setStatus(stat);
 		res.setContentType("application/json");
 		JSONObject json = new JSONObject();
-		json.put("reverify", reverify);
+		json.put("reverify", true);
 		json.put("message", message);
 		json.put("type", type);
 		res.getWriter().write(json.toString());
@@ -89,6 +89,25 @@ public class HttpUtil {
 			json.put("accType", user.accType());
 		}
 
+		resp.getWriter().write(json.toString());
+	}
+
+	public static void sendUserMetadataPerms(HttpServletResponse resp, User user) throws IOException {
+		resp.setStatus(HttpServletResponse.SC_OK);
+		resp.setContentType("application/json");
+
+		JSONObject json = new JSONObject();
+		json.put("type", "success");
+		if (user.metadata() != null) {
+			json.put("metadata", user.metadata());
+		} else {
+			json.put("metadata", new JSONObject());
+		}
+		if (user.permissions() != null) {
+			json.put("permissions", user.permissions());
+		} else {
+			json.put("permissions", new JSONObject());
+		}
 		resp.getWriter().write(json.toString());
 	}
 

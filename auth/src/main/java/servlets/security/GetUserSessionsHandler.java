@@ -14,17 +14,12 @@ import db.dbAuth;
 import entities.Session;
 import entities.User;
 import jakarta.servlet.ServletException;
-import jakarta.servlet.annotation.WebServlet;
-import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 
-@WebServlet("/v1/getSessions")
-public class GetUserSessions extends HttpServlet {
-	private static final long serialVersionUID = 1L;
+public class GetUserSessionsHandler  {
 
-	@Override
-	public void doGet(HttpServletRequest req, HttpServletResponse resp) throws IOException, ServletException {
+	public static void getUserSessions(HttpServletRequest req, HttpServletResponse resp) throws IOException, ServletException {
 		try (Connection conn = dbAuth.getConnection()) {
 			String uuid = AuthUtil.getUserUUIDFromAuthCookie(req, resp, conn);
 			if (uuid == null) {

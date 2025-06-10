@@ -3,48 +3,23 @@ package servlets.profile;
 import java.io.IOException;
 import java.sql.Connection;
 import java.sql.SQLException;
-import java.util.Iterator; // Used for merging JSONObjects
+import java.util.Iterator;
 
 import org.json.JSONObject;
-import org.json.JSONException; // Import for specific JSON exceptions
+import org.json.JSONException;
 
 import db.UsersDAO;
 import db.dbAuth;
 import dtos.UserMetadataPermissionsUpdateDTO;
 import entities.User;
-import jakarta.servlet.ServletException;
-import jakarta.servlet.annotation.WebServlet;
-import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import utils.AuthUtil;
 import utils.HttpUtil;
 
-@WebServlet("/v1/adminProfile")
-public class UpdateUserMetadataPermissionsServlet extends HttpServlet {
+public class GetUserAdminProfileHandler {
 
-	private static final long serialVersionUID = 1L;
-
-	@Override
-	protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-		handlePutRequest(req, resp);
-	}
-
-	@Override
-	protected void doPut(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-		handlePutRequest(req, resp);
-	}
-
-	/**
-	 * Handles PUT/POST requests for updating user metadata and permissions. It
-	 * allows for either replacing the entire JSON object or merging new values
-	 * based on `metadataMerge` and `permissionsMerge` flags in the request.
-	 *
-	 * @param req  The HttpServletRequest containing the update data.
-	 * @param resp The HttpServletResponse to send the result.
-	 * @throws IOException If an I/O error occurs during request/response handling.
-	 */
-	private void handlePutRequest(HttpServletRequest req, HttpServletResponse resp) throws IOException {
+	public static void getUserAdminProfile(HttpServletRequest req, HttpServletResponse resp) throws IOException {
 		resp.setContentType("application/json");
 		resp.setCharacterEncoding("UTF-8");
 

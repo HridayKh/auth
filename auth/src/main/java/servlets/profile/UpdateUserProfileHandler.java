@@ -8,31 +8,16 @@ import org.json.JSONObject;
 
 import db.UsersDAO;
 import db.dbAuth;
-import dtos.UserProfileUpdateDTO; // Import your DTO
+import dtos.UserProfileUpdateDTO;
 import entities.User;
-import jakarta.servlet.ServletException;
-import jakarta.servlet.annotation.WebServlet;
-import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import utils.AuthUtil;
-import utils.HttpUtil; // Assuming HttpUtil is in utils package
+import utils.HttpUtil;
 
-@WebServlet("/v1/profile")
-public class UpdateUserProfileServlet extends HttpServlet {
-	private static final long serialVersionUID = 1L;
+public class UpdateUserProfileHandler {
 
-	@Override
-	protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-		handlePutRequest(req, resp);
-	}
-
-	@Override
-	protected void doPut(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-		handlePutRequest(req, resp);
-	}
-
-	private void handlePutRequest(HttpServletRequest req, HttpServletResponse resp) throws IOException {
+	public static void updateUserProfile(HttpServletRequest req, HttpServletResponse resp) throws IOException {
 		Connection conn = null;
 		try {
 			conn = dbAuth.getConnection();
@@ -170,7 +155,7 @@ public class UpdateUserProfileServlet extends HttpServlet {
 	}
 
 	// Basic email format validation (can be more robust with regex)
-	private boolean isValidEmail(String email) {
+	private static boolean isValidEmail(String email) {
 		return email != null && email.matches("^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\\.[a-zA-Z]{2,6}$");
 	}
 }

@@ -37,8 +37,8 @@ public class RegisterHandler {
 			User oldUser = UsersDAO.getUserByEmail(conn, email.toLowerCase());
 			if (oldUser != null && !oldUser.isVerified()) {
 
-				HttpUtil.sendJson(resp, HttpServletResponse.SC_CONFLICT, "error",
-						"Unverified User with this email/username already exists", true);
+				HttpUtil.sendJsonReVerify(resp, HttpServletResponse.SC_CONFLICT, "error",
+						"Unverified User with this email/username already exists");
 				return;
 
 			} else if (oldUser != null && oldUser.isVerified()) {
