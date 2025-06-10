@@ -1,4 +1,4 @@
-package servlets;
+package servlets.authentication;
 
 import java.io.IOException;
 
@@ -17,6 +17,7 @@ public class LogoutHandler {
 		}
 
 		AuthUtil.clearAuthCookie(resp);
+		HttpUtil.clearUserCookie(resp);
 
 		HttpUtil.sendJson(resp, HttpServletResponse.SC_OK, "success", "Logged out and cookie removed");
 	}

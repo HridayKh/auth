@@ -26,7 +26,7 @@ public class User {
 
 	private User(Builder builder) {
 		this.uuid = builder.uuid;
-		this.email = builder.email;
+		this.email = builder.email.toLowerCase();
 		this.passwordHash = builder.passwordHash;
 		this.isVerified = builder.isVerified;
 		this.createdAt = builder.createdAt;
@@ -52,7 +52,7 @@ public class User {
 	}
 
 	public String email() {
-		return email;
+		return email.toLowerCase();
 	}
 
 	public String passwordHash() {
@@ -144,7 +144,7 @@ public class User {
 		 */
 		public Builder(String uuid, String email, long createdAt, long updatedAt) {
 			this.uuid = uuid;
-			this.email = email;
+			this.email = email.toLowerCase();
 			this.createdAt = createdAt;
 			this.updatedAt = updatedAt;
 		}

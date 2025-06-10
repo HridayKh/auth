@@ -1,4 +1,4 @@
-package servlets;
+package servlets.registration;
 
 import java.io.IOException;
 import java.sql.Connection;
@@ -23,7 +23,7 @@ public class ReVerifyHandler extends HttpServlet {
 
 	public static void reVerifyUser(HttpServletRequest req, HttpServletResponse resp) throws IOException {
 		JSONObject body = HttpUtil.readBodyJSON(req);
-		String email = body.getString("email");
+		String email = body.getString("email").toLowerCase();
 		String redir = body.getString("redirect");
 
 		try (Connection conn = dbAuth.getConnection()) {

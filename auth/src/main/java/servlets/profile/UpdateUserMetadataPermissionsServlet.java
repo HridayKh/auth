@@ -1,4 +1,4 @@
-package servlets;
+package servlets.profile;
 
 import java.io.IOException;
 import java.sql.Connection;
@@ -20,7 +20,7 @@ import jakarta.servlet.http.HttpServletResponse;
 import utils.AuthUtil;
 import utils.HttpUtil;
 
-@WebServlet("/v1/adminProfile") // Endpoint remains the same
+@WebServlet("/v1/adminProfile")
 public class UpdateUserMetadataPermissionsServlet extends HttpServlet {
 
 	private static final long serialVersionUID = 1L;

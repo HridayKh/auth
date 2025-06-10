@@ -1,4 +1,4 @@
-package servlets;
+package servlets.registration;
 
 import java.io.IOException;
 import java.sql.Connection;
@@ -23,7 +23,7 @@ public class RegisterHandler {
 	public static void registerUser(HttpServletRequest req, HttpServletResponse resp) {
 
 		JSONObject body = HttpUtil.readBodyJSON(req);
-		String email = body.getString("email");
+		String email = body.getString("email").toLowerCase();
 		String pass = body.getString("pass");
 		String FullName = body.getString("fullName");
 		String redir = body.getString("redirect");
@@ -34,7 +34,7 @@ public class RegisterHandler {
 
 		try (Connection conn = dbAuth.getConnection()) {
 
-			User oldUser = UsersDAO.getUserByEmail(conn, email);
+			User oldUser = UsersDAO.getUserByEmail(conn, email.toLowerCase());
 			if (oldUser != null && !oldUser.isVerified()) {
 
 				HttpUtil.sendJson(resp, HttpServletResponse.SC_CONFLICT, "error",

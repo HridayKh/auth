@@ -123,7 +123,7 @@ public class OAuth2CallbackServlet extends HttpServlet {
 				Payload payload = idToken.getPayload();
 
 				String userId = payload.getSubject();
-				String email = (String) payload.get("email");
+				String email = ((String) payload.get("email")).toLowerCase();
 				String name = (String) payload.get("name");
 				String pictureUrl = (String) payload.get("picture");
 				Boolean emailVerified = (Boolean) payload.get("email_verified");

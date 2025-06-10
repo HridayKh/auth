@@ -1,4 +1,4 @@
-package servlets;
+package servlets.profile;
 
 import java.io.IOException;
 import java.sql.Connection;
@@ -74,7 +74,7 @@ public class UpdateUserProfileServlet extends HttpServlet {
 			boolean emailUpdated = false;
 
 			// --- Handle Email Update ---
-			String newEmail = updateDTO.getEmail();
+			String newEmail = updateDTO.getEmail().toLowerCase();
 			// Only proceed if email is actually changing
 			if (newEmail != null && !newEmail.isEmpty() && !currentUser.email().equals(newEmail)) {
 				if (!"password".equals(currentUser.accType())) {
@@ -84,13 +84,13 @@ public class UpdateUserProfileServlet extends HttpServlet {
 					return;
 				}
 				// Validate new email format (optional, but recommended)
-				if (!isValidEmail(newEmail)) { // Implement isValidEmail helper
+				if (!isValidEmail(newEmail.toLowerCase())) {
 					conn.rollback();
 					HttpUtil.sendJson(resp, HttpServletResponse.SC_BAD_REQUEST, "error", "Invalid email format.");
 					return;
 				}
 				// Check if new email already exists for another user
-				User existingUserWithNewEmail = UsersDAO.getUserByEmail(conn, newEmail);
+				User existingUserWithNewEmail = UsersDAO.getUserByEmail(conn, newEmail.toLowerCase());
 				if (existingUserWithNewEmail != null && !existingUserWithNewEmail.uuid().equals(userUuid)) {
 					conn.rollback();
 					HttpUtil.sendJson(resp, HttpServletResponse.SC_CONFLICT, "error",
@@ -98,7 +98,7 @@ public class UpdateUserProfileServlet extends HttpServlet {
 					return;
 				}
 
-				if (UsersDAO.updateEmail(conn, userUuid, newEmail, now)) {
+				if (UsersDAO.updateEmail(conn, userUuid, newEmail.toLowerCase(), now)) {
 					emailUpdated = true;
 				} else {
 					conn.rollback();

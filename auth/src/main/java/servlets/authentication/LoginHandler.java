@@ -1,4 +1,4 @@
-package servlets;
+package servlets.authentication;
 
 import java.io.IOException;
 import java.sql.Connection;
@@ -22,7 +22,7 @@ public class LoginHandler {
 		String pass = body.getString("pass");
 
 		try (Connection conn = dbAuth.getConnection()) {
-			User user = UsersDAO.getUserByEmailPass(conn, email, PassUtil.sha256Hash(pass));
+			User user = UsersDAO.getUserByEmailPass(conn, email.toLowerCase(), PassUtil.sha256Hash(pass));
 
 			if (user == null) {
 				HttpUtil.sendJson(resp, HttpServletResponse.SC_BAD_REQUEST, "error",

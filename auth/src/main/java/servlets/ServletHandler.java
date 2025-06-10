@@ -1,4 +1,4 @@
-package auth;
+package servlets;
 
 import java.io.IOException;
 
@@ -7,13 +7,13 @@ import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
-import servlets.GetUserHandler;
-import servlets.LoginHandler;
-import servlets.LogoutHandler;
-import servlets.ReVerifyHandler;
-import servlets.RegisterHandler;
-import servlets.UpdatePassHandler;
-import servlets.VerifyHandler;
+import servlets.authentication.LoginHandler;
+import servlets.authentication.LogoutHandler;
+import servlets.profile.GetUserHandler;
+import servlets.registration.ReVerifyHandler;
+import servlets.registration.RegisterHandler;
+import servlets.registration.VerifyHandler;
+import servlets.security.UpdatePassHandler;
 
 public class ServletHandler {
 
@@ -96,7 +96,7 @@ public class ServletHandler {
 
 		@Override
 		protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws IOException, ServletException {
-			UpdatePassHandler.updateUser(req, resp);
+			UpdatePassHandler.updateUserPass(req, resp);
 		}
 	}
 

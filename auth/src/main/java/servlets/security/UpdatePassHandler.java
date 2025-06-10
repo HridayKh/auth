@@ -1,4 +1,4 @@
-package servlets;
+package servlets.security;
 
 import java.io.IOException;
 import java.sql.Connection;
@@ -17,7 +17,7 @@ import jakarta.servlet.http.HttpServletResponse;
 
 public class UpdatePassHandler {
 
-	public static void updateUser(HttpServletRequest req, HttpServletResponse resp) throws IOException, ServletException {
+	public static void updateUserPass(HttpServletRequest req, HttpServletResponse resp) throws IOException, ServletException {
 
 		try (Connection conn = dbAuth.getConnection()) {
 
