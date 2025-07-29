@@ -1,5 +1,8 @@
 # Hriday.Tech Authentication Service API Documentation
 
+# the following is outdated as the entire api keys system, route and servlet controller amd some other things have been completely rewritten, redesigned and rebuilt
+this doc will be updatee by july 30 2025 4pm ist
+
 ## Overview
 
 This is a comprehensive Java servlet-based authentication service built with Jakarta EE, providing secure user management, session handling, Google OAuth integration, and role-based access control. The service supports both traditional email/password authentication and Google OAuth2 authentication.
