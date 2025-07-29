@@ -24,6 +24,7 @@ public class RegisterHandler {
 	public static void registerUser(HttpServletRequest req, HttpServletResponse resp) {
 
 		JSONObject body = HttpUtil.readBodyJSON(req);
+		
 		String email = body.getString("email").toLowerCase();
 		String pass = body.getString("pass");
 		String FullName = body.getString("fullName");

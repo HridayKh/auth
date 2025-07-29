@@ -18,11 +18,9 @@ public final class ApiKeyManager {
 	public static final Map<String, String> API_KEY_TO_ROLE_MAP;
 
 	static {
-		System.out.println("\n\nstart\n\n");
 		Map<String, String> keys = new HashMap<>();
 
 		// Load keys for each role using a helper method
-		System.out.println(System.getenv("FRONTEND_CLIENT_IDS"));
 		loadKeysForRole(keys, "ADMIN_API_KEYS", ROLE_ADMIN);
 		loadKeysForRole(keys, "BACKEND_API_KEYS", ROLE_BACKEND);
 		loadKeysForRole(keys, "FRONTEND_CLIENT_IDS", ROLE_FRONTEND);
@@ -34,8 +32,6 @@ public final class ApiKeyManager {
 		}
 
 		API_KEY_TO_ROLE_MAP = Collections.unmodifiableMap(keys);
-
-		System.out.println(API_KEY_TO_ROLE_MAP.toString());
 	}
 
 	/**

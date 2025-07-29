@@ -54,9 +54,9 @@ public class ApiKeyFilter implements Filter {
 			if (authResult.isAuthenticated()) {
 				request.setAttribute("clientId", authResult.getClientId());
 				request.setAttribute("clientType", authResult.getClientType());
-				chain.doFilter(request, response);
 			} else {
 				HttpUtil.sendJson(httpResponse, authResult.getStatusCode(), "error", authResult.getErrorMessage());
+				return;
 			}
 
 		} catch (Exception e) {
@@ -64,6 +64,8 @@ public class ApiKeyFilter implements Filter {
 			HttpUtil.sendJson(httpResponse, HttpServletResponse.SC_INTERNAL_SERVER_ERROR, "error",
 					"Authentication service error");
 		}
+
+		chain.doFilter(request, response);
 	}
 
 	// ================================
@@ -206,9 +208,9 @@ public class ApiKeyFilter implements Filter {
 			String clientId = request.getHeader(CLIENT_ID_HEADER);
 
 			if (clientId != null && !clientId.trim().isEmpty()) {
-				
+
 				System.out.println(ApiKeyManager.API_KEY_TO_ROLE_MAP.toString());
-				
+
 				String role = ApiKeyManager.getRoleForApiKey(clientId);
 				if (role != null && ApiKeyManager.ROLE_FRONTEND.equals(role)) {
 					return AuthResult.allowed(clientId, "frontend");
