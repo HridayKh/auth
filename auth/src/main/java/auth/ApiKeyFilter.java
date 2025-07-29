@@ -1,6 +1,8 @@
 package auth;
 
 import java.io.IOException;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Set;
 
 import jakarta.servlet.Filter;
@@ -12,32 +14,28 @@ import jakarta.servlet.ServletResponse;
 import jakarta.servlet.annotation.WebFilter;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
-import servlets.ServletHandler; // To get URL constants
+import servlets.ApiConstants;
 import utils.ApiKeyManager;
-import utils.HttpUtil; // Assuming you have this for sending error responses
+import utils.HttpUtil;
 
-// Apply this filter to all /v1/* URLs where your API endpoints are
 @WebFilter("/v1/*")
 public class ApiKeyFilter implements Filter {
 
-	private static final String API_KEY_HEADER_NAME = "X-Hriday-Tech-App-Key";
-	private static final String CLIENT_ID_HEADER_NAME = "X-Hriday-Tech-Client-ID";
+	private static final String API_KEY_HEADER = "X-Hriday-Tech-Auth-Key";
+	private static final String CLIENT_ID_HEADER = "X-Hriday-Tech-Client-ID";
 
-	private static final Set<String> PUBLIC_PATHS = Set.of(
-	// ServletHandler.HealthCheckURL // Example: if you had a public health check
-	);
+	private final PathAccessControl pathAccessControl = new PathAccessControl();
+	private final AuthenticationService authService = new AuthenticationService();
 
-	private static final Set<String> IDENTIFIED_FRONTEND_PATHS = Set.of(ServletHandler.LoginURL,
-			ServletHandler.RegisterURL, ServletHandler.VerifyURL, ServletHandler.ReVerifyURL, ServletHandler.LogoutURL,
-			ServletHandler.GetUserURL, // User gets their own profile
-			ServletHandler.UpdateUserProfileURL, // User updates their own profile
-			ServletHandler.UpdatePassURL, // User updates their own password
-			ServletHandler.GetUserSessionsURL, // User gets their own sessions
-			ServletHandler.RemoveUserSessionURL // User removes their own session
-	);
+	@Override
+	public void init(FilterConfig filterConfig) throws ServletException {
+		System.out.println("ApiKeyFilter initialized");
+	}
 
-	private static final Set<String> SECRET_API_KEY_PATHS = Set.of(ServletHandler.GetUserAdminProfileURL,
-			ServletHandler.UpdateUserAdminProfileURL);
+	@Override
+	public void destroy() {
+		System.out.println("ApiKeyFilter destroyed");
+	}
 
 	@Override
 	public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain)
@@ -46,69 +44,210 @@ public class ApiKeyFilter implements Filter {
 		HttpServletRequest httpRequest = (HttpServletRequest) request;
 		HttpServletResponse httpResponse = (HttpServletResponse) response;
 
-		String path = httpRequest.getRequestURI().substring(httpRequest.getContextPath().length());
+		try {
+			String requestPath = httpRequest.getRequestURI().substring(httpRequest.getContextPath().length());
 
-		// --- 1. Handle Public Paths ---
-		if (PUBLIC_PATHS.contains(path)) {
-			chain.doFilter(request, response);
-			return;
-		}
+			AccessType requiredAccess = pathAccessControl.getRequiredAccess(requestPath);
 
-		String secretApiKey = httpRequest.getHeader(API_KEY_HEADER_NAME);
-		String backendClientId = null;
-		if (secretApiKey != null) {
-			backendClientId = ApiKeyManager.validateApiKey(secretApiKey);
-		}
+			AuthResult authResult = authService.authenticate(httpRequest, requiredAccess);
 
-		if (backendClientId != null) {
-			httpRequest.setAttribute("clientId", backendClientId);
-			httpRequest.setAttribute("clientType", "backend");
-
-			if (SECRET_API_KEY_PATHS.contains(path) && !ApiKeyManager.isAdminApp(backendClientId)) {
-				HttpUtil.sendJson(httpResponse, HttpServletResponse.SC_FORBIDDEN, "error",
-						"Forbidden: Insufficient application privileges.");
-				return;
-			}
-			chain.doFilter(request, response);
-			return;
-		}
-
-		// --- 3. Check for Public Client ID (from frontend apps) ---
-		// This code only runs if no valid SECRET_API_KEY was found
-		String publicClientId = httpRequest.getHeader(CLIENT_ID_HEADER_NAME);
-
-		if (IDENTIFIED_FRONTEND_PATHS.contains(path)) {
-			if (publicClientId != null && !publicClientId.isEmpty()) {
-				// This is just for identification, not validation.
-				// You might want a whitelist of known publicClientIds if strict.
-				httpRequest.setAttribute("clientId", publicClientId);
-				httpRequest.setAttribute("clientType", "frontend");
+			if (authResult.isAuthenticated()) {
+				request.setAttribute("clientId", authResult.getClientId());
+				request.setAttribute("clientType", authResult.getClientType());
 				chain.doFilter(request, response);
-				return;
 			} else {
-				// For identified frontend paths, a client ID might be mandatory.
-				// Decide if you want to allow requests without it or deny.
-				HttpUtil.sendJson(httpResponse, HttpServletResponse.SC_UNAUTHORIZED, "error",
-						"Unauthorized: Client ID required for frontend access.");
-				return;
+				HttpUtil.sendJson(httpResponse, authResult.getStatusCode(), "error", authResult.getErrorMessage());
 			}
+
+		} catch (Exception e) {
+			System.err.println("Authentication error: " + e.getMessage());
+			HttpUtil.sendJson(httpResponse, HttpServletResponse.SC_INTERNAL_SERVER_ERROR, "error",
+					"Authentication service error");
+		}
+	}
+
+	// ================================
+	// Core Types and Result Classes
+	// ================================
+
+	private enum AccessType {
+		PUBLIC, FRONTEND, BACKEND, ADMIN
+	}
+
+	private static class AuthResult {
+		private final boolean authenticated;
+		private final String clientId;
+		private final String clientType;
+		private final String errorMessage;
+		private final int statusCode;
+
+		private AuthResult(boolean authenticated, String clientId, String clientType, String errorMessage,
+				int statusCode) {
+			this.authenticated = authenticated;
+			this.clientId = clientId;
+			this.clientType = clientType;
+			this.errorMessage = errorMessage;
+			this.statusCode = statusCode;
 		}
 
-		// --- 4. If none of the above conditions met, it's an unauthorized access ---
-		// This means it's a path that expects a secret API key, but none was provided
-		// or valid.
-		// Or it's an unidentified frontend access to a path that needs identification.
-		HttpUtil.sendJson(httpResponse, HttpServletResponse.SC_UNAUTHORIZED, "error",
-				"Unauthorized: Invalid or missing API Key/Client ID.");
+		public static AuthResult allowed(String clientId, String clientType) {
+			return new AuthResult(true, clientId, clientType, null, 200);
+		}
+
+		public static AuthResult denied(String errorMessage) {
+			return denied(errorMessage, HttpServletResponse.SC_UNAUTHORIZED);
+		}
+
+		public static AuthResult denied(String errorMessage, int statusCode) {
+			return new AuthResult(false, null, null, errorMessage, statusCode);
+		}
+
+		public boolean isAuthenticated() {
+			return authenticated;
+		}
+
+		public String getClientId() {
+			return clientId;
+		}
+
+		public String getClientType() {
+			return clientType;
+		}
+
+		public String getErrorMessage() {
+			return errorMessage;
+		}
+
+		public int getStatusCode() {
+			return statusCode;
+		}
 	}
 
-	@Override
-	public void init(FilterConfig filterConfig) throws ServletException {
-		System.out.println("ApiKeyFilter initialized.");
+	// ================================
+	// Path Access Control
+	// ================================
+
+	private static class PathAccessControl {
+		private final Set<String> publicPaths = Set.of();
+
+		private final Set<String> frontendPaths = Set.of(ApiConstants.LOGIN_URL, ApiConstants.LOGOUT_URL,
+				ApiConstants.FORGOT_PASSWORD_URL, ApiConstants.GET_USER_URL, ApiConstants.UPDATE_USER_PROFILE_URL,
+				ApiConstants.REGISTER_URL, ApiConstants.VERIFY_URL, ApiConstants.RE_VERIFY_URL,
+				ApiConstants.UPDATE_PASSWORD_URL, ApiConstants.GET_USER_SESSIONS_URL,
+				ApiConstants.REMOVE_USER_SESSION_URL);
+
+		private final Set<String> backendPaths = Set.of(ApiConstants.GET_USER_ADMIN_PROFILE_URL,
+				ApiConstants.UPDATE_USER_ADMIN_PROFILE_URL);
+
+		private final Set<String> adminPaths = Set.of();
+
+		public AccessType getRequiredAccess(String path) {
+			if (matches(path, publicPaths))
+				return AccessType.PUBLIC;
+			if (matches(path, frontendPaths))
+				return AccessType.FRONTEND;
+			if (matches(path, adminPaths))
+				return AccessType.ADMIN;
+			if (matches(path, backendPaths))
+				return AccessType.BACKEND;
+			return AccessType.ADMIN;
+		}
+
+		private boolean matches(String path, Set<String> patterns) {
+			return patterns.contains(path) || patterns.stream().anyMatch(pattern -> matchesPattern(path, pattern));
+		}
+
+		private boolean matchesPattern(String path, String pattern) {
+			if (!pattern.contains("{"))
+				return false;
+			String regex = pattern.replaceAll("\\{[^}]+\\}", "[^/]+");
+			return path.matches("^" + regex + "$");
+		}
 	}
 
-	@Override
-	public void destroy() {
-		System.out.println("ApiKeyFilter destroyed.");
+	// ================================
+	// Authentication Service & Strategies
+	// ================================
+
+	private interface AuthenticationStrategy {
+		AuthResult authenticate(HttpServletRequest request);
+	}
+
+	private class AuthenticationService {
+		private final Map<AccessType, AuthenticationStrategy> strategies = new HashMap<>();
+
+		public AuthenticationService() {
+			strategies.put(AccessType.PUBLIC, new PublicAuthStrategy());
+			strategies.put(AccessType.FRONTEND, new FrontendAuthStrategy());
+			strategies.put(AccessType.BACKEND, new BackendAuthStrategy());
+			strategies.put(AccessType.ADMIN, new AdminAuthStrategy());
+		}
+
+		public AuthResult authenticate(HttpServletRequest request, AccessType accessType) {
+			AuthenticationStrategy strategy = strategies.get(accessType);
+			return strategy != null ? strategy.authenticate(request) : AuthResult.denied("Invalid access type");
+		}
+	}
+
+	// ================================
+	// Authentication Strategy Implementations
+	// ================================
+
+	private static class PublicAuthStrategy implements AuthenticationStrategy {
+		@Override
+		public AuthResult authenticate(HttpServletRequest request) {
+			return AuthResult.allowed("public", "public");
+		}
+	}
+
+	private class FrontendAuthStrategy implements AuthenticationStrategy {
+		@Override
+		public AuthResult authenticate(HttpServletRequest request) {
+			String clientId = request.getHeader(CLIENT_ID_HEADER);
+
+			if (clientId != null && !clientId.trim().isEmpty()) {
+				
+				System.out.println(ApiKeyManager.API_KEY_TO_ROLE_MAP.toString());
+				
+				String role = ApiKeyManager.getRoleForApiKey(clientId);
+				if (role != null && ApiKeyManager.ROLE_FRONTEND.equals(role)) {
+					return AuthResult.allowed(clientId, "frontend");
+				}
+			}
+
+			return AuthResult.denied("Valid client ID required", HttpServletResponse.SC_UNAUTHORIZED);
+		}
+	}
+
+	private class BackendAuthStrategy implements AuthenticationStrategy {
+		@Override
+		public AuthResult authenticate(HttpServletRequest request) {
+			String apiKey = request.getHeader(API_KEY_HEADER);
+
+			if (apiKey != null) {
+				String role = ApiKeyManager.getRoleForApiKey(apiKey);
+				if (role != null && ApiKeyManager.ROLE_BACKEND.equals(role)) {
+					return AuthResult.allowed(apiKey, "admin");
+				}
+			}
+
+			return AuthResult.denied("Valid API key required", HttpServletResponse.SC_UNAUTHORIZED);
+		}
+	}
+
+	private class AdminAuthStrategy implements AuthenticationStrategy {
+		@Override
+		public AuthResult authenticate(HttpServletRequest request) {
+			String apiKey = request.getHeader(API_KEY_HEADER);
+
+			if (apiKey != null) {
+				String role = ApiKeyManager.getRoleForApiKey(apiKey);
+				if (role != null && ApiKeyManager.ROLE_ADMIN.equals(role)) {
+					return AuthResult.allowed(apiKey, "admin");
+				}
+			}
+
+			return AuthResult.denied("Admin privileges required", HttpServletResponse.SC_FORBIDDEN);
+		}
 	}
 }

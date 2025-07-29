@@ -27,6 +27,16 @@ public class GetUserSessionsHandler  {
 				return;
 			}
 
+			// Get userId from path parameter (set by the routing servlet)
+			String requestedUserId = (String) req.getAttribute("userId");
+			
+			// For security, users can only view their own sessions unless they have admin permissions
+			// For now, enforce that users can only see their own sessions
+			if (requestedUserId != null && !requestedUserId.equals(uuid)) {
+				HttpUtil.sendJson(resp, HttpServletResponse.SC_FORBIDDEN, "error", "Access denied");
+				return;
+			}
+
 			User user = UsersDAO.getUserByUuid(conn, uuid);
 			if (user == null) {
 				HttpUtil.sendJson(resp, HttpServletResponse.SC_NOT_FOUND, "error", "User not found");

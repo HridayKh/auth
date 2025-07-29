@@ -22,6 +22,20 @@ public class UpdatePassHandler {
 		try (Connection conn = dbAuth.getConnection()) {
 
 			String uuid = AuthUtil.getUserUUIDFromAuthCookie(req, resp, conn);
+			if (uuid == null) {
+				HttpUtil.sendJson(resp, HttpServletResponse.SC_UNAUTHORIZED, "error", "Not logged in");
+				return;
+			}
+
+			// Get userId from path parameter (set by the routing servlet)
+			String requestedUserId = (String) req.getAttribute("userId");
+			
+			// For security, users can only update their own password unless they have admin permissions
+			// For now, enforce that users can only update their own password
+			if (requestedUserId != null && !requestedUserId.equals(uuid)) {
+				HttpUtil.sendJson(resp, HttpServletResponse.SC_FORBIDDEN, "error", "Access denied");
+				return;
+			}
 
 			JSONObject body = HttpUtil.readBodyJSON(req);
 			String old = body.getString("old");

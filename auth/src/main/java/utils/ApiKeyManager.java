@@ -3,64 +3,85 @@ package utils;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.logging.Logger;
 
-public class ApiKeyManager {
+public final class ApiKeyManager {
 
-	private static final Map<String, String> VALID_API_KEYS;
+	private static final Logger LOGGER = Logger.getLogger(ApiKeyManager.class.getName());
+
+	// Define roles as constants for type safety and maintainability
+	public static final String ROLE_ADMIN = "ADMIN";
+	public static final String ROLE_BACKEND = "BACKEND";
+	public static final String ROLE_FRONTEND = "FRONTEND";
+
+	// A single map stores all valid keys and maps them to their role.
+	public static final Map<String, String> API_KEY_TO_ROLE_MAP;
 
 	static {
+		System.out.println("\n\nstart\n\n");
 		Map<String, String> keys = new HashMap<>();
-		String myWebAppKey = System.getenv("MY_WEB_APP_AUTH_API_KEY");
-		String myMobileAppKey = System.getenv("MY_MOBILE_APP_AUTH_API_KEY");
-		String myAdminPanelKey = System.getenv("MY_ADMIN_PANEL_AUTH_API_KEY");
 
-		if (myWebAppKey != null && !myWebAppKey.isEmpty()) {
-			keys.put("my-web-app", myWebAppKey);
-		} else {
-			System.err.println("MY_WEB_APP_AUTH_API_KEY environment variable not set!");
-			// Consider throwing an exception or making the app fail startup if keys are
-			// mandatory.
-		}
-		if (myMobileAppKey != null && !myMobileAppKey.isEmpty()) {
-			keys.put("my-mobile-app", myMobileAppKey);
-		} else {
-			System.err.println("MY_MOBILE_APP_AUTH_API_KEY environment variable not set!");
-		}
-		if (myAdminPanelKey != null && !myAdminPanelKey.isEmpty()) {
-			keys.put("my-admin-panel", myAdminPanelKey);
-		} else {
-			System.err.println("MY_ADMIN_PANEL_AUTH_API_KEY environment variable not set!");
+		// Load keys for each role using a helper method
+		System.out.println(System.getenv("FRONTEND_CLIENT_IDS"));
+		loadKeysForRole(keys, "ADMIN_API_KEYS", ROLE_ADMIN);
+		loadKeysForRole(keys, "BACKEND_API_KEYS", ROLE_BACKEND);
+		loadKeysForRole(keys, "FRONTEND_CLIENT_IDS", ROLE_FRONTEND);
+
+		if (keys.isEmpty()) {
+			String errorMessage = "CRITICAL: No API keys were loaded. Check environment variables.";
+			LOGGER.severe(errorMessage);
+			throw new IllegalStateException(errorMessage);
 		}
 
-		VALID_API_KEYS = Collections.unmodifiableMap(keys); // Make it immutable
+		API_KEY_TO_ROLE_MAP = Collections.unmodifiableMap(keys);
+
+		System.out.println(API_KEY_TO_ROLE_MAP.toString());
 	}
 
 	/**
-	 * Validates an incoming API key.
-	 * 
-	 * @param apiKey The raw API key received from the client.
-	 * @return The client ID (e.g., "my-web-app") if valid, otherwise null.
+	 * Reads a comma-separated list of API keys from an environment variable and
+	 * maps each key to the specified role.
+	 *
+	 * @param map    The map to populate.
+	 * @param envVar The name of the environment variable (e.g., "ADMIN_API_KEYS").
+	 * @param role   The role to assign to these keys (e.g., ROLE_ADMIN).
 	 */
-	public static String validateApiKey(String apiKey) {
+	private static void loadKeysForRole(Map<String, String> map, String envVar, String role) {
+		String keysCsv = System.getenv(envVar);
+		if (keysCsv == null || keysCsv.trim().isEmpty()) {
+			// This is now treated as a warning, not a critical failure,
+			// unless NO keys are loaded at all.
+			LOGGER.warning(
+					"Environment variable for API keys '" + envVar + "' is not set. No keys loaded for role: " + role);
+			return;
+		}
+
+		int count = 0;
+		String[] apiKeys = keysCsv.split(",");
+		for (String apiKey : apiKeys) {
+			String trimmedKey = apiKey.trim();
+			if (!trimmedKey.isEmpty()) {
+				map.put(trimmedKey, role);
+				count++;
+			}
+		}
+		LOGGER.info("Loaded " + count + " API key(s) for role: " + role);
+	}
+
+	/**
+	 * Validates an API key and returns its associated role.
+	 *
+	 * @param apiKey The raw API key from the client.
+	 * @return The role (e.g., "ADMIN", "USER") if the key is valid, otherwise null.
+	 */
+	public static String getRoleForApiKey(String apiKey) {
 		if (apiKey == null || apiKey.isEmpty()) {
 			return null;
 		}
-		// Iterate through known keys to find a match
-		for (Map.Entry<String, String> entry : VALID_API_KEYS.entrySet()) {
-			if (apiKey.equals(entry.getValue())) {
-				return entry.getKey(); // Return the client ID
-			}
-		}
-		return null; // No matching key found
+		return API_KEY_TO_ROLE_MAP.get(apiKey);
 	}
 
-	/**
-	 * Returns a list of API keys that are allowed for "admin-only" operations. For
-	 * example, only "my-admin-panel" might be allowed to call updateAdminProfile.
-	 * This is a simple way to manage granular permissions if needed.
-	 */
-	public static boolean isAdminApp(String clientId) {
-		// Define which client IDs have "admin" privileges for certain endpoints
-		return "my-admin-panel".equals(clientId);
+	// Private constructor to prevent instantiation
+	private ApiKeyManager() {
 	}
 }

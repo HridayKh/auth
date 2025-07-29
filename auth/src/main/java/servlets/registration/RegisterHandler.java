@@ -14,6 +14,7 @@ import entities.EmailToken;
 import entities.User;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import servlets.ApiConstants;
 import utils.MailUtil;
 import utils.HttpUtil;
 import utils.PassUtil;
@@ -66,7 +67,7 @@ public class RegisterHandler {
 				return;
 			}
 
-			String verifyLink = dbAuth.BACK_HOST + "/v1/verify?token=" + token + "&redirect=" + redir;
+			String verifyLink = dbAuth.BACK_HOST + ApiConstants.VERIFY_URL + "?token=" + token + "&redirect=" + redir;
 			MailUtil.sendMail(email, "Verify your E-Mail for Hriday.Tech", MailUtil.templateVerifyMail(verifyLink));
 
 			conn.commit();
