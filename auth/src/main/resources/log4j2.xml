@@ -2,7 +2,7 @@
 <Configuration status="warn">
 	<Properties>
 		<!-- You can use ${logDir} in paths now -->
-		<Property name="logDir">logs/auth</Property>
+		<Property name="logDir">~/logs/auth</Property>
 		<Property name="logPattern">[%d{dd/MM/yyyy HH:mm:ss.SSS}] %5p %c{1} - %msg%n</Property>
 	</Properties>
 
@@ -43,12 +43,6 @@
 	</Appenders>
 
 	<Loggers>
-		<!-- 🔹 Your specific servlet logger-->
-		<Logger name="auth.test" level="trace" additivity="false">
-			<AppenderRef ref="Console" />
-			<AppenderRef ref="RollingFile" />
-			<AppenderRef ref="ErrorFile" />
-		</Logger>
 
 		<!-- 🔹 Root logger catches everything else -->
 		<Root level="trace">

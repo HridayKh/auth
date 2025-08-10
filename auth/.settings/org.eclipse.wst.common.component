@@ -42,7 +42,7 @@
         
         
         
-        <property name="java-output-path" value="/qr-tracker/target/classes"/>
+        <property name="java-output-path" value="/auth/target/classes"/>
                                         
         
         

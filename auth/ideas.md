@@ -4,7 +4,7 @@
 
 #### 3. Account Deletion
 
-#### 4. Expanded Social Logins
+#### 4. More Social Logins
 
 #### 5. Centralized Security Logging and Monitoring
 
