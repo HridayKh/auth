@@ -1,0 +1,2456 @@
+2025-08-10T08:06:39.961715969Z http-nio-8080-exec-3 WARN Could not examine class org/apache/logging/log4j/core/async/RingBufferLogEventTranslator.class java.lang.NoClassDefFoundError: com/lmax/disruptor/EventTranslator
+	at java.base/java.lang.ClassLoader.defineClass1(Native Method)
+	at java.base/java.lang.ClassLoader.defineClass(ClassLoader.java:1027)
+	at java.base/java.security.SecureClassLoader.defineClass(SecureClassLoader.java:150)
+	at org.apache.catalina.loader.WebappClassLoaderBase.findClassInternal(WebappClassLoaderBase.java:2112)
+	at org.apache.catalina.loader.WebappClassLoaderBase.findClass(WebappClassLoaderBase.java:669)
+	at org.apache.catalina.loader.WebappClassLoaderBase.loadClass(WebappClassLoaderBase.java:1144)
+	at org.apache.catalina.loader.WebappClassLoaderBase.loadClass(WebappClassLoaderBase.java:1014)
+	at org.apache.logging.log4j.core.config.plugins.util.ResolverUtil.addIfMatching(ResolverUtil.java:462)
+	at org.apache.logging.log4j.core.config.plugins.util.ResolverUtil.loadImplementationsInJar(ResolverUtil.java:357)
+	at org.apache.logging.log4j.core.config.plugins.util.ResolverUtil.findInPackage(ResolverUtil.java:236)
+	at org.apache.logging.log4j.core.config.plugins.util.PluginRegistry.loadFromPackage(PluginRegistry.java:224)
+	at org.apache.logging.log4j.core.config.plugins.util.PluginManager.collectPlugins(PluginManager.java:162)
+	at org.apache.logging.log4j.core.config.AbstractConfiguration.initialize(AbstractConfiguration.java:242)
+	at org.apache.logging.log4j.core.config.AbstractConfiguration.start(AbstractConfiguration.java:313)
+	at org.apache.logging.log4j.core.LoggerContext.setConfiguration(LoggerContext.java:631)
+	at org.apache.logging.log4j.core.LoggerContext.reconfigure(LoggerContext.java:713)
+	at org.apache.logging.log4j.core.LoggerContext.reconfigure(LoggerContext.java:735)
+	at org.apache.logging.log4j.core.LoggerContext.start(LoggerContext.java:260)
+	at org.apache.logging.log4j.core.impl.Log4jContextFactory.getContext(Log4jContextFactory.java:154)
+	at org.apache.logging.log4j.core.impl.Log4jContextFactory.getContext(Log4jContextFactory.java:46)
+	at org.apache.logging.log4j.LogManager.getContext(LogManager.java:197)
+	at org.apache.logging.log4j.LogManager.getLogger(LogManager.java:611)
+	at auth.test.<clinit>(test.java:18)
+	at java.base/jdk.internal.misc.Unsafe.ensureClassInitialized0(Native Method)
+	at java.base/jdk.internal.misc.Unsafe.ensureClassInitialized(Unsafe.java:1160)
+	at java.base/jdk.internal.reflect.MethodHandleAccessorFactory.ensureClassInitialized(MethodHandleAccessorFactory.java:300)
+	at java.base/jdk.internal.reflect.MethodHandleAccessorFactory.newConstructorAccessor(MethodHandleAccessorFactory.java:103)
+	at java.base/jdk.internal.reflect.ReflectionFactory.newConstructorAccessor(ReflectionFactory.java:200)
+	at java.base/java.lang.reflect.Constructor.acquireConstructorAccessor(Constructor.java:549)
+	at java.base/java.lang.reflect.Constructor.newInstanceWithCaller(Constructor.java:499)
+	at java.base/java.lang.reflect.Constructor.newInstance(Constructor.java:486)
+	at org.apache.catalina.core.DefaultInstanceManager.newInstance(DefaultInstanceManager.java:140)
+	at org.apache.catalina.core.StandardWrapper.loadServlet(StandardWrapper.java:751)
+	at org.apache.catalina.core.StandardWrapper.allocate(StandardWrapper.java:568)
+	at org.apache.catalina.core.StandardWrapperValve.invoke(StandardWrapperValve.java:115)
+	at org.apache.catalina.core.StandardContextValve.invoke(StandardContextValve.java:90)
+	at org.apache.catalina.authenticator.AuthenticatorBase.invoke(AuthenticatorBase.java:483)
+	at org.apache.catalina.core.StandardHostValve.invoke(StandardHostValve.java:115)
+	at org.apache.catalina.valves.ErrorReportValve.invoke(ErrorReportValve.java:93)
+	at org.apache.catalina.valves.AbstractAccessLogValve.invoke(AbstractAccessLogValve.java:663)
+	at org.apache.catalina.core.StandardEngineValve.invoke(StandardEngineValve.java:74)
+	at org.apache.catalina.connector.CoyoteAdapter.service(CoyoteAdapter.java:342)
+	at org.apache.coyote.http11.Http11Processor.service(Http11Processor.java:387)
+	at org.apache.coyote.AbstractProcessorLight.process(AbstractProcessorLight.java:63)
+	at org.apache.coyote.AbstractProtocol$ConnectionHandler.process(AbstractProtocol.java:904)
+	at org.apache.tomcat.util.net.NioEndpoint$SocketProcessor.doRun(NioEndpoint.java:1746)
+	at org.apache.tomcat.util.net.SocketProcessorBase.run(SocketProcessorBase.java:52)
+	at org.apache.tomcat.util.threads.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1148)
+	at org.apache.tomcat.util.threads.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:636)
+	at org.apache.tomcat.util.threads.TaskThread$WrappingRunnable.run(TaskThread.java:63)
+	at java.base/java.lang.Thread.run(Thread.java:1583)
+Caused by: java.lang.ClassNotFoundException: com.lmax.disruptor.EventTranslator
+	at org.apache.catalina.loader.WebappClassLoaderBase.loadClass(WebappClassLoaderBase.java:1180)
+	at org.apache.catalina.loader.WebappClassLoaderBase.loadClass(WebappClassLoaderBase.java:1014)
+	... 51 more
+
+2025-08-10T08:06:39.964006252Z http-nio-8080-exec-3 WARN Could not examine class org/apache/logging/log4j/core/async/TimeoutBlockingWaitStrategy.class java.lang.NoClassDefFoundError: com/lmax/disruptor/WaitStrategy
+	at java.base/java.lang.ClassLoader.defineClass1(Native Method)
+	at java.base/java.lang.ClassLoader.defineClass(ClassLoader.java:1027)
+	at java.base/java.security.SecureClassLoader.defineClass(SecureClassLoader.java:150)
+	at org.apache.catalina.loader.WebappClassLoaderBase.findClassInternal(WebappClassLoaderBase.java:2112)
+	at org.apache.catalina.loader.WebappClassLoaderBase.findClass(WebappClassLoaderBase.java:669)
+	at org.apache.catalina.loader.WebappClassLoaderBase.loadClass(WebappClassLoaderBase.java:1144)
+	at org.apache.catalina.loader.WebappClassLoaderBase.loadClass(WebappClassLoaderBase.java:1014)
+	at org.apache.logging.log4j.core.config.plugins.util.ResolverUtil.addIfMatching(ResolverUtil.java:462)
+	at org.apache.logging.log4j.core.config.plugins.util.ResolverUtil.loadImplementationsInJar(ResolverUtil.java:357)
+	at org.apache.logging.log4j.core.config.plugins.util.ResolverUtil.findInPackage(ResolverUtil.java:236)
+	at org.apache.logging.log4j.core.config.plugins.util.PluginRegistry.loadFromPackage(PluginRegistry.java:224)
+	at org.apache.logging.log4j.core.config.plugins.util.PluginManager.collectPlugins(PluginManager.java:162)
+	at org.apache.logging.log4j.core.config.AbstractConfiguration.initialize(AbstractConfiguration.java:242)
+	at org.apache.logging.log4j.core.config.AbstractConfiguration.start(AbstractConfiguration.java:313)
+	at org.apache.logging.log4j.core.LoggerContext.setConfiguration(LoggerContext.java:631)
+	at org.apache.logging.log4j.core.LoggerContext.reconfigure(LoggerContext.java:713)
+	at org.apache.logging.log4j.core.LoggerContext.reconfigure(LoggerContext.java:735)
+	at org.apache.logging.log4j.core.LoggerContext.start(LoggerContext.java:260)
+	at org.apache.logging.log4j.core.impl.Log4jContextFactory.getContext(Log4jContextFactory.java:154)
+	at org.apache.logging.log4j.core.impl.Log4jContextFactory.getContext(Log4jContextFactory.java:46)
+	at org.apache.logging.log4j.LogManager.getContext(LogManager.java:197)
+	at org.apache.logging.log4j.LogManager.getLogger(LogManager.java:611)
+	at auth.test.<clinit>(test.java:18)
+	at java.base/jdk.internal.misc.Unsafe.ensureClassInitialized0(Native Method)
+	at java.base/jdk.internal.misc.Unsafe.ensureClassInitialized(Unsafe.java:1160)
+	at java.base/jdk.internal.reflect.MethodHandleAccessorFactory.ensureClassInitialized(MethodHandleAccessorFactory.java:300)
+	at java.base/jdk.internal.reflect.MethodHandleAccessorFactory.newConstructorAccessor(MethodHandleAccessorFactory.java:103)
+	at java.base/jdk.internal.reflect.ReflectionFactory.newConstructorAccessor(ReflectionFactory.java:200)
+	at java.base/java.lang.reflect.Constructor.acquireConstructorAccessor(Constructor.java:549)
+	at java.base/java.lang.reflect.Constructor.newInstanceWithCaller(Constructor.java:499)
+	at java.base/java.lang.reflect.Constructor.newInstance(Constructor.java:486)
+	at org.apache.catalina.core.DefaultInstanceManager.newInstance(DefaultInstanceManager.java:140)
+	at org.apache.catalina.core.StandardWrapper.loadServlet(StandardWrapper.java:751)
+	at org.apache.catalina.core.StandardWrapper.allocate(StandardWrapper.java:568)
+	at org.apache.catalina.core.StandardWrapperValve.invoke(StandardWrapperValve.java:115)
+	at org.apache.catalina.core.StandardContextValve.invoke(StandardContextValve.java:90)
+	at org.apache.catalina.authenticator.AuthenticatorBase.invoke(AuthenticatorBase.java:483)
+	at org.apache.catalina.core.StandardHostValve.invoke(StandardHostValve.java:115)
+	at org.apache.catalina.valves.ErrorReportValve.invoke(ErrorReportValve.java:93)
+	at org.apache.catalina.valves.AbstractAccessLogValve.invoke(AbstractAccessLogValve.java:663)
+	at org.apache.catalina.core.StandardEngineValve.invoke(StandardEngineValve.java:74)
+	at org.apache.catalina.connector.CoyoteAdapter.service(CoyoteAdapter.java:342)
+	at org.apache.coyote.http11.Http11Processor.service(Http11Processor.java:387)
+	at org.apache.coyote.AbstractProcessorLight.process(AbstractProcessorLight.java:63)
+	at org.apache.coyote.AbstractProtocol$ConnectionHandler.process(AbstractProtocol.java:904)
+	at org.apache.tomcat.util.net.NioEndpoint$SocketProcessor.doRun(NioEndpoint.java:1746)
+	at org.apache.tomcat.util.net.SocketProcessorBase.run(SocketProcessorBase.java:52)
+	at org.apache.tomcat.util.threads.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1148)
+	at org.apache.tomcat.util.threads.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:636)
+	at org.apache.tomcat.util.threads.TaskThread$WrappingRunnable.run(TaskThread.java:63)
+	at java.base/java.lang.Thread.run(Thread.java:1583)
+Caused by: java.lang.ClassNotFoundException: com.lmax.disruptor.WaitStrategy
+	at org.apache.catalina.loader.WebappClassLoaderBase.loadClass(WebappClassLoaderBase.java:1180)
+	at org.apache.catalina.loader.WebappClassLoaderBase.loadClass(WebappClassLoaderBase.java:1014)
+	... 51 more
+
+2025-08-10T08:06:40.106502845Z http-nio-8080-exec-3 WARN Could not examine class org/apache/logging/log4j/core/jackson/Log4jXmlModule.class java.lang.NoClassDefFoundError: com/fasterxml/jackson/dataformat/xml/JacksonXmlModule
+	at java.base/java.lang.ClassLoader.defineClass1(Native Method)
+	at java.base/java.lang.ClassLoader.defineClass(ClassLoader.java:1027)
+	at java.base/java.security.SecureClassLoader.defineClass(SecureClassLoader.java:150)
+	at org.apache.catalina.loader.WebappClassLoaderBase.findClassInternal(WebappClassLoaderBase.java:2112)
+	at org.apache.catalina.loader.WebappClassLoaderBase.findClass(WebappClassLoaderBase.java:669)
+	at org.apache.catalina.loader.WebappClassLoaderBase.loadClass(WebappClassLoaderBase.java:1144)
+	at org.apache.catalina.loader.WebappClassLoaderBase.loadClass(WebappClassLoaderBase.java:1014)
+	at org.apache.logging.log4j.core.config.plugins.util.ResolverUtil.addIfMatching(ResolverUtil.java:462)
+	at org.apache.logging.log4j.core.config.plugins.util.ResolverUtil.loadImplementationsInJar(ResolverUtil.java:357)
+	at org.apache.logging.log4j.core.config.plugins.util.ResolverUtil.findInPackage(ResolverUtil.java:236)
+	at org.apache.logging.log4j.core.config.plugins.util.PluginRegistry.loadFromPackage(PluginRegistry.java:224)
+	at org.apache.logging.log4j.core.config.plugins.util.PluginManager.collectPlugins(PluginManager.java:162)
+	at org.apache.logging.log4j.core.config.AbstractConfiguration.initialize(AbstractConfiguration.java:242)
+	at org.apache.logging.log4j.core.config.AbstractConfiguration.start(AbstractConfiguration.java:313)
+	at org.apache.logging.log4j.core.LoggerContext.setConfiguration(LoggerContext.java:631)
+	at org.apache.logging.log4j.core.LoggerContext.reconfigure(LoggerContext.java:713)
+	at org.apache.logging.log4j.core.LoggerContext.reconfigure(LoggerContext.java:735)
+	at org.apache.logging.log4j.core.LoggerContext.start(LoggerContext.java:260)
+	at org.apache.logging.log4j.core.impl.Log4jContextFactory.getContext(Log4jContextFactory.java:154)
+	at org.apache.logging.log4j.core.impl.Log4jContextFactory.getContext(Log4jContextFactory.java:46)
+	at org.apache.logging.log4j.LogManager.getContext(LogManager.java:197)
+	at org.apache.logging.log4j.LogManager.getLogger(LogManager.java:611)
+	at auth.test.<clinit>(test.java:18)
+	at java.base/jdk.internal.misc.Unsafe.ensureClassInitialized0(Native Method)
+	at java.base/jdk.internal.misc.Unsafe.ensureClassInitialized(Unsafe.java:1160)
+	at java.base/jdk.internal.reflect.MethodHandleAccessorFactory.ensureClassInitialized(MethodHandleAccessorFactory.java:300)
+	at java.base/jdk.internal.reflect.MethodHandleAccessorFactory.newConstructorAccessor(MethodHandleAccessorFactory.java:103)
+	at java.base/jdk.internal.reflect.ReflectionFactory.newConstructorAccessor(ReflectionFactory.java:200)
+	at java.base/java.lang.reflect.Constructor.acquireConstructorAccessor(Constructor.java:549)
+	at java.base/java.lang.reflect.Constructor.newInstanceWithCaller(Constructor.java:499)
+	at java.base/java.lang.reflect.Constructor.newInstance(Constructor.java:486)
+	at org.apache.catalina.core.DefaultInstanceManager.newInstance(DefaultInstanceManager.java:140)
+	at org.apache.catalina.core.StandardWrapper.loadServlet(StandardWrapper.java:751)
+	at org.apache.catalina.core.StandardWrapper.allocate(StandardWrapper.java:568)
+	at org.apache.catalina.core.StandardWrapperValve.invoke(StandardWrapperValve.java:115)
+	at org.apache.catalina.core.StandardContextValve.invoke(StandardContextValve.java:90)
+	at org.apache.catalina.authenticator.AuthenticatorBase.invoke(AuthenticatorBase.java:483)
+	at org.apache.catalina.core.StandardHostValve.invoke(StandardHostValve.java:115)
+	at org.apache.catalina.valves.ErrorReportValve.invoke(ErrorReportValve.java:93)
+	at org.apache.catalina.valves.AbstractAccessLogValve.invoke(AbstractAccessLogValve.java:663)
+	at org.apache.catalina.core.StandardEngineValve.invoke(StandardEngineValve.java:74)
+	at org.apache.catalina.connector.CoyoteAdapter.service(CoyoteAdapter.java:342)
+	at org.apache.coyote.http11.Http11Processor.service(Http11Processor.java:387)
+	at org.apache.coyote.AbstractProcessorLight.process(AbstractProcessorLight.java:63)
+	at org.apache.coyote.AbstractProtocol$ConnectionHandler.process(AbstractProtocol.java:904)
+	at org.apache.tomcat.util.net.NioEndpoint$SocketProcessor.doRun(NioEndpoint.java:1746)
+	at org.apache.tomcat.util.net.SocketProcessorBase.run(SocketProcessorBase.java:52)
+	at org.apache.tomcat.util.threads.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1148)
+	at org.apache.tomcat.util.threads.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:636)
+	at org.apache.tomcat.util.threads.TaskThread$WrappingRunnable.run(TaskThread.java:63)
+	at java.base/java.lang.Thread.run(Thread.java:1583)
+Caused by: java.lang.ClassNotFoundException: com.fasterxml.jackson.dataformat.xml.JacksonXmlModule
+	at org.apache.catalina.loader.WebappClassLoaderBase.loadClass(WebappClassLoaderBase.java:1180)
+	at org.apache.catalina.loader.WebappClassLoaderBase.loadClass(WebappClassLoaderBase.java:1014)
+	... 51 more
+
+2025-08-10T08:06:40.108055828Z http-nio-8080-exec-3 WARN Could not examine class org/apache/logging/log4j/core/jackson/Log4jXmlObjectMapper.class java.lang.NoClassDefFoundError: com/fasterxml/jackson/dataformat/xml/XmlMapper
+	at java.base/java.lang.ClassLoader.defineClass1(Native Method)
+	at java.base/java.lang.ClassLoader.defineClass(ClassLoader.java:1027)
+	at java.base/java.security.SecureClassLoader.defineClass(SecureClassLoader.java:150)
+	at org.apache.catalina.loader.WebappClassLoaderBase.findClassInternal(WebappClassLoaderBase.java:2112)
+	at org.apache.catalina.loader.WebappClassLoaderBase.findClass(WebappClassLoaderBase.java:669)
+	at org.apache.catalina.loader.WebappClassLoaderBase.loadClass(WebappClassLoaderBase.java:1144)
+	at org.apache.catalina.loader.WebappClassLoaderBase.loadClass(WebappClassLoaderBase.java:1014)
+	at org.apache.logging.log4j.core.config.plugins.util.ResolverUtil.addIfMatching(ResolverUtil.java:462)
+	at org.apache.logging.log4j.core.config.plugins.util.ResolverUtil.loadImplementationsInJar(ResolverUtil.java:357)
+	at org.apache.logging.log4j.core.config.plugins.util.ResolverUtil.findInPackage(ResolverUtil.java:236)
+	at org.apache.logging.log4j.core.config.plugins.util.PluginRegistry.loadFromPackage(PluginRegistry.java:224)
+	at org.apache.logging.log4j.core.config.plugins.util.PluginManager.collectPlugins(PluginManager.java:162)
+	at org.apache.logging.log4j.core.config.AbstractConfiguration.initialize(AbstractConfiguration.java:242)
+	at org.apache.logging.log4j.core.config.AbstractConfiguration.start(AbstractConfiguration.java:313)
+	at org.apache.logging.log4j.core.LoggerContext.setConfiguration(LoggerContext.java:631)
+	at org.apache.logging.log4j.core.LoggerContext.reconfigure(LoggerContext.java:713)
+	at org.apache.logging.log4j.core.LoggerContext.reconfigure(LoggerContext.java:735)
+	at org.apache.logging.log4j.core.LoggerContext.start(LoggerContext.java:260)
+	at org.apache.logging.log4j.core.impl.Log4jContextFactory.getContext(Log4jContextFactory.java:154)
+	at org.apache.logging.log4j.core.impl.Log4jContextFactory.getContext(Log4jContextFactory.java:46)
+	at org.apache.logging.log4j.LogManager.getContext(LogManager.java:197)
+	at org.apache.logging.log4j.LogManager.getLogger(LogManager.java:611)
+	at auth.test.<clinit>(test.java:18)
+	at java.base/jdk.internal.misc.Unsafe.ensureClassInitialized0(Native Method)
+	at java.base/jdk.internal.misc.Unsafe.ensureClassInitialized(Unsafe.java:1160)
+	at java.base/jdk.internal.reflect.MethodHandleAccessorFactory.ensureClassInitialized(MethodHandleAccessorFactory.java:300)
+	at java.base/jdk.internal.reflect.MethodHandleAccessorFactory.newConstructorAccessor(MethodHandleAccessorFactory.java:103)
+	at java.base/jdk.internal.reflect.ReflectionFactory.newConstructorAccessor(ReflectionFactory.java:200)
+	at java.base/java.lang.reflect.Constructor.acquireConstructorAccessor(Constructor.java:549)
+	at java.base/java.lang.reflect.Constructor.newInstanceWithCaller(Constructor.java:499)
+	at java.base/java.lang.reflect.Constructor.newInstance(Constructor.java:486)
+	at org.apache.catalina.core.DefaultInstanceManager.newInstance(DefaultInstanceManager.java:140)
+	at org.apache.catalina.core.StandardWrapper.loadServlet(StandardWrapper.java:751)
+	at org.apache.catalina.core.StandardWrapper.allocate(StandardWrapper.java:568)
+	at org.apache.catalina.core.StandardWrapperValve.invoke(StandardWrapperValve.java:115)
+	at org.apache.catalina.core.StandardContextValve.invoke(StandardContextValve.java:90)
+	at org.apache.catalina.authenticator.AuthenticatorBase.invoke(AuthenticatorBase.java:483)
+	at org.apache.catalina.core.StandardHostValve.invoke(StandardHostValve.java:115)
+	at org.apache.catalina.valves.ErrorReportValve.invoke(ErrorReportValve.java:93)
+	at org.apache.catalina.valves.AbstractAccessLogValve.invoke(AbstractAccessLogValve.java:663)
+	at org.apache.catalina.core.StandardEngineValve.invoke(StandardEngineValve.java:74)
+	at org.apache.catalina.connector.CoyoteAdapter.service(CoyoteAdapter.java:342)
+	at org.apache.coyote.http11.Http11Processor.service(Http11Processor.java:387)
+	at org.apache.coyote.AbstractProcessorLight.process(AbstractProcessorLight.java:63)
+	at org.apache.coyote.AbstractProtocol$ConnectionHandler.process(AbstractProtocol.java:904)
+	at org.apache.tomcat.util.net.NioEndpoint$SocketProcessor.doRun(NioEndpoint.java:1746)
+	at org.apache.tomcat.util.net.SocketProcessorBase.run(SocketProcessorBase.java:52)
+	at org.apache.tomcat.util.threads.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1148)
+	at org.apache.tomcat.util.threads.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:636)
+	at org.apache.tomcat.util.threads.TaskThread$WrappingRunnable.run(TaskThread.java:63)
+	at java.base/java.lang.Thread.run(Thread.java:1583)
+Caused by: java.lang.ClassNotFoundException: com.fasterxml.jackson.dataformat.xml.XmlMapper
+	at org.apache.catalina.loader.WebappClassLoaderBase.loadClass(WebappClassLoaderBase.java:1180)
+	at org.apache.catalina.loader.WebappClassLoaderBase.loadClass(WebappClassLoaderBase.java:1014)
+	... 51 more
+
+2025-08-10T08:06:40.109600941Z http-nio-8080-exec-3 WARN Could not examine class org/apache/logging/log4j/core/jackson/Log4jYamlObjectMapper.class java.lang.NoClassDefFoundError: com/fasterxml/jackson/dataformat/yaml/YAMLMapper
+	at java.base/java.lang.ClassLoader.defineClass1(Native Method)
+	at java.base/java.lang.ClassLoader.defineClass(ClassLoader.java:1027)
+	at java.base/java.security.SecureClassLoader.defineClass(SecureClassLoader.java:150)
+	at org.apache.catalina.loader.WebappClassLoaderBase.findClassInternal(WebappClassLoaderBase.java:2112)
+	at org.apache.catalina.loader.WebappClassLoaderBase.findClass(WebappClassLoaderBase.java:669)
+	at org.apache.catalina.loader.WebappClassLoaderBase.loadClass(WebappClassLoaderBase.java:1144)
+	at org.apache.catalina.loader.WebappClassLoaderBase.loadClass(WebappClassLoaderBase.java:1014)
+	at org.apache.logging.log4j.core.config.plugins.util.ResolverUtil.addIfMatching(ResolverUtil.java:462)
+	at org.apache.logging.log4j.core.config.plugins.util.ResolverUtil.loadImplementationsInJar(ResolverUtil.java:357)
+	at org.apache.logging.log4j.core.config.plugins.util.ResolverUtil.findInPackage(ResolverUtil.java:236)
+	at org.apache.logging.log4j.core.config.plugins.util.PluginRegistry.loadFromPackage(PluginRegistry.java:224)
+	at org.apache.logging.log4j.core.config.plugins.util.PluginManager.collectPlugins(PluginManager.java:162)
+	at org.apache.logging.log4j.core.config.AbstractConfiguration.initialize(AbstractConfiguration.java:242)
+	at org.apache.logging.log4j.core.config.AbstractConfiguration.start(AbstractConfiguration.java:313)
+	at org.apache.logging.log4j.core.LoggerContext.setConfiguration(LoggerContext.java:631)
+	at org.apache.logging.log4j.core.LoggerContext.reconfigure(LoggerContext.java:713)
+	at org.apache.logging.log4j.core.LoggerContext.reconfigure(LoggerContext.java:735)
+	at org.apache.logging.log4j.core.LoggerContext.start(LoggerContext.java:260)
+	at org.apache.logging.log4j.core.impl.Log4jContextFactory.getContext(Log4jContextFactory.java:154)
+	at org.apache.logging.log4j.core.impl.Log4jContextFactory.getContext(Log4jContextFactory.java:46)
+	at org.apache.logging.log4j.LogManager.getContext(LogManager.java:197)
+	at org.apache.logging.log4j.LogManager.getLogger(LogManager.java:611)
+	at auth.test.<clinit>(test.java:18)
+	at java.base/jdk.internal.misc.Unsafe.ensureClassInitialized0(Native Method)
+	at java.base/jdk.internal.misc.Unsafe.ensureClassInitialized(Unsafe.java:1160)
+	at java.base/jdk.internal.reflect.MethodHandleAccessorFactory.ensureClassInitialized(MethodHandleAccessorFactory.java:300)
+	at java.base/jdk.internal.reflect.MethodHandleAccessorFactory.newConstructorAccessor(MethodHandleAccessorFactory.java:103)
+	at java.base/jdk.internal.reflect.ReflectionFactory.newConstructorAccessor(ReflectionFactory.java:200)
+	at java.base/java.lang.reflect.Constructor.acquireConstructorAccessor(Constructor.java:549)
+	at java.base/java.lang.reflect.Constructor.newInstanceWithCaller(Constructor.java:499)
+	at java.base/java.lang.reflect.Constructor.newInstance(Constructor.java:486)
+	at org.apache.catalina.core.DefaultInstanceManager.newInstance(DefaultInstanceManager.java:140)
+	at org.apache.catalina.core.StandardWrapper.loadServlet(StandardWrapper.java:751)
+	at org.apache.catalina.core.StandardWrapper.allocate(StandardWrapper.java:568)
+	at org.apache.catalina.core.StandardWrapperValve.invoke(StandardWrapperValve.java:115)
+	at org.apache.catalina.core.StandardContextValve.invoke(StandardContextValve.java:90)
+	at org.apache.catalina.authenticator.AuthenticatorBase.invoke(AuthenticatorBase.java:483)
+	at org.apache.catalina.core.StandardHostValve.invoke(StandardHostValve.java:115)
+	at org.apache.catalina.valves.ErrorReportValve.invoke(ErrorReportValve.java:93)
+	at org.apache.catalina.valves.AbstractAccessLogValve.invoke(AbstractAccessLogValve.java:663)
+	at org.apache.catalina.core.StandardEngineValve.invoke(StandardEngineValve.java:74)
+	at org.apache.catalina.connector.CoyoteAdapter.service(CoyoteAdapter.java:342)
+	at org.apache.coyote.http11.Http11Processor.service(Http11Processor.java:387)
+	at org.apache.coyote.AbstractProcessorLight.process(AbstractProcessorLight.java:63)
+	at org.apache.coyote.AbstractProtocol$ConnectionHandler.process(AbstractProtocol.java:904)
+	at org.apache.tomcat.util.net.NioEndpoint$SocketProcessor.doRun(NioEndpoint.java:1746)
+	at org.apache.tomcat.util.net.SocketProcessorBase.run(SocketProcessorBase.java:52)
+	at org.apache.tomcat.util.threads.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1148)
+	at org.apache.tomcat.util.threads.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:636)
+	at org.apache.tomcat.util.threads.TaskThread$WrappingRunnable.run(TaskThread.java:63)
+	at java.base/java.lang.Thread.run(Thread.java:1583)
+Caused by: java.lang.ClassNotFoundException: com.fasterxml.jackson.dataformat.yaml.YAMLMapper
+	at org.apache.catalina.loader.WebappClassLoaderBase.loadClass(WebappClassLoaderBase.java:1180)
+	at org.apache.catalina.loader.WebappClassLoaderBase.loadClass(WebappClassLoaderBase.java:1014)
+	... 51 more
+
+2025-08-10T08:06:40.150542664Z http-nio-8080-exec-3 WARN Could not examine class org/apache/logging/log4j/core/layout/JacksonFactory$Log4jXmlPrettyPrinter.class java.lang.NoClassDefFoundError: com/fasterxml/jackson/dataformat/xml/util/DefaultXmlPrettyPrinter
+	at java.base/java.lang.ClassLoader.defineClass1(Native Method)
+	at java.base/java.lang.ClassLoader.defineClass(ClassLoader.java:1027)
+	at java.base/java.security.SecureClassLoader.defineClass(SecureClassLoader.java:150)
+	at org.apache.catalina.loader.WebappClassLoaderBase.findClassInternal(WebappClassLoaderBase.java:2112)
+	at org.apache.catalina.loader.WebappClassLoaderBase.findClass(WebappClassLoaderBase.java:669)
+	at org.apache.catalina.loader.WebappClassLoaderBase.loadClass(WebappClassLoaderBase.java:1144)
+	at org.apache.catalina.loader.WebappClassLoaderBase.loadClass(WebappClassLoaderBase.java:1014)
+	at org.apache.logging.log4j.core.config.plugins.util.ResolverUtil.addIfMatching(ResolverUtil.java:462)
+	at org.apache.logging.log4j.core.config.plugins.util.ResolverUtil.loadImplementationsInJar(ResolverUtil.java:357)
+	at org.apache.logging.log4j.core.config.plugins.util.ResolverUtil.findInPackage(ResolverUtil.java:236)
+	at org.apache.logging.log4j.core.config.plugins.util.PluginRegistry.loadFromPackage(PluginRegistry.java:224)
+	at org.apache.logging.log4j.core.config.plugins.util.PluginManager.collectPlugins(PluginManager.java:162)
+	at org.apache.logging.log4j.core.config.AbstractConfiguration.initialize(AbstractConfiguration.java:242)
+	at org.apache.logging.log4j.core.config.AbstractConfiguration.start(AbstractConfiguration.java:313)
+	at org.apache.logging.log4j.core.LoggerContext.setConfiguration(LoggerContext.java:631)
+	at org.apache.logging.log4j.core.LoggerContext.reconfigure(LoggerContext.java:713)
+	at org.apache.logging.log4j.core.LoggerContext.reconfigure(LoggerContext.java:735)
+	at org.apache.logging.log4j.core.LoggerContext.start(LoggerContext.java:260)
+	at org.apache.logging.log4j.core.impl.Log4jContextFactory.getContext(Log4jContextFactory.java:154)
+	at org.apache.logging.log4j.core.impl.Log4jContextFactory.getContext(Log4jContextFactory.java:46)
+	at org.apache.logging.log4j.LogManager.getContext(LogManager.java:197)
+	at org.apache.logging.log4j.LogManager.getLogger(LogManager.java:611)
+	at auth.test.<clinit>(test.java:18)
+	at java.base/jdk.internal.misc.Unsafe.ensureClassInitialized0(Native Method)
+	at java.base/jdk.internal.misc.Unsafe.ensureClassInitialized(Unsafe.java:1160)
+	at java.base/jdk.internal.reflect.MethodHandleAccessorFactory.ensureClassInitialized(MethodHandleAccessorFactory.java:300)
+	at java.base/jdk.internal.reflect.MethodHandleAccessorFactory.newConstructorAccessor(MethodHandleAccessorFactory.java:103)
+	at java.base/jdk.internal.reflect.ReflectionFactory.newConstructorAccessor(ReflectionFactory.java:200)
+	at java.base/java.lang.reflect.Constructor.acquireConstructorAccessor(Constructor.java:549)
+	at java.base/java.lang.reflect.Constructor.newInstanceWithCaller(Constructor.java:499)
+	at java.base/java.lang.reflect.Constructor.newInstance(Constructor.java:486)
+	at org.apache.catalina.core.DefaultInstanceManager.newInstance(DefaultInstanceManager.java:140)
+	at org.apache.catalina.core.StandardWrapper.loadServlet(StandardWrapper.java:751)
+	at org.apache.catalina.core.StandardWrapper.allocate(StandardWrapper.java:568)
+	at org.apache.catalina.core.StandardWrapperValve.invoke(StandardWrapperValve.java:115)
+	at org.apache.catalina.core.StandardContextValve.invoke(StandardContextValve.java:90)
+	at org.apache.catalina.authenticator.AuthenticatorBase.invoke(AuthenticatorBase.java:483)
+	at org.apache.catalina.core.StandardHostValve.invoke(StandardHostValve.java:115)
+	at org.apache.catalina.valves.ErrorReportValve.invoke(ErrorReportValve.java:93)
+	at org.apache.catalina.valves.AbstractAccessLogValve.invoke(AbstractAccessLogValve.java:663)
+	at org.apache.catalina.core.StandardEngineValve.invoke(StandardEngineValve.java:74)
+	at org.apache.catalina.connector.CoyoteAdapter.service(CoyoteAdapter.java:342)
+	at org.apache.coyote.http11.Http11Processor.service(Http11Processor.java:387)
+	at org.apache.coyote.AbstractProcessorLight.process(AbstractProcessorLight.java:63)
+	at org.apache.coyote.AbstractProtocol$ConnectionHandler.process(AbstractProtocol.java:904)
+	at org.apache.tomcat.util.net.NioEndpoint$SocketProcessor.doRun(NioEndpoint.java:1746)
+	at org.apache.tomcat.util.net.SocketProcessorBase.run(SocketProcessorBase.java:52)
+	at org.apache.tomcat.util.threads.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1148)
+	at org.apache.tomcat.util.threads.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:636)
+	at org.apache.tomcat.util.threads.TaskThread$WrappingRunnable.run(TaskThread.java:63)
+	at java.base/java.lang.Thread.run(Thread.java:1583)
+Caused by: java.lang.ClassNotFoundException: com.fasterxml.jackson.dataformat.xml.util.DefaultXmlPrettyPrinter
+	at org.apache.catalina.loader.WebappClassLoaderBase.loadClass(WebappClassLoaderBase.java:1180)
+	at org.apache.catalina.loader.WebappClassLoaderBase.loadClass(WebappClassLoaderBase.java:1014)
+	... 51 more
+
+2025-08-10T08:06:40.183995964Z http-nio-8080-exec-3 WARN Could not examine class org/apache/logging/log4j/core/net/SmtpManager$SMTPManagerFactory$1.class java.lang.NoClassDefFoundError: javax/mail/Authenticator
+	at java.base/java.lang.ClassLoader.defineClass1(Native Method)
+	at java.base/java.lang.ClassLoader.defineClass(ClassLoader.java:1027)
+	at java.base/java.security.SecureClassLoader.defineClass(SecureClassLoader.java:150)
+	at org.apache.catalina.loader.WebappClassLoaderBase.findClassInternal(WebappClassLoaderBase.java:2112)
+	at org.apache.catalina.loader.WebappClassLoaderBase.findClass(WebappClassLoaderBase.java:669)
+	at org.apache.catalina.loader.WebappClassLoaderBase.loadClass(WebappClassLoaderBase.java:1144)
+	at org.apache.catalina.loader.WebappClassLoaderBase.loadClass(WebappClassLoaderBase.java:1014)
+	at org.apache.logging.log4j.core.config.plugins.util.ResolverUtil.addIfMatching(ResolverUtil.java:462)
+	at org.apache.logging.log4j.core.config.plugins.util.ResolverUtil.loadImplementationsInJar(ResolverUtil.java:357)
+	at org.apache.logging.log4j.core.config.plugins.util.ResolverUtil.findInPackage(ResolverUtil.java:236)
+	at org.apache.logging.log4j.core.config.plugins.util.PluginRegistry.loadFromPackage(PluginRegistry.java:224)
+	at org.apache.logging.log4j.core.config.plugins.util.PluginManager.collectPlugins(PluginManager.java:162)
+	at org.apache.logging.log4j.core.config.AbstractConfiguration.initialize(AbstractConfiguration.java:242)
+	at org.apache.logging.log4j.core.config.AbstractConfiguration.start(AbstractConfiguration.java:313)
+	at org.apache.logging.log4j.core.LoggerContext.setConfiguration(LoggerContext.java:631)
+	at org.apache.logging.log4j.core.LoggerContext.reconfigure(LoggerContext.java:713)
+	at org.apache.logging.log4j.core.LoggerContext.reconfigure(LoggerContext.java:735)
+	at org.apache.logging.log4j.core.LoggerContext.start(LoggerContext.java:260)
+	at org.apache.logging.log4j.core.impl.Log4jContextFactory.getContext(Log4jContextFactory.java:154)
+	at org.apache.logging.log4j.core.impl.Log4jContextFactory.getContext(Log4jContextFactory.java:46)
+	at org.apache.logging.log4j.LogManager.getContext(LogManager.java:197)
+	at org.apache.logging.log4j.LogManager.getLogger(LogManager.java:611)
+	at auth.test.<clinit>(test.java:18)
+	at java.base/jdk.internal.misc.Unsafe.ensureClassInitialized0(Native Method)
+	at java.base/jdk.internal.misc.Unsafe.ensureClassInitialized(Unsafe.java:1160)
+	at java.base/jdk.internal.reflect.MethodHandleAccessorFactory.ensureClassInitialized(MethodHandleAccessorFactory.java:300)
+	at java.base/jdk.internal.reflect.MethodHandleAccessorFactory.newConstructorAccessor(MethodHandleAccessorFactory.java:103)
+	at java.base/jdk.internal.reflect.ReflectionFactory.newConstructorAccessor(ReflectionFactory.java:200)
+	at java.base/java.lang.reflect.Constructor.acquireConstructorAccessor(Constructor.java:549)
+	at java.base/java.lang.reflect.Constructor.newInstanceWithCaller(Constructor.java:499)
+	at java.base/java.lang.reflect.Constructor.newInstance(Constructor.java:486)
+	at org.apache.catalina.core.DefaultInstanceManager.newInstance(DefaultInstanceManager.java:140)
+	at org.apache.catalina.core.StandardWrapper.loadServlet(StandardWrapper.java:751)
+	at org.apache.catalina.core.StandardWrapper.allocate(StandardWrapper.java:568)
+	at org.apache.catalina.core.StandardWrapperValve.invoke(StandardWrapperValve.java:115)
+	at org.apache.catalina.core.StandardContextValve.invoke(StandardContextValve.java:90)
+	at org.apache.catalina.authenticator.AuthenticatorBase.invoke(AuthenticatorBase.java:483)
+	at org.apache.catalina.core.StandardHostValve.invoke(StandardHostValve.java:115)
+	at org.apache.catalina.valves.ErrorReportValve.invoke(ErrorReportValve.java:93)
+	at org.apache.catalina.valves.AbstractAccessLogValve.invoke(AbstractAccessLogValve.java:663)
+	at org.apache.catalina.core.StandardEngineValve.invoke(StandardEngineValve.java:74)
+	at org.apache.catalina.connector.CoyoteAdapter.service(CoyoteAdapter.java:342)
+	at org.apache.coyote.http11.Http11Processor.service(Http11Processor.java:387)
+	at org.apache.coyote.AbstractProcessorLight.process(AbstractProcessorLight.java:63)
+	at org.apache.coyote.AbstractProtocol$ConnectionHandler.process(AbstractProtocol.java:904)
+	at org.apache.tomcat.util.net.NioEndpoint$SocketProcessor.doRun(NioEndpoint.java:1746)
+	at org.apache.tomcat.util.net.SocketProcessorBase.run(SocketProcessorBase.java:52)
+	at org.apache.tomcat.util.threads.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1148)
+	at org.apache.tomcat.util.threads.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:636)
+	at org.apache.tomcat.util.threads.TaskThread$WrappingRunnable.run(TaskThread.java:63)
+	at java.base/java.lang.Thread.run(Thread.java:1583)
+Caused by: java.lang.ClassNotFoundException: javax.mail.Authenticator
+	at org.apache.catalina.loader.WebappClassLoaderBase.loadClass(WebappClassLoaderBase.java:1180)
+	at org.apache.catalina.loader.WebappClassLoaderBase.loadClass(WebappClassLoaderBase.java:1014)
+	... 51 more
+
+2025-08-10T08:06:40.197542497Z http-nio-8080-exec-3 WARN Could not examine class org/apache/logging/log4j/core/osgi/Activator.class java.lang.NoClassDefFoundError: org/osgi/framework/SynchronousBundleListener
+	at java.base/java.lang.ClassLoader.defineClass1(Native Method)
+	at java.base/java.lang.ClassLoader.defineClass(ClassLoader.java:1027)
+	at java.base/java.security.SecureClassLoader.defineClass(SecureClassLoader.java:150)
+	at org.apache.catalina.loader.WebappClassLoaderBase.findClassInternal(WebappClassLoaderBase.java:2112)
+	at org.apache.catalina.loader.WebappClassLoaderBase.findClass(WebappClassLoaderBase.java:669)
+	at org.apache.catalina.loader.WebappClassLoaderBase.loadClass(WebappClassLoaderBase.java:1144)
+	at org.apache.catalina.loader.WebappClassLoaderBase.loadClass(WebappClassLoaderBase.java:1014)
+	at org.apache.logging.log4j.core.config.plugins.util.ResolverUtil.addIfMatching(ResolverUtil.java:462)
+	at org.apache.logging.log4j.core.config.plugins.util.ResolverUtil.loadImplementationsInJar(ResolverUtil.java:357)
+	at org.apache.logging.log4j.core.config.plugins.util.ResolverUtil.findInPackage(ResolverUtil.java:236)
+	at org.apache.logging.log4j.core.config.plugins.util.PluginRegistry.loadFromPackage(PluginRegistry.java:224)
+	at org.apache.logging.log4j.core.config.plugins.util.PluginManager.collectPlugins(PluginManager.java:162)
+	at org.apache.logging.log4j.core.config.AbstractConfiguration.initialize(AbstractConfiguration.java:242)
+	at org.apache.logging.log4j.core.config.AbstractConfiguration.start(AbstractConfiguration.java:313)
+	at org.apache.logging.log4j.core.LoggerContext.setConfiguration(LoggerContext.java:631)
+	at org.apache.logging.log4j.core.LoggerContext.reconfigure(LoggerContext.java:713)
+	at org.apache.logging.log4j.core.LoggerContext.reconfigure(LoggerContext.java:735)
+	at org.apache.logging.log4j.core.LoggerContext.start(LoggerContext.java:260)
+	at org.apache.logging.log4j.core.impl.Log4jContextFactory.getContext(Log4jContextFactory.java:154)
+	at org.apache.logging.log4j.core.impl.Log4jContextFactory.getContext(Log4jContextFactory.java:46)
+	at org.apache.logging.log4j.LogManager.getContext(LogManager.java:197)
+	at org.apache.logging.log4j.LogManager.getLogger(LogManager.java:611)
+	at auth.test.<clinit>(test.java:18)
+	at java.base/jdk.internal.misc.Unsafe.ensureClassInitialized0(Native Method)
+	at java.base/jdk.internal.misc.Unsafe.ensureClassInitialized(Unsafe.java:1160)
+	at java.base/jdk.internal.reflect.MethodHandleAccessorFactory.ensureClassInitialized(MethodHandleAccessorFactory.java:300)
+	at java.base/jdk.internal.reflect.MethodHandleAccessorFactory.newConstructorAccessor(MethodHandleAccessorFactory.java:103)
+	at java.base/jdk.internal.reflect.ReflectionFactory.newConstructorAccessor(ReflectionFactory.java:200)
+	at java.base/java.lang.reflect.Constructor.acquireConstructorAccessor(Constructor.java:549)
+	at java.base/java.lang.reflect.Constructor.newInstanceWithCaller(Constructor.java:499)
+	at java.base/java.lang.reflect.Constructor.newInstance(Constructor.java:486)
+	at org.apache.catalina.core.DefaultInstanceManager.newInstance(DefaultInstanceManager.java:140)
+	at org.apache.catalina.core.StandardWrapper.loadServlet(StandardWrapper.java:751)
+	at org.apache.catalina.core.StandardWrapper.allocate(StandardWrapper.java:568)
+	at org.apache.catalina.core.StandardWrapperValve.invoke(StandardWrapperValve.java:115)
+	at org.apache.catalina.core.StandardContextValve.invoke(StandardContextValve.java:90)
+	at org.apache.catalina.authenticator.AuthenticatorBase.invoke(AuthenticatorBase.java:483)
+	at org.apache.catalina.core.StandardHostValve.invoke(StandardHostValve.java:115)
+	at org.apache.catalina.valves.ErrorReportValve.invoke(ErrorReportValve.java:93)
+	at org.apache.catalina.valves.AbstractAccessLogValve.invoke(AbstractAccessLogValve.java:663)
+	at org.apache.catalina.core.StandardEngineValve.invoke(StandardEngineValve.java:74)
+	at org.apache.catalina.connector.CoyoteAdapter.service(CoyoteAdapter.java:342)
+	at org.apache.coyote.http11.Http11Processor.service(Http11Processor.java:387)
+	at org.apache.coyote.AbstractProcessorLight.process(AbstractProcessorLight.java:63)
+	at org.apache.coyote.AbstractProtocol$ConnectionHandler.process(AbstractProtocol.java:904)
+	at org.apache.tomcat.util.net.NioEndpoint$SocketProcessor.doRun(NioEndpoint.java:1746)
+	at org.apache.tomcat.util.net.SocketProcessorBase.run(SocketProcessorBase.java:52)
+	at org.apache.tomcat.util.threads.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1148)
+	at org.apache.tomcat.util.threads.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:636)
+	at org.apache.tomcat.util.threads.TaskThread$WrappingRunnable.run(TaskThread.java:63)
+	at java.base/java.lang.Thread.run(Thread.java:1583)
+Caused by: java.lang.ClassNotFoundException: org.osgi.framework.SynchronousBundleListener
+	at org.apache.catalina.loader.WebappClassLoaderBase.loadClass(WebappClassLoaderBase.java:1180)
+	at org.apache.catalina.loader.WebappClassLoaderBase.loadClass(WebappClassLoaderBase.java:1014)
+	... 51 more
+
+2025-08-10T08:06:40.301258373Z http-nio-8080-exec-3 WARN The use of package scanning to locate plugins is deprecated and will be removed in a future release
+2025-08-10T08:06:40.303056613Z http-nio-8080-exec-3 WARN The use of package scanning to locate plugins is deprecated and will be removed in a future release
+2025-08-10T08:06:40.319895091Z http-nio-8080-exec-3 WARN The use of package scanning to locate plugins is deprecated and will be removed in a future release
+INFO: Initializing SDK with DSN: 'https://6f8c6e7ce86811df962456b9e68d1834@o4509022198431744.ingest.de.sentry.io/4509818434551888'
+INFO: No outbox dir path is defined in options.
+INFO: Debug Meta Data Properties loaded from file:/home/hridaykh/Code/.metadata/.plugins/org.eclipse.wst.server.core/tmp0/wtpwebapps/auth/WEB-INF/classes/sentry-debug-meta.properties
+DEBUG: Bundle IDs found: 0c1e4342-8aeb-4582-b3d4-38f50e270532
+DEBUG: Build tool found: maven, version unknown
+DEBUG: UncaughtExceptionHandlerIntegration enabled: true
+DEBUG: UncaughtExceptionHandlerIntegration installed.
+DEBUG: ShutdownHookIntegration installed.
+DEBUG: SpotlightIntegration is not enabled. BeforeEnvelopeCallback is already set or spotlight is not enabled.
+DEBUG: Using openTelemetryMode AUTO
+DEBUG: Using span factory io.sentry.DefaultSpanFactory
+DEBUG: Using scopes storage io.sentry.DefaultScopesStorage
+INFO: Cache dir is not set, not finalizing the previous session.
+13:36:40.461 [http-nio-8080-exec-3] TRACE auth.test - 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
+13:36:40.475 [http-nio-8080-exec-3] TRACE auth.test - Trace level log
+13:36:40.476 [http-nio-8080-exec-3] DEBUG auth.test - Debug level log
+13:36:40.476 [http-nio-8080-exec-3] INFO  auth.test - Info level log
+DEBUG: Capturing event: e86b38f1344c4c08868e7a40c3c2a714
+INFO: sentry-external-modules.txt file was not found.
+INFO: Session is null on scope.withSession
+13:36:40.476 [http-nio-8080-exec-3] WARN  auth.test - Warn level log
+DEBUG: Capturing event: 39b8502d40a347b19f4c6f8ff659ea50
+INFO: Session is null on scope.withSession
+13:36:40.515 [http-nio-8080-exec-3] ERROR auth.test - Error level log
+DEBUG: Capturing event: 50f8d9acec364abcbdbaeaf365b07800
+INFO: Session is null on scope.withSession
+13:36:40.519 [http-nio-8080-exec-3] FATAL auth.test - Fatal level log
+DEBUG: Capturing event: 8fc5201ef4e34108a4162de4b817834b
+INFO: Session is null on scope.withSession
+DEBUG: Serializing object: {
+	"timestamp": "2025-08-10T08:06:40.476Z",
+	"message": {
+		"formatted": "Warn level log",
+		"message": "Warn level log"
+	},
+	"logger": "auth.test",
+	"threads": {
+		"values": [
+			{
+				"id": 27,
+				"priority": 5,
+				"name": "http-nio-8080-exec-3",
+				"state": "RUNNABLE",
+				"crashed": true,
+				"daemon": true,
+				"stacktrace": {
+					"frames": [
+						{
+							"filename": "Thread.java",
+							"function": "run",
+							"module": "java.lang.Thread",
+							"lineno": 1583,
+							"native": false
+						},
+						{
+							"filename": "TaskThread.java",
+							"function": "run",
+							"module": "org.apache.tomcat.util.threads.TaskThread$WrappingRunnable",
+							"lineno": 63,
+							"native": false
+						},
+						{
+							"filename": "ThreadPoolExecutor.java",
+							"function": "run",
+							"module": "org.apache.tomcat.util.threads.ThreadPoolExecutor$Worker",
+							"lineno": 636,
+							"native": false
+						},
+						{
+							"filename": "ThreadPoolExecutor.java",
+							"function": "runWorker",
+							"module": "org.apache.tomcat.util.threads.ThreadPoolExecutor",
+							"lineno": 1148,
+							"native": false
+						},
+						{
+							"filename": "SocketProcessorBase.java",
+							"function": "run",
+							"module": "org.apache.tomcat.util.net.SocketProcessorBase",
+							"lineno": 52,
+							"native": false
+						},
+						{
+							"filename": "NioEndpoint.java",
+							"function": "doRun",
+							"module": "org.apache.tomcat.util.net.NioEndpoint$SocketProcessor",
+							"lineno": 1746,
+							"native": false
+						},
+						{
+							"filename": "AbstractProtocol.java",
+							"function": "process",
+							"module": "org.apache.coyote.AbstractProtocol$ConnectionHandler",
+							"lineno": 904,
+							"native": false
+						},
+						{
+							"filename": "AbstractProcessorLight.java",
+							"function": "process",
+							"module": "org.apache.coyote.AbstractProcessorLight",
+							"lineno": 63,
+							"native": false
+						},
+						{
+							"filename": "Http11Processor.java",
+							"function": "service",
+							"module": "org.apache.coyote.http11.Http11Processor",
+							"lineno": 387,
+							"native": false
+						},
+						{
+							"filename": "CoyoteAdapter.java",
+							"function": "service",
+							"module": "org.apache.catalina.connector.CoyoteAdapter",
+							"lineno": 342,
+							"native": false
+						},
+						{
+							"filename": "StandardEngineValve.java",
+							"function": "invoke",
+							"module": "org.apache.catalina.core.StandardEngineValve",
+							"lineno": 74,
+							"native": false
+						},
+						{
+							"filename": "AbstractAccessLogValve.java",
+							"function": "invoke",
+							"module": "org.apache.catalina.valves.AbstractAccessLogValve",
+							"lineno": 663,
+							"native": false
+						},
+						{
+							"filename": "ErrorReportValve.java",
+							"function": "invoke",
+							"module": "org.apache.catalina.valves.ErrorReportValve",
+							"lineno": 93,
+							"native": false
+						},
+						{
+							"filename": "StandardHostValve.java",
+							"function": "invoke",
+							"module": "org.apache.catalina.core.StandardHostValve",
+							"lineno": 115,
+							"native": false
+						},
+						{
+							"filename": "AuthenticatorBase.java",
+							"function": "invoke",
+							"module": "org.apache.catalina.authenticator.AuthenticatorBase",
+							"lineno": 483,
+							"native": false
+						},
+						{
+							"filename": "StandardContextValve.java",
+							"function": "invoke",
+							"module": "org.apache.catalina.core.StandardContextValve",
+							"lineno": 90,
+							"native": false
+						},
+						{
+							"filename": "StandardWrapperValve.java",
+							"function": "invoke",
+							"module": "org.apache.catalina.core.StandardWrapperValve",
+							"lineno": 167,
+							"native": false
+						},
+						{
+							"filename": "ApplicationFilterChain.java",
+							"function": "doFilter",
+							"module": "org.apache.catalina.core.ApplicationFilterChain",
+							"lineno": 109,
+							"native": false
+						},
+						{
+							"filename": "CORSFilter.java",
+							"function": "doFilter",
+							"module": "auth.CORSFilter",
+							"lineno": 39,
+							"native": false
+						},
+						{
+							"filename": "ApplicationFilterChain.java",
+							"function": "doFilter",
+							"module": "org.apache.catalina.core.ApplicationFilterChain",
+							"lineno": 109,
+							"native": false
+						},
+						{
+							"filename": "WsFilter.java",
+							"function": "doFilter",
+							"module": "org.apache.tomcat.websocket.server.WsFilter",
+							"lineno": 51,
+							"native": false
+						},
+						{
+							"filename": "ApplicationFilterChain.java",
+							"function": "doFilter",
+							"module": "org.apache.catalina.core.ApplicationFilterChain",
+							"lineno": 130,
+							"native": false
+						},
+						{
+							"filename": "HttpServlet.java",
+							"function": "service",
+							"module": "jakarta.servlet.http.HttpServlet",
+							"lineno": 716,
+							"native": false
+						},
+						{
+							"filename": "HttpServlet.java",
+							"function": "service",
+							"module": "jakarta.servlet.http.HttpServlet",
+							"lineno": 619,
+							"native": false
+						},
+						{
+							"filename": "test.java",
+							"function": "doGet",
+							"module": "auth.test",
+							"lineno": 26,
+							"native": false
+						},
+						{
+							"filename": "AbstractLogger.java",
+							"function": "warn",
+							"module": "org.apache.logging.log4j.spi.AbstractLogger",
+							"lineno": 3469,
+							"native": false
+						},
+						{
+							"filename": "AbstractLogger.java",
+							"function": "logIfEnabled",
+							"module": "org.apache.logging.log4j.spi.AbstractLogger",
+							"lineno": 2567,
+							"native": false
+						},
+						{
+							"filename": "AbstractLogger.java",
+							"function": "logMessage",
+							"module": "org.apache.logging.log4j.spi.AbstractLogger",
+							"lineno": 2620,
+							"native": false
+						},
+						{
+							"filename": "AbstractLogger.java",
+							"function": "logMessageSafely",
+							"module": "org.apache.logging.log4j.spi.AbstractLogger",
+							"lineno": 2841,
+							"native": false
+						},
+						{
+							"filename": "AbstractLogger.java",
+							"function": "logMessageTrackRecursion",
+							"module": "org.apache.logging.log4j.spi.AbstractLogger",
+							"lineno": 2859,
+							"native": false
+						},
+						{
+							"filename": "AbstractLogger.java",
+							"function": "tryLogMessage",
+							"module": "org.apache.logging.log4j.spi.AbstractLogger",
+							"lineno": 2906,
+							"native": false
+						},
+						{
+							"filename": "Logger.java",
+							"function": "log",
+							"module": "org.apache.logging.log4j.core.Logger",
+							"lineno": 169,
+							"native": false
+						},
+						{
+							"filename": "AwaitCompletionReliabilityStrategy.java",
+							"function": "log",
+							"module": "org.apache.logging.log4j.core.config.AwaitCompletionReliabilityStrategy",
+							"lineno": 92,
+							"native": false
+						},
+						{
+							"filename": "LoggerConfig.java",
+							"function": "log",
+							"module": "org.apache.logging.log4j.core.config.LoggerConfig",
+							"lineno": 575,
+							"native": false
+						},
+						{
+							"filename": "LoggerConfig.java",
+							"function": "log",
+							"module": "org.apache.logging.log4j.core.config.LoggerConfig",
+							"lineno": 639,
+							"native": false
+						},
+						{
+							"filename": "LoggerConfig.java",
+							"function": "processLogEvent",
+							"module": "org.apache.logging.log4j.core.config.LoggerConfig",
+							"lineno": 663,
+							"native": false
+						},
+						{
+							"filename": "LoggerConfig.java",
+							"function": "callAppenders",
+							"module": "org.apache.logging.log4j.core.config.LoggerConfig",
+							"lineno": 705,
+							"native": false
+						},
+						{
+							"filename": "AppenderControl.java",
+							"function": "callAppender",
+							"module": "org.apache.logging.log4j.core.config.AppenderControl",
+							"lineno": 88,
+							"native": false
+						},
+						{
+							"filename": "AppenderControl.java",
+							"function": "callAppenderPreventRecursion",
+							"module": "org.apache.logging.log4j.core.config.AppenderControl",
+							"lineno": 124,
+							"native": false
+						},
+						{
+							"filename": "AppenderControl.java",
+							"function": "callAppender0",
+							"module": "org.apache.logging.log4j.core.config.AppenderControl",
+							"lineno": 133,
+							"native": false
+						},
+						{
+							"filename": "AppenderControl.java",
+							"function": "tryCallAppender",
+							"module": "org.apache.logging.log4j.core.config.AppenderControl",
+							"lineno": 160,
+							"native": false
+						},
+						{
+							"filename": "Thread.java",
+							"function": "getStackTrace",
+							"module": "java.lang.Thread",
+							"lineno": 2450,
+							"native": false
+						}
+					],
+					"snapshot": true
+				}
+			}
+		]
+	},
+	"level": "warning",
+	"fingerprint": [],
+	"modules": {
+		"google-api-client": "2.4.0",
+		"jackson-annotations": "2.14.2",
+		"google-http-client": "1.44.1",
+		"opencensus-contrib-http-util": "0.31.1",
+		"google-auth-library-credentials": "1.23.0",
+		"jackson-core": "2.14.2",
+		"jackson-datatype-jdk8": "2.14.2",
+		"ecj": "4.32",
+		"log4j-api": "2.23.1",
+		"google-auth-library-oauth2-http": "1.23.0",
+		"j2objc-annotations": "2.8",
+		"slf4j-api": "2.0.5",
+		"checker-qual": "3.41.0",
+		"commons-codec": "1.16.1",
+		"google-oauth-client": "1.35.0",
+		"jackson-module-parameter-names": "2.14.2",
+		"sentry-log4j2": "8.18.0",
+		"feign-jackson": "12.2",
+		"listenablefuture": "9999.0-empty-to-avoid-conflict-with-guava",
+		"commons-collections4": "4.4",
+		"commons-logging": "1.2",
+		"google-http-client-gson": "1.44.1",
+		"log4j-core": "2.23.1",
+		"sentry": "8.18.0",
+		"opencensus-api": "0.31.1",
+		"google-http-client-apache-v2": "1.44.1",
+		"jackson-datatype-jsr310": "2.14.2",
+		"feign-core": "12.2",
+		"jsr305": "3.0.2",
+		"jackson-databind": "2.14.2",
+		"auto-value-annotations": "1.10.4",
+		"grpc-api": "1.60.1",
+		"jakartaee-migration": "1.0.8-shaded",
+		"mysql-connector-j": "9.3.0",
+		"grpc-context": "1.60.1",
+		"error_prone_annotations": "2.18.0",
+		"failureaccess": "1.0.2",
+		"mailgun-java": "1.1.6",
+		"commons-lang3": "3.12.0",
+		"gson": "2.10.1",
+		"guava": "33.0.0-jre",
+		"httpclient": "4.5.14",
+		"feign-form": "3.8.0",
+		"httpcore": "4.4.16"
+	},
+	"event_id": "e86b38f1344c4c08868e7a40c3c2a714",
+	"contexts": {
+		"runtime": {
+			"name": "Eclipse Adoptium",
+			"version": "21"
+		},
+		"trace": {
+			"trace_id": "53252ab9ada84fd4b513b4e8f0014fc0",
+			"span_id": "2d57069f9d4344da",
+			"op": "default",
+			"origin": "manual",
+			"data": {
+				"thread.name": "http-nio-8080-exec-3",
+				"thread.id": "27"
+			}
+		}
+	},
+	"sdk": {
+		"name": "sentry.java.log4j2",
+		"version": "8.18.0",
+		"packages": [
+			{
+				"name": "maven:io.sentry:sentry-log4j2",
+				"version": "8.18.0"
+			},
+			{
+				"name": "maven:io.sentry:sentry",
+				"version": "8.18.0"
+			},
+			{
+				"name": "maven",
+				"version": "unknown"
+			}
+		],
+		"integrations": [
+			"UncaughtExceptionHandler",
+			"ShutdownHook",
+			"Log4j"
+		]
+	},
+	"environment": "production",
+	"platform": "java",
+	"user": {},
+	"server_name": "hkpc.airplane-tailor.ts.net",
+	"breadcrumbs": [
+		{
+			"timestamp": "2025-08-10T08:06:40.474Z",
+			"message": "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",
+			"data": {},
+			"category": "auth.test",
+			"level": "debug"
+		},
+		{
+			"timestamp": "2025-08-10T08:06:40.476Z",
+			"message": "Trace level log",
+			"data": {},
+			"category": "auth.test",
+			"level": "debug"
+		},
+		{
+			"timestamp": "2025-08-10T08:06:40.476Z",
+			"message": "Debug level log",
+			"data": {},
+			"category": "auth.test",
+			"level": "debug"
+		},
+		{
+			"timestamp": "2025-08-10T08:06:40.476Z",
+			"message": "Info level log",
+			"data": {},
+			"category": "auth.test",
+			"level": "info"
+		}
+	],
+	"debug_meta": {
+		"images": [
+			{
+				"type": "jvm",
+				"debug_id": "0c1e4342-8aeb-4582-b3d4-38f50e270532"
+			}
+		]
+	},
+	"extra": {
+		"thread_name": "http-nio-8080-exec-3"
+	}
+}
+DEBUG: Envelope sent successfully.
+DEBUG: Envelope flushed
+DEBUG: Serializing object: {
+	"timestamp": "2025-08-10T08:06:40.515Z",
+	"message": {
+		"formatted": "Error level log",
+		"message": "Error level log"
+	},
+	"logger": "auth.test",
+	"threads": {
+		"values": [
+			{
+				"id": 27,
+				"priority": 5,
+				"name": "http-nio-8080-exec-3",
+				"state": "RUNNABLE",
+				"crashed": true,
+				"daemon": true,
+				"stacktrace": {
+					"frames": [
+						{
+							"filename": "Thread.java",
+							"function": "run",
+							"module": "java.lang.Thread",
+							"lineno": 1583,
+							"native": false
+						},
+						{
+							"filename": "TaskThread.java",
+							"function": "run",
+							"module": "org.apache.tomcat.util.threads.TaskThread$WrappingRunnable",
+							"lineno": 63,
+							"native": false
+						},
+						{
+							"filename": "ThreadPoolExecutor.java",
+							"function": "run",
+							"module": "org.apache.tomcat.util.threads.ThreadPoolExecutor$Worker",
+							"lineno": 636,
+							"native": false
+						},
+						{
+							"filename": "ThreadPoolExecutor.java",
+							"function": "runWorker",
+							"module": "org.apache.tomcat.util.threads.ThreadPoolExecutor",
+							"lineno": 1148,
+							"native": false
+						},
+						{
+							"filename": "SocketProcessorBase.java",
+							"function": "run",
+							"module": "org.apache.tomcat.util.net.SocketProcessorBase",
+							"lineno": 52,
+							"native": false
+						},
+						{
+							"filename": "NioEndpoint.java",
+							"function": "doRun",
+							"module": "org.apache.tomcat.util.net.NioEndpoint$SocketProcessor",
+							"lineno": 1746,
+							"native": false
+						},
+						{
+							"filename": "AbstractProtocol.java",
+							"function": "process",
+							"module": "org.apache.coyote.AbstractProtocol$ConnectionHandler",
+							"lineno": 904,
+							"native": false
+						},
+						{
+							"filename": "AbstractProcessorLight.java",
+							"function": "process",
+							"module": "org.apache.coyote.AbstractProcessorLight",
+							"lineno": 63,
+							"native": false
+						},
+						{
+							"filename": "Http11Processor.java",
+							"function": "service",
+							"module": "org.apache.coyote.http11.Http11Processor",
+							"lineno": 387,
+							"native": false
+						},
+						{
+							"filename": "CoyoteAdapter.java",
+							"function": "service",
+							"module": "org.apache.catalina.connector.CoyoteAdapter",
+							"lineno": 342,
+							"native": false
+						},
+						{
+							"filename": "StandardEngineValve.java",
+							"function": "invoke",
+							"module": "org.apache.catalina.core.StandardEngineValve",
+							"lineno": 74,
+							"native": false
+						},
+						{
+							"filename": "AbstractAccessLogValve.java",
+							"function": "invoke",
+							"module": "org.apache.catalina.valves.AbstractAccessLogValve",
+							"lineno": 663,
+							"native": false
+						},
+						{
+							"filename": "ErrorReportValve.java",
+							"function": "invoke",
+							"module": "org.apache.catalina.valves.ErrorReportValve",
+							"lineno": 93,
+							"native": false
+						},
+						{
+							"filename": "StandardHostValve.java",
+							"function": "invoke",
+							"module": "org.apache.catalina.core.StandardHostValve",
+							"lineno": 115,
+							"native": false
+						},
+						{
+							"filename": "AuthenticatorBase.java",
+							"function": "invoke",
+							"module": "org.apache.catalina.authenticator.AuthenticatorBase",
+							"lineno": 483,
+							"native": false
+						},
+						{
+							"filename": "StandardContextValve.java",
+							"function": "invoke",
+							"module": "org.apache.catalina.core.StandardContextValve",
+							"lineno": 90,
+							"native": false
+						},
+						{
+							"filename": "StandardWrapperValve.java",
+							"function": "invoke",
+							"module": "org.apache.catalina.core.StandardWrapperValve",
+							"lineno": 167,
+							"native": false
+						},
+						{
+							"filename": "ApplicationFilterChain.java",
+							"function": "doFilter",
+							"module": "org.apache.catalina.core.ApplicationFilterChain",
+							"lineno": 109,
+							"native": false
+						},
+						{
+							"filename": "CORSFilter.java",
+							"function": "doFilter",
+							"module": "auth.CORSFilter",
+							"lineno": 39,
+							"native": false
+						},
+						{
+							"filename": "ApplicationFilterChain.java",
+							"function": "doFilter",
+							"module": "org.apache.catalina.core.ApplicationFilterChain",
+							"lineno": 109,
+							"native": false
+						},
+						{
+							"filename": "WsFilter.java",
+							"function": "doFilter",
+							"module": "org.apache.tomcat.websocket.server.WsFilter",
+							"lineno": 51,
+							"native": false
+						},
+						{
+							"filename": "ApplicationFilterChain.java",
+							"function": "doFilter",
+							"module": "org.apache.catalina.core.ApplicationFilterChain",
+							"lineno": 130,
+							"native": false
+						},
+						{
+							"filename": "HttpServlet.java",
+							"function": "service",
+							"module": "jakarta.servlet.http.HttpServlet",
+							"lineno": 716,
+							"native": false
+						},
+						{
+							"filename": "HttpServlet.java",
+							"function": "service",
+							"module": "jakarta.servlet.http.HttpServlet",
+							"lineno": 619,
+							"native": false
+						},
+						{
+							"filename": "test.java",
+							"function": "doGet",
+							"module": "auth.test",
+							"lineno": 27,
+							"native": false
+						},
+						{
+							"filename": "AbstractLogger.java",
+							"function": "error",
+							"module": "org.apache.logging.log4j.spi.AbstractLogger",
+							"lineno": 798,
+							"native": false
+						},
+						{
+							"filename": "AbstractLogger.java",
+							"function": "logIfEnabled",
+							"module": "org.apache.logging.log4j.spi.AbstractLogger",
+							"lineno": 2567,
+							"native": false
+						},
+						{
+							"filename": "AbstractLogger.java",
+							"function": "logMessage",
+							"module": "org.apache.logging.log4j.spi.AbstractLogger",
+							"lineno": 2620,
+							"native": false
+						},
+						{
+							"filename": "AbstractLogger.java",
+							"function": "logMessageSafely",
+							"module": "org.apache.logging.log4j.spi.AbstractLogger",
+							"lineno": 2841,
+							"native": false
+						},
+						{
+							"filename": "AbstractLogger.java",
+							"function": "logMessageTrackRecursion",
+							"module": "org.apache.logging.log4j.spi.AbstractLogger",
+							"lineno": 2859,
+							"native": false
+						},
+						{
+							"filename": "AbstractLogger.java",
+							"function": "tryLogMessage",
+							"module": "org.apache.logging.log4j.spi.AbstractLogger",
+							"lineno": 2906,
+							"native": false
+						},
+						{
+							"filename": "Logger.java",
+							"function": "log",
+							"module": "org.apache.logging.log4j.core.Logger",
+							"lineno": 169,
+							"native": false
+						},
+						{
+							"filename": "AwaitCompletionReliabilityStrategy.java",
+							"function": "log",
+							"module": "org.apache.logging.log4j.core.config.AwaitCompletionReliabilityStrategy",
+							"lineno": 92,
+							"native": false
+						},
+						{
+							"filename": "LoggerConfig.java",
+							"function": "log",
+							"module": "org.apache.logging.log4j.core.config.LoggerConfig",
+							"lineno": 575,
+							"native": false
+						},
+						{
+							"filename": "LoggerConfig.java",
+							"function": "log",
+							"module": "org.apache.logging.log4j.core.config.LoggerConfig",
+							"lineno": 639,
+							"native": false
+						},
+						{
+							"filename": "LoggerConfig.java",
+							"function": "processLogEvent",
+							"module": "org.apache.logging.log4j.core.config.LoggerConfig",
+							"lineno": 663,
+							"native": false
+						},
+						{
+							"filename": "LoggerConfig.java",
+							"function": "callAppenders",
+							"module": "org.apache.logging.log4j.core.config.LoggerConfig",
+							"lineno": 705,
+							"native": false
+						},
+						{
+							"filename": "AppenderControl.java",
+							"function": "callAppender",
+							"module": "org.apache.logging.log4j.core.config.AppenderControl",
+							"lineno": 88,
+							"native": false
+						},
+						{
+							"filename": "AppenderControl.java",
+							"function": "callAppenderPreventRecursion",
+							"module": "org.apache.logging.log4j.core.config.AppenderControl",
+							"lineno": 124,
+							"native": false
+						},
+						{
+							"filename": "AppenderControl.java",
+							"function": "callAppender0",
+							"module": "org.apache.logging.log4j.core.config.AppenderControl",
+							"lineno": 133,
+							"native": false
+						},
+						{
+							"filename": "AppenderControl.java",
+							"function": "tryCallAppender",
+							"module": "org.apache.logging.log4j.core.config.AppenderControl",
+							"lineno": 160,
+							"native": false
+						},
+						{
+							"filename": "Thread.java",
+							"function": "getStackTrace",
+							"module": "java.lang.Thread",
+							"lineno": 2450,
+							"native": false
+						}
+					],
+					"snapshot": true
+				}
+			}
+		]
+	},
+	"level": "error",
+	"fingerprint": [],
+	"modules": {
+		"google-api-client": "2.4.0",
+		"jackson-annotations": "2.14.2",
+		"google-http-client": "1.44.1",
+		"opencensus-contrib-http-util": "0.31.1",
+		"google-auth-library-credentials": "1.23.0",
+		"jackson-core": "2.14.2",
+		"jackson-datatype-jdk8": "2.14.2",
+		"ecj": "4.32",
+		"log4j-api": "2.23.1",
+		"google-auth-library-oauth2-http": "1.23.0",
+		"j2objc-annotations": "2.8",
+		"slf4j-api": "2.0.5",
+		"checker-qual": "3.41.0",
+		"commons-codec": "1.16.1",
+		"google-oauth-client": "1.35.0",
+		"jackson-module-parameter-names": "2.14.2",
+		"sentry-log4j2": "8.18.0",
+		"feign-jackson": "12.2",
+		"listenablefuture": "9999.0-empty-to-avoid-conflict-with-guava",
+		"commons-collections4": "4.4",
+		"commons-logging": "1.2",
+		"google-http-client-gson": "1.44.1",
+		"log4j-core": "2.23.1",
+		"sentry": "8.18.0",
+		"opencensus-api": "0.31.1",
+		"google-http-client-apache-v2": "1.44.1",
+		"jackson-datatype-jsr310": "2.14.2",
+		"feign-core": "12.2",
+		"jsr305": "3.0.2",
+		"jackson-databind": "2.14.2",
+		"auto-value-annotations": "1.10.4",
+		"grpc-api": "1.60.1",
+		"jakartaee-migration": "1.0.8-shaded",
+		"mysql-connector-j": "9.3.0",
+		"grpc-context": "1.60.1",
+		"error_prone_annotations": "2.18.0",
+		"failureaccess": "1.0.2",
+		"mailgun-java": "1.1.6",
+		"commons-lang3": "3.12.0",
+		"gson": "2.10.1",
+		"guava": "33.0.0-jre",
+		"httpclient": "4.5.14",
+		"feign-form": "3.8.0",
+		"httpcore": "4.4.16"
+	},
+	"event_id": "39b8502d40a347b19f4c6f8ff659ea50",
+	"contexts": {
+		"runtime": {
+			"name": "Eclipse Adoptium",
+			"version": "21"
+		},
+		"trace": {
+			"trace_id": "53252ab9ada84fd4b513b4e8f0014fc0",
+			"span_id": "2d57069f9d4344da",
+			"op": "default",
+			"origin": "manual",
+			"data": {
+				"thread.name": "http-nio-8080-exec-3",
+				"thread.id": "27"
+			}
+		}
+	},
+	"sdk": {
+		"name": "sentry.java.log4j2",
+		"version": "8.18.0",
+		"packages": [
+			{
+				"name": "maven:io.sentry:sentry-log4j2",
+				"version": "8.18.0"
+			},
+			{
+				"name": "maven:io.sentry:sentry",
+				"version": "8.18.0"
+			},
+			{
+				"name": "maven",
+				"version": "unknown"
+			}
+		],
+		"integrations": [
+			"UncaughtExceptionHandler",
+			"ShutdownHook",
+			"Log4j"
+		]
+	},
+	"environment": "production",
+	"platform": "java",
+	"user": {},
+	"server_name": "hkpc.airplane-tailor.ts.net",
+	"breadcrumbs": [
+		{
+			"timestamp": "2025-08-10T08:06:40.474Z",
+			"message": "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",
+			"data": {},
+			"category": "auth.test",
+			"level": "debug"
+		},
+		{
+			"timestamp": "2025-08-10T08:06:40.476Z",
+			"message": "Trace level log",
+			"data": {},
+			"category": "auth.test",
+			"level": "debug"
+		},
+		{
+			"timestamp": "2025-08-10T08:06:40.476Z",
+			"message": "Debug level log",
+			"data": {},
+			"category": "auth.test",
+			"level": "debug"
+		},
+		{
+			"timestamp": "2025-08-10T08:06:40.476Z",
+			"message": "Info level log",
+			"data": {},
+			"category": "auth.test",
+			"level": "info"
+		},
+		{
+			"timestamp": "2025-08-10T08:06:40.514Z",
+			"message": "Warn level log",
+			"data": {},
+			"category": "auth.test",
+			"level": "warning"
+		}
+	],
+	"debug_meta": {
+		"images": [
+			{
+				"type": "jvm",
+				"debug_id": "0c1e4342-8aeb-4582-b3d4-38f50e270532"
+			}
+		]
+	},
+	"extra": {
+		"thread_name": "http-nio-8080-exec-3"
+	}
+}
+DEBUG: Envelope sent successfully.
+DEBUG: Envelope flushed
+DEBUG: Serializing object: {
+	"timestamp": "2025-08-10T08:06:40.519Z",
+	"message": {
+		"formatted": "Fatal level log",
+		"message": "Fatal level log"
+	},
+	"logger": "auth.test",
+	"threads": {
+		"values": [
+			{
+				"id": 27,
+				"priority": 5,
+				"name": "http-nio-8080-exec-3",
+				"state": "RUNNABLE",
+				"crashed": true,
+				"daemon": true,
+				"stacktrace": {
+					"frames": [
+						{
+							"filename": "Thread.java",
+							"function": "run",
+							"module": "java.lang.Thread",
+							"lineno": 1583,
+							"native": false
+						},
+						{
+							"filename": "TaskThread.java",
+							"function": "run",
+							"module": "org.apache.tomcat.util.threads.TaskThread$WrappingRunnable",
+							"lineno": 63,
+							"native": false
+						},
+						{
+							"filename": "ThreadPoolExecutor.java",
+							"function": "run",
+							"module": "org.apache.tomcat.util.threads.ThreadPoolExecutor$Worker",
+							"lineno": 636,
+							"native": false
+						},
+						{
+							"filename": "ThreadPoolExecutor.java",
+							"function": "runWorker",
+							"module": "org.apache.tomcat.util.threads.ThreadPoolExecutor",
+							"lineno": 1148,
+							"native": false
+						},
+						{
+							"filename": "SocketProcessorBase.java",
+							"function": "run",
+							"module": "org.apache.tomcat.util.net.SocketProcessorBase",
+							"lineno": 52,
+							"native": false
+						},
+						{
+							"filename": "NioEndpoint.java",
+							"function": "doRun",
+							"module": "org.apache.tomcat.util.net.NioEndpoint$SocketProcessor",
+							"lineno": 1746,
+							"native": false
+						},
+						{
+							"filename": "AbstractProtocol.java",
+							"function": "process",
+							"module": "org.apache.coyote.AbstractProtocol$ConnectionHandler",
+							"lineno": 904,
+							"native": false
+						},
+						{
+							"filename": "AbstractProcessorLight.java",
+							"function": "process",
+							"module": "org.apache.coyote.AbstractProcessorLight",
+							"lineno": 63,
+							"native": false
+						},
+						{
+							"filename": "Http11Processor.java",
+							"function": "service",
+							"module": "org.apache.coyote.http11.Http11Processor",
+							"lineno": 387,
+							"native": false
+						},
+						{
+							"filename": "CoyoteAdapter.java",
+							"function": "service",
+							"module": "org.apache.catalina.connector.CoyoteAdapter",
+							"lineno": 342,
+							"native": false
+						},
+						{
+							"filename": "StandardEngineValve.java",
+							"function": "invoke",
+							"module": "org.apache.catalina.core.StandardEngineValve",
+							"lineno": 74,
+							"native": false
+						},
+						{
+							"filename": "AbstractAccessLogValve.java",
+							"function": "invoke",
+							"module": "org.apache.catalina.valves.AbstractAccessLogValve",
+							"lineno": 663,
+							"native": false
+						},
+						{
+							"filename": "ErrorReportValve.java",
+							"function": "invoke",
+							"module": "org.apache.catalina.valves.ErrorReportValve",
+							"lineno": 93,
+							"native": false
+						},
+						{
+							"filename": "StandardHostValve.java",
+							"function": "invoke",
+							"module": "org.apache.catalina.core.StandardHostValve",
+							"lineno": 115,
+							"native": false
+						},
+						{
+							"filename": "AuthenticatorBase.java",
+							"function": "invoke",
+							"module": "org.apache.catalina.authenticator.AuthenticatorBase",
+							"lineno": 483,
+							"native": false
+						},
+						{
+							"filename": "StandardContextValve.java",
+							"function": "invoke",
+							"module": "org.apache.catalina.core.StandardContextValve",
+							"lineno": 90,
+							"native": false
+						},
+						{
+							"filename": "StandardWrapperValve.java",
+							"function": "invoke",
+							"module": "org.apache.catalina.core.StandardWrapperValve",
+							"lineno": 167,
+							"native": false
+						},
+						{
+							"filename": "ApplicationFilterChain.java",
+							"function": "doFilter",
+							"module": "org.apache.catalina.core.ApplicationFilterChain",
+							"lineno": 109,
+							"native": false
+						},
+						{
+							"filename": "CORSFilter.java",
+							"function": "doFilter",
+							"module": "auth.CORSFilter",
+							"lineno": 39,
+							"native": false
+						},
+						{
+							"filename": "ApplicationFilterChain.java",
+							"function": "doFilter",
+							"module": "org.apache.catalina.core.ApplicationFilterChain",
+							"lineno": 109,
+							"native": false
+						},
+						{
+							"filename": "WsFilter.java",
+							"function": "doFilter",
+							"module": "org.apache.tomcat.websocket.server.WsFilter",
+							"lineno": 51,
+							"native": false
+						},
+						{
+							"filename": "ApplicationFilterChain.java",
+							"function": "doFilter",
+							"module": "org.apache.catalina.core.ApplicationFilterChain",
+							"lineno": 130,
+							"native": false
+						},
+						{
+							"filename": "HttpServlet.java",
+							"function": "service",
+							"module": "jakarta.servlet.http.HttpServlet",
+							"lineno": 716,
+							"native": false
+						},
+						{
+							"filename": "HttpServlet.java",
+							"function": "service",
+							"module": "jakarta.servlet.http.HttpServlet",
+							"lineno": 619,
+							"native": false
+						},
+						{
+							"filename": "test.java",
+							"function": "doGet",
+							"module": "auth.test",
+							"lineno": 28,
+							"native": false
+						},
+						{
+							"filename": "AbstractLogger.java",
+							"function": "fatal",
+							"module": "org.apache.logging.log4j.spi.AbstractLogger",
+							"lineno": 1199,
+							"native": false
+						},
+						{
+							"filename": "AbstractLogger.java",
+							"function": "logIfEnabled",
+							"module": "org.apache.logging.log4j.spi.AbstractLogger",
+							"lineno": 2567,
+							"native": false
+						},
+						{
+							"filename": "AbstractLogger.java",
+							"function": "logMessage",
+							"module": "org.apache.logging.log4j.spi.AbstractLogger",
+							"lineno": 2620,
+							"native": false
+						},
+						{
+							"filename": "AbstractLogger.java",
+							"function": "logMessageSafely",
+							"module": "org.apache.logging.log4j.spi.AbstractLogger",
+							"lineno": 2841,
+							"native": false
+						},
+						{
+							"filename": "AbstractLogger.java",
+							"function": "logMessageTrackRecursion",
+							"module": "org.apache.logging.log4j.spi.AbstractLogger",
+							"lineno": 2859,
+							"native": false
+						},
+						{
+							"filename": "AbstractLogger.java",
+							"function": "tryLogMessage",
+							"module": "org.apache.logging.log4j.spi.AbstractLogger",
+							"lineno": 2906,
+							"native": false
+						},
+						{
+							"filename": "Logger.java",
+							"function": "log",
+							"module": "org.apache.logging.log4j.core.Logger",
+							"lineno": 169,
+							"native": false
+						},
+						{
+							"filename": "AwaitCompletionReliabilityStrategy.java",
+							"function": "log",
+							"module": "org.apache.logging.log4j.core.config.AwaitCompletionReliabilityStrategy",
+							"lineno": 92,
+							"native": false
+						},
+						{
+							"filename": "LoggerConfig.java",
+							"function": "log",
+							"module": "org.apache.logging.log4j.core.config.LoggerConfig",
+							"lineno": 575,
+							"native": false
+						},
+						{
+							"filename": "LoggerConfig.java",
+							"function": "log",
+							"module": "org.apache.logging.log4j.core.config.LoggerConfig",
+							"lineno": 639,
+							"native": false
+						},
+						{
+							"filename": "LoggerConfig.java",
+							"function": "processLogEvent",
+							"module": "org.apache.logging.log4j.core.config.LoggerConfig",
+							"lineno": 663,
+							"native": false
+						},
+						{
+							"filename": "LoggerConfig.java",
+							"function": "callAppenders",
+							"module": "org.apache.logging.log4j.core.config.LoggerConfig",
+							"lineno": 705,
+							"native": false
+						},
+						{
+							"filename": "AppenderControl.java",
+							"function": "callAppender",
+							"module": "org.apache.logging.log4j.core.config.AppenderControl",
+							"lineno": 88,
+							"native": false
+						},
+						{
+							"filename": "AppenderControl.java",
+							"function": "callAppenderPreventRecursion",
+							"module": "org.apache.logging.log4j.core.config.AppenderControl",
+							"lineno": 124,
+							"native": false
+						},
+						{
+							"filename": "AppenderControl.java",
+							"function": "callAppender0",
+							"module": "org.apache.logging.log4j.core.config.AppenderControl",
+							"lineno": 133,
+							"native": false
+						},
+						{
+							"filename": "AppenderControl.java",
+							"function": "tryCallAppender",
+							"module": "org.apache.logging.log4j.core.config.AppenderControl",
+							"lineno": 160,
+							"native": false
+						},
+						{
+							"filename": "Thread.java",
+							"function": "getStackTrace",
+							"module": "java.lang.Thread",
+							"lineno": 2450,
+							"native": false
+						}
+					],
+					"snapshot": true
+				}
+			}
+		]
+	},
+	"level": "fatal",
+	"fingerprint": [],
+	"modules": {
+		"google-api-client": "2.4.0",
+		"jackson-annotations": "2.14.2",
+		"google-http-client": "1.44.1",
+		"opencensus-contrib-http-util": "0.31.1",
+		"google-auth-library-credentials": "1.23.0",
+		"jackson-core": "2.14.2",
+		"jackson-datatype-jdk8": "2.14.2",
+		"ecj": "4.32",
+		"log4j-api": "2.23.1",
+		"google-auth-library-oauth2-http": "1.23.0",
+		"j2objc-annotations": "2.8",
+		"slf4j-api": "2.0.5",
+		"checker-qual": "3.41.0",
+		"commons-codec": "1.16.1",
+		"google-oauth-client": "1.35.0",
+		"jackson-module-parameter-names": "2.14.2",
+		"sentry-log4j2": "8.18.0",
+		"feign-jackson": "12.2",
+		"listenablefuture": "9999.0-empty-to-avoid-conflict-with-guava",
+		"commons-collections4": "4.4",
+		"commons-logging": "1.2",
+		"google-http-client-gson": "1.44.1",
+		"log4j-core": "2.23.1",
+		"sentry": "8.18.0",
+		"opencensus-api": "0.31.1",
+		"google-http-client-apache-v2": "1.44.1",
+		"jackson-datatype-jsr310": "2.14.2",
+		"feign-core": "12.2",
+		"jsr305": "3.0.2",
+		"jackson-databind": "2.14.2",
+		"auto-value-annotations": "1.10.4",
+		"grpc-api": "1.60.1",
+		"jakartaee-migration": "1.0.8-shaded",
+		"mysql-connector-j": "9.3.0",
+		"grpc-context": "1.60.1",
+		"error_prone_annotations": "2.18.0",
+		"failureaccess": "1.0.2",
+		"mailgun-java": "1.1.6",
+		"commons-lang3": "3.12.0",
+		"gson": "2.10.1",
+		"guava": "33.0.0-jre",
+		"httpclient": "4.5.14",
+		"feign-form": "3.8.0",
+		"httpcore": "4.4.16"
+	},
+	"event_id": "50f8d9acec364abcbdbaeaf365b07800",
+	"contexts": {
+		"runtime": {
+			"name": "Eclipse Adoptium",
+			"version": "21"
+		},
+		"trace": {
+			"trace_id": "53252ab9ada84fd4b513b4e8f0014fc0",
+			"span_id": "2d57069f9d4344da",
+			"op": "default",
+			"origin": "manual",
+			"data": {
+				"thread.name": "http-nio-8080-exec-3",
+				"thread.id": "27"
+			}
+		}
+	},
+	"sdk": {
+		"name": "sentry.java.log4j2",
+		"version": "8.18.0",
+		"packages": [
+			{
+				"name": "maven:io.sentry:sentry-log4j2",
+				"version": "8.18.0"
+			},
+			{
+				"name": "maven:io.sentry:sentry",
+				"version": "8.18.0"
+			},
+			{
+				"name": "maven",
+				"version": "unknown"
+			}
+		],
+		"integrations": [
+			"UncaughtExceptionHandler",
+			"ShutdownHook",
+			"Log4j"
+		]
+	},
+	"environment": "production",
+	"platform": "java",
+	"user": {},
+	"server_name": "hkpc.airplane-tailor.ts.net",
+	"breadcrumbs": [
+		{
+			"timestamp": "2025-08-10T08:06:40.474Z",
+			"message": "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",
+			"data": {},
+			"category": "auth.test",
+			"level": "debug"
+		},
+		{
+			"timestamp": "2025-08-10T08:06:40.476Z",
+			"message": "Trace level log",
+			"data": {},
+			"category": "auth.test",
+			"level": "debug"
+		},
+		{
+			"timestamp": "2025-08-10T08:06:40.476Z",
+			"message": "Debug level log",
+			"data": {},
+			"category": "auth.test",
+			"level": "debug"
+		},
+		{
+			"timestamp": "2025-08-10T08:06:40.476Z",
+			"message": "Info level log",
+			"data": {},
+			"category": "auth.test",
+			"level": "info"
+		},
+		{
+			"timestamp": "2025-08-10T08:06:40.514Z",
+			"message": "Warn level log",
+			"data": {},
+			"category": "auth.test",
+			"level": "warning"
+		},
+		{
+			"timestamp": "2025-08-10T08:06:40.517Z",
+			"message": "Error level log",
+			"data": {},
+			"category": "auth.test",
+			"level": "error"
+		}
+	],
+	"debug_meta": {
+		"images": [
+			{
+				"type": "jvm",
+				"debug_id": "0c1e4342-8aeb-4582-b3d4-38f50e270532"
+			}
+		]
+	},
+	"extra": {
+		"thread_name": "http-nio-8080-exec-3"
+	}
+}
+DEBUG: Envelope sent successfully.
+DEBUG: Envelope flushed
+DEBUG: Serializing object: {
+	"timestamp": "2025-08-10T08:06:40.521Z",
+	"exception": {
+		"values": [
+			{
+				"type": "Exception",
+				"value": "This is a test.",
+				"module": "java.lang",
+				"thread_id": 27,
+				"stacktrace": {
+					"frames": [
+						{
+							"filename": "Thread.java",
+							"function": "run",
+							"module": "java.lang.Thread",
+							"lineno": 1583,
+							"native": false
+						},
+						{
+							"filename": "TaskThread.java",
+							"function": "run",
+							"module": "org.apache.tomcat.util.threads.TaskThread$WrappingRunnable",
+							"lineno": 63,
+							"native": false
+						},
+						{
+							"filename": "ThreadPoolExecutor.java",
+							"function": "run",
+							"module": "org.apache.tomcat.util.threads.ThreadPoolExecutor$Worker",
+							"lineno": 636,
+							"native": false
+						},
+						{
+							"filename": "ThreadPoolExecutor.java",
+							"function": "runWorker",
+							"module": "org.apache.tomcat.util.threads.ThreadPoolExecutor",
+							"lineno": 1148,
+							"native": false
+						},
+						{
+							"filename": "SocketProcessorBase.java",
+							"function": "run",
+							"module": "org.apache.tomcat.util.net.SocketProcessorBase",
+							"lineno": 52,
+							"native": false
+						},
+						{
+							"filename": "NioEndpoint.java",
+							"function": "doRun",
+							"module": "org.apache.tomcat.util.net.NioEndpoint$SocketProcessor",
+							"lineno": 1746,
+							"native": false
+						},
+						{
+							"filename": "AbstractProtocol.java",
+							"function": "process",
+							"module": "org.apache.coyote.AbstractProtocol$ConnectionHandler",
+							"lineno": 904,
+							"native": false
+						},
+						{
+							"filename": "AbstractProcessorLight.java",
+							"function": "process",
+							"module": "org.apache.coyote.AbstractProcessorLight",
+							"lineno": 63,
+							"native": false
+						},
+						{
+							"filename": "Http11Processor.java",
+							"function": "service",
+							"module": "org.apache.coyote.http11.Http11Processor",
+							"lineno": 387,
+							"native": false
+						},
+						{
+							"filename": "CoyoteAdapter.java",
+							"function": "service",
+							"module": "org.apache.catalina.connector.CoyoteAdapter",
+							"lineno": 342,
+							"native": false
+						},
+						{
+							"filename": "StandardEngineValve.java",
+							"function": "invoke",
+							"module": "org.apache.catalina.core.StandardEngineValve",
+							"lineno": 74,
+							"native": false
+						},
+						{
+							"filename": "AbstractAccessLogValve.java",
+							"function": "invoke",
+							"module": "org.apache.catalina.valves.AbstractAccessLogValve",
+							"lineno": 663,
+							"native": false
+						},
+						{
+							"filename": "ErrorReportValve.java",
+							"function": "invoke",
+							"module": "org.apache.catalina.valves.ErrorReportValve",
+							"lineno": 93,
+							"native": false
+						},
+						{
+							"filename": "StandardHostValve.java",
+							"function": "invoke",
+							"module": "org.apache.catalina.core.StandardHostValve",
+							"lineno": 115,
+							"native": false
+						},
+						{
+							"filename": "AuthenticatorBase.java",
+							"function": "invoke",
+							"module": "org.apache.catalina.authenticator.AuthenticatorBase",
+							"lineno": 483,
+							"native": false
+						},
+						{
+							"filename": "StandardContextValve.java",
+							"function": "invoke",
+							"module": "org.apache.catalina.core.StandardContextValve",
+							"lineno": 90,
+							"native": false
+						},
+						{
+							"filename": "StandardWrapperValve.java",
+							"function": "invoke",
+							"module": "org.apache.catalina.core.StandardWrapperValve",
+							"lineno": 167,
+							"native": false
+						},
+						{
+							"filename": "ApplicationFilterChain.java",
+							"function": "doFilter",
+							"module": "org.apache.catalina.core.ApplicationFilterChain",
+							"lineno": 109,
+							"native": false
+						},
+						{
+							"filename": "CORSFilter.java",
+							"function": "doFilter",
+							"module": "auth.CORSFilter",
+							"lineno": 39,
+							"native": false
+						},
+						{
+							"filename": "ApplicationFilterChain.java",
+							"function": "doFilter",
+							"module": "org.apache.catalina.core.ApplicationFilterChain",
+							"lineno": 109,
+							"native": false
+						},
+						{
+							"filename": "WsFilter.java",
+							"function": "doFilter",
+							"module": "org.apache.tomcat.websocket.server.WsFilter",
+							"lineno": 51,
+							"native": false
+						},
+						{
+							"filename": "ApplicationFilterChain.java",
+							"function": "doFilter",
+							"module": "org.apache.catalina.core.ApplicationFilterChain",
+							"lineno": 130,
+							"native": false
+						},
+						{
+							"filename": "HttpServlet.java",
+							"function": "service",
+							"module": "jakarta.servlet.http.HttpServlet",
+							"lineno": 716,
+							"native": false
+						},
+						{
+							"filename": "HttpServlet.java",
+							"function": "service",
+							"module": "jakarta.servlet.http.HttpServlet",
+							"lineno": 619,
+							"native": false
+						},
+						{
+							"filename": "test.java",
+							"function": "doGet",
+							"module": "auth.test",
+							"lineno": 30,
+							"native": false
+						}
+					]
+				},
+				"mechanism": {
+					"type": "chained",
+					"exception_id": 0
+				}
+			}
+		]
+	},
+	"fingerprint": [],
+	"modules": {
+		"google-api-client": "2.4.0",
+		"jackson-annotations": "2.14.2",
+		"google-http-client": "1.44.1",
+		"opencensus-contrib-http-util": "0.31.1",
+		"google-auth-library-credentials": "1.23.0",
+		"jackson-core": "2.14.2",
+		"jackson-datatype-jdk8": "2.14.2",
+		"ecj": "4.32",
+		"log4j-api": "2.23.1",
+		"google-auth-library-oauth2-http": "1.23.0",
+		"j2objc-annotations": "2.8",
+		"slf4j-api": "2.0.5",
+		"checker-qual": "3.41.0",
+		"commons-codec": "1.16.1",
+		"google-oauth-client": "1.35.0",
+		"jackson-module-parameter-names": "2.14.2",
+		"sentry-log4j2": "8.18.0",
+		"feign-jackson": "12.2",
+		"listenablefuture": "9999.0-empty-to-avoid-conflict-with-guava",
+		"commons-collections4": "4.4",
+		"commons-logging": "1.2",
+		"google-http-client-gson": "1.44.1",
+		"log4j-core": "2.23.1",
+		"sentry": "8.18.0",
+		"opencensus-api": "0.31.1",
+		"google-http-client-apache-v2": "1.44.1",
+		"jackson-datatype-jsr310": "2.14.2",
+		"feign-core": "12.2",
+		"jsr305": "3.0.2",
+		"jackson-databind": "2.14.2",
+		"auto-value-annotations": "1.10.4",
+		"grpc-api": "1.60.1",
+		"jakartaee-migration": "1.0.8-shaded",
+		"mysql-connector-j": "9.3.0",
+		"grpc-context": "1.60.1",
+		"error_prone_annotations": "2.18.0",
+		"failureaccess": "1.0.2",
+		"mailgun-java": "1.1.6",
+		"commons-lang3": "3.12.0",
+		"gson": "2.10.1",
+		"guava": "33.0.0-jre",
+		"httpclient": "4.5.14",
+		"feign-form": "3.8.0",
+		"httpcore": "4.4.16"
+	},
+	"event_id": "8fc5201ef4e34108a4162de4b817834b",
+	"contexts": {
+		"runtime": {
+			"name": "Eclipse Adoptium",
+			"version": "21"
+		},
+		"trace": {
+			"trace_id": "53252ab9ada84fd4b513b4e8f0014fc0",
+			"span_id": "2d57069f9d4344da",
+			"op": "default",
+			"origin": "manual",
+			"data": {
+				"thread.name": "http-nio-8080-exec-3",
+				"thread.id": "27"
+			}
+		}
+	},
+	"sdk": {
+		"name": "sentry.java.log4j2",
+		"version": "8.18.0",
+		"packages": [
+			{
+				"name": "maven:io.sentry:sentry-log4j2",
+				"version": "8.18.0"
+			},
+			{
+				"name": "maven:io.sentry:sentry",
+				"version": "8.18.0"
+			},
+			{
+				"name": "maven",
+				"version": "unknown"
+			}
+		],
+		"integrations": [
+			"UncaughtExceptionHandler",
+			"ShutdownHook",
+			"Log4j"
+		]
+	},
+	"environment": "production",
+	"platform": "java",
+	"user": {},
+	"server_name": "hkpc.airplane-tailor.ts.net",
+	"breadcrumbs": [
+		{
+			"timestamp": "2025-08-10T08:06:40.474Z",
+			"message": "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",
+			"data": {},
+			"category": "auth.test",
+			"level": "debug"
+		},
+		{
+			"timestamp": "2025-08-10T08:06:40.476Z",
+			"message": "Trace level log",
+			"data": {},
+			"category": "auth.test",
+			"level": "debug"
+		},
+		{
+			"timestamp": "2025-08-10T08:06:40.476Z",
+			"message": "Debug level log",
+			"data": {},
+			"category": "auth.test",
+			"level": "debug"
+		},
+		{
+			"timestamp": "2025-08-10T08:06:40.476Z",
+			"message": "Info level log",
+			"data": {},
+			"category": "auth.test",
+			"level": "info"
+		},
+		{
+			"timestamp": "2025-08-10T08:06:40.514Z",
+			"message": "Warn level log",
+			"data": {},
+			"category": "auth.test",
+			"level": "warning"
+		},
+		{
+			"timestamp": "2025-08-10T08:06:40.517Z",
+			"message": "Error level log",
+			"data": {},
+			"category": "auth.test",
+			"level": "error"
+		},
+		{
+			"timestamp": "2025-08-10T08:06:40.520Z",
+			"message": "Fatal level log",
+			"data": {},
+			"category": "auth.test",
+			"level": "fatal"
+		}
+	],
+	"debug_meta": {
+		"images": [
+			{
+				"type": "jvm",
+				"debug_id": "0c1e4342-8aeb-4582-b3d4-38f50e270532"
+			}
+		]
+	}
+}
+DEBUG: Envelope sent successfully.
+DEBUG: Envelope flushed
+DEBUG: Serializing object: {
+	"items": [
+		{
+			"timestamp": 1754813200.464632,
+			"trace_id": "53252ab9ada84fd4b513b4e8f0014fc0",
+			"body": "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",
+			"level": "trace",
+			"severity_number": 1,
+			"attributes": {
+				"sentry.message.template": {
+					"type": "string",
+					"value": "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"
+				},
+				"server.address": {
+					"type": "string",
+					"value": "hkpc.airplane-tailor.ts.net"
+				},
+				"sentry.sdk.name": {
+					"type": "string",
+					"value": "sentry.java.log4j2"
+				},
+				"sentry.environment": {
+					"type": "string",
+					"value": "production"
+				},
+				"sentry.sdk.version": {
+					"type": "string",
+					"value": "8.18.0"
+				},
+				"sentry.trace.parent_span_id": {
+					"type": "string",
+					"value": "2d57069f9d4344da"
+				}
+			}
+		},
+		{
+			"timestamp": 1754813200.475969,
+			"trace_id": "53252ab9ada84fd4b513b4e8f0014fc0",
+			"body": "Trace level log",
+			"level": "trace",
+			"severity_number": 1,
+			"attributes": {
+				"sentry.message.template": {
+					"type": "string",
+					"value": "Trace level log"
+				},
+				"server.address": {
+					"type": "string",
+					"value": "hkpc.airplane-tailor.ts.net"
+				},
+				"sentry.sdk.name": {
+					"type": "string",
+					"value": "sentry.java.log4j2"
+				},
+				"sentry.environment": {
+					"type": "string",
+					"value": "production"
+				},
+				"sentry.sdk.version": {
+					"type": "string",
+					"value": "8.18.0"
+				},
+				"sentry.trace.parent_span_id": {
+					"type": "string",
+					"value": "2d57069f9d4344da"
+				}
+			}
+		},
+		{
+			"timestamp": 1754813200.476307,
+			"trace_id": "53252ab9ada84fd4b513b4e8f0014fc0",
+			"body": "Debug level log",
+			"level": "debug",
+			"severity_number": 5,
+			"attributes": {
+				"sentry.message.template": {
+					"type": "string",
+					"value": "Debug level log"
+				},
+				"server.address": {
+					"type": "string",
+					"value": "hkpc.airplane-tailor.ts.net"
+				},
+				"sentry.sdk.name": {
+					"type": "string",
+					"value": "sentry.java.log4j2"
+				},
+				"sentry.environment": {
+					"type": "string",
+					"value": "production"
+				},
+				"sentry.sdk.version": {
+					"type": "string",
+					"value": "8.18.0"
+				},
+				"sentry.trace.parent_span_id": {
+					"type": "string",
+					"value": "2d57069f9d4344da"
+				}
+			}
+		},
+		{
+			"timestamp": 1754813200.476582,
+			"trace_id": "53252ab9ada84fd4b513b4e8f0014fc0",
+			"body": "Info level log",
+			"level": "info",
+			"severity_number": 9,
+			"attributes": {
+				"sentry.message.template": {
+					"type": "string",
+					"value": "Info level log"
+				},
+				"server.address": {
+					"type": "string",
+					"value": "hkpc.airplane-tailor.ts.net"
+				},
+				"sentry.sdk.name": {
+					"type": "string",
+					"value": "sentry.java.log4j2"
+				},
+				"sentry.environment": {
+					"type": "string",
+					"value": "production"
+				},
+				"sentry.sdk.version": {
+					"type": "string",
+					"value": "8.18.0"
+				},
+				"sentry.trace.parent_span_id": {
+					"type": "string",
+					"value": "2d57069f9d4344da"
+				}
+			}
+		},
+		{
+			"timestamp": 1754813200.476817,
+			"trace_id": "53252ab9ada84fd4b513b4e8f0014fc0",
+			"body": "Warn level log",
+			"level": "warn",
+			"severity_number": 13,
+			"attributes": {
+				"sentry.message.template": {
+					"type": "string",
+					"value": "Warn level log"
+				},
+				"server.address": {
+					"type": "string",
+					"value": "hkpc.airplane-tailor.ts.net"
+				},
+				"sentry.sdk.name": {
+					"type": "string",
+					"value": "sentry.java.log4j2"
+				},
+				"sentry.environment": {
+					"type": "string",
+					"value": "production"
+				},
+				"sentry.sdk.version": {
+					"type": "string",
+					"value": "8.18.0"
+				},
+				"sentry.trace.parent_span_id": {
+					"type": "string",
+					"value": "2d57069f9d4344da"
+				}
+			}
+		},
+		{
+			"timestamp": 1754813200.515310,
+			"trace_id": "53252ab9ada84fd4b513b4e8f0014fc0",
+			"body": "Error level log",
+			"level": "error",
+			"severity_number": 17,
+			"attributes": {
+				"sentry.message.template": {
+					"type": "string",
+					"value": "Error level log"
+				},
+				"server.address": {
+					"type": "string",
+					"value": "hkpc.airplane-tailor.ts.net"
+				},
+				"sentry.sdk.name": {
+					"type": "string",
+					"value": "sentry.java.log4j2"
+				},
+				"sentry.environment": {
+					"type": "string",
+					"value": "production"
+				},
+				"sentry.sdk.version": {
+					"type": "string",
+					"value": "8.18.0"
+				},
+				"sentry.trace.parent_span_id": {
+					"type": "string",
+					"value": "2d57069f9d4344da"
+				}
+			}
+		},
+		{
+			"timestamp": 1754813200.519548,
+			"trace_id": "53252ab9ada84fd4b513b4e8f0014fc0",
+			"body": "Fatal level log",
+			"level": "fatal",
+			"severity_number": 21,
+			"attributes": {
+				"sentry.message.template": {
+					"type": "string",
+					"value": "Fatal level log"
+				},
+				"server.address": {
+					"type": "string",
+					"value": "hkpc.airplane-tailor.ts.net"
+				},
+				"sentry.sdk.name": {
+					"type": "string",
+					"value": "sentry.java.log4j2"
+				},
+				"sentry.environment": {
+					"type": "string",
+					"value": "production"
+				},
+				"sentry.sdk.version": {
+					"type": "string",
+					"value": "8.18.0"
+				},
+				"sentry.trace.parent_span_id": {
+					"type": "string",
+					"value": "2d57069f9d4344da"
+				}
+			}
+		}
+	]
+}
+DEBUG: Envelope sent successfully.
+DEBUG: Envelope flushed

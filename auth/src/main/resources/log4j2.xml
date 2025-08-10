@@ -1,54 +1,20 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<Configuration status="warn">
-	<Properties>
-		<!-- You can use ${logDir} in paths now -->
-		<Property name="logDir">~/logs/auth</Property>
-		<Property name="logPattern">[%d{dd/MM/yyyy HH:mm:ss.SSS}] %5p %c{1} - %msg%n</Property>
-	</Properties>
-
+<Configuration status="warn"
+	packages="org.apache.logging.log4j.core,io.sentry.log4j2">
 	<Appenders>
-		<!-- 🔹 Color-coded console output (only works in supported terminals) -->
 		<Console name="Console" target="SYSTEM_OUT">
-			<PatternLayout disableAnsi="false" noConsoleNoAnsi="true"
-				pattern="%highlight{${logPattern}}" />
-
+			<PatternLayout
+				pattern="%d{HH:mm:ss.SSS} [%t] %-5level %logger{36} - %msg%n" />
 		</Console>
-
-		<!-- 🔹 All logs in a single rotating file -->
-		<RollingFile name="RollingFile"
-			fileName="${logDir}/auth.log"
-			filePattern="${logDir}/auth-%d{yyyy-MM-dd}-%i.log.gz">
-			<PatternLayout pattern="${logPattern}" />
-			<Policies>
-				<TimeBasedTriggeringPolicy interval="1" />
-				<SizeBasedTriggeringPolicy size="10MB" />
-			</Policies>
-			<DefaultRolloverStrategy max="7" />
-		</RollingFile>
-
-		<!-- 🔹 Only errors and fatal logs go here -->
-		<RollingFile name="ErrorFile"
-			fileName="${logDir}/error.log"
-			filePattern="${logDir}/error-%d{yyyy-MM-dd}-%i.log.gz">
-			<PatternLayout pattern="${logPattern}" />
-			<Filters>
-				<ThresholdFilter level="error" onMatch="ACCEPT" onMismatch="DENY" />
-			</Filters>
-			<Policies>
-				<TimeBasedTriggeringPolicy interval="1" />
-				<SizeBasedTriggeringPolicy size="5MB" />
-			</Policies>
-			<DefaultRolloverStrategy max="5" />
-		</RollingFile>
+		<Sentry name="Sentry"
+			dsn="https://6f8c6e7ce86811df962456b9e68d1834@o4509022198431744.ingest.de.sentry.io/4509818434551888"
+			minimumBreadcrumbLevel="TRACE" minimumEventLevel="WARN"
+			minimumLevel="TRACE" />
 	</Appenders>
-
 	<Loggers>
-
-		<!-- 🔹 Root logger catches everything else -->
 		<Root level="trace">
+			<AppenderRef ref="Sentry" />
 			<AppenderRef ref="Console" />
-			<AppenderRef ref="RollingFile" />
-			<AppenderRef ref="ErrorFile" />
 		</Root>
 	</Loggers>
 </Configuration>

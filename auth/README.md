@@ -10,7 +10,7 @@ This is a comprehensive Java servlet-based authentication service built with Jak
 
 1. [Architecture](#architecture)
 2. [Database Schema](#database-schema)
-3. [Authentication & Security](#authentication--security)
+3. [Authentication & Security](#authentication-and-security)
 4. [API Endpoints](#api-endpoints)
 5. [Data Transfer Objects (DTOs)](#data-transfer-objects-dtos)
 6. [Error Handling](#error-handling)
@@ -70,6 +70,7 @@ src/main/java/
     └── ...                 # Other utilities
 ```
 
+
 ## Database Schema
 
 ### Users Table
@@ -117,7 +118,8 @@ CREATE TABLE email_tokens (
 );
 ```
 
-## Authentication & Security
+
+## Authentication and Security
 
 ### Session Management
 - **Cookie-based sessions**: Uses signed JWT-like tokens stored in HTTP-only cookies

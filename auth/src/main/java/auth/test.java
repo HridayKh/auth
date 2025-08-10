@@ -19,14 +19,14 @@ public class test extends HttpServlet {
 
 	@Override
 	protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws IOException, ServletException {
-		log.debug(System.getenv("SENTRY_AUTH_TOKEN"));
 		log.trace("Trace level log");
 		log.debug("Debug level log");
 		log.info("Info level log");
 		log.warn("Warn level log");
 		log.error("Error level log");
+		log.fatal("Fatal level log");
 		try {
-			throw new Exception("This is a test.");
+			throw new Exception("a This is a test.");
 		} catch (Exception e) {
 			Sentry.captureException(e);
 		}
