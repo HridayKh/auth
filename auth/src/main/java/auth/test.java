@@ -5,6 +5,7 @@ import java.io.IOException;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
+import io.sentry.Sentry;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
@@ -18,10 +19,16 @@ public class test extends HttpServlet {
 
 	@Override
 	protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws IOException, ServletException {
+		log.debug(System.getenv("SENTRY_AUTH_TOKEN"));
 		log.trace("Trace level log");
 		log.debug("Debug level log");
 		log.info("Info level log");
 		log.warn("Warn level log");
 		log.error("Error level log");
+		try {
+			throw new Exception("This is a test.");
+		} catch (Exception e) {
+			Sentry.captureException(e);
+		}
 	}
 }
