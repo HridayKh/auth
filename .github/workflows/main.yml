@@ -35,6 +35,9 @@ jobs:
           distribution: 'temurin'
           cache: maven
 
+      - name: Set up sentry-cli
+        uses: matbour/setup-sentry-cli@v1
+
       - name: Build with Maven
         run: |
           cd auth
