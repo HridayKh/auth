@@ -21,8 +21,8 @@ import utils.HttpUtil;
 @WebFilter("/v1/*")
 public class ApiKeyFilter implements Filter {
 
-	private static final String API_KEY_HEADER = "X-Hriday-Tech-Auth-Key";
-	private static final String CLIENT_ID_HEADER = "X-Hriday-Tech-Client-ID";
+	private static final String API_KEY_HEADER = "X-HridayKh-In-Auth-Key";
+	private static final String CLIENT_ID_HEADER = "X-HridayKh-In-Client-ID";
 
 	private final PathAccessControl pathAccessControl = new PathAccessControl();
 	private final AuthenticationService authService = new AuthenticationService();

@@ -52,7 +52,7 @@ public class ReVerifyHandler extends HttpServlet {
 			}
 
 			String verifyLink = dbAuth.BACK_HOST + "/v1/verify?token=" + newToken + "&redirect=" + redir;
-			MailUtil.sendMail(email, "Your new Hriday.Tech email verification link",
+			MailUtil.sendMail(email, "Your new HridayKh.in email verification link",
 					MailUtil.templateVerifyMail(verifyLink));
 
 			HttpUtil.sendJson(resp, HttpServletResponse.SC_OK, "success", "A new verification email has been sent.");

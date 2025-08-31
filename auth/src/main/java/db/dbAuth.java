@@ -5,7 +5,7 @@ import java.sql.DriverManager;
 import java.sql.SQLException;
 
 public class dbAuth {
-	public final static String DB_URL = "jdbc:mysql://db.hriday.tech:3306/Auth_Db";
+	public final static String DB_URL = "jdbc:mysql://db.hridaykh.in:3306/Auth_Db";
 	public final static String DB_USER = System.getenv("AUTH_DB_USER");
 	public final static String DB_PASSWORD = System.getenv("AUTH_DB_PASSWORD");
 	

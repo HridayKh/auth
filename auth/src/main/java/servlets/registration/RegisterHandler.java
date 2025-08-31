@@ -69,7 +69,7 @@ public class RegisterHandler {
 			}
 
 			String verifyLink = dbAuth.BACK_HOST + ApiConstants.VERIFY_URL + "?token=" + token + "&redirect=" + redir;
-			MailUtil.sendMail(email, "Verify your E-Mail for Hriday.Tech", MailUtil.templateVerifyMail(verifyLink));
+			MailUtil.sendMail(email, "Verify your E-Mail for HridayKh.in", MailUtil.templateVerifyMail(verifyLink));
 
 			conn.commit();
 			HttpUtil.sendJson(resp, HttpServletResponse.SC_CREATED, "success",

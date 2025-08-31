@@ -1,4 +1,4 @@
-# Hriday.Tech Authentication Service API Documentation
+# HridayKh.in Authentication Service API Documentation
 
 *Last Updated: July 30, 2025*
 
@@ -145,8 +145,8 @@ The service implements a completely redesigned multi-tier authentication system 
 - `FRONTEND_CLIENT_IDS`: Comma-separated frontend client identifiers
 
 **Headers:**
-- `X-Hriday-Tech-Auth-Key`: Secret API key for backend/admin operations
-- `X-Hriday-Tech-Client-ID`: Public client identifier for frontend requests
+- `X-HridayKh-In-Auth-Key`: Secret API key for backend/admin operations
+- `X-HridayKh-In-Client-ID`: Public client identifier for frontend requests
 
 #### Path-based Access Control
 
@@ -169,19 +169,19 @@ The system automatically determines required access level based on request paths
 
 **FrontendAuthStrategy**: Validates client ID
 ```java
-// Requires: X-Hriday-Tech-Client-ID header
+// Requires: X-HridayKh-In-Client-ID header
 // Validates against FRONTEND_CLIENT_IDS environment variable
 ```
 
 **BackendAuthStrategy**: Validates backend API keys
 ```java
-// Requires: X-Hriday-Tech-Auth-Key header
+// Requires: X-HridayKh-In-Auth-Key header
 // Validates against BACKEND_API_KEYS environment variable
 ```
 
 **AdminAuthStrategy**: Validates admin API keys
 ```java
-// Requires: X-Hriday-Tech-Auth-Key header
+// Requires: X-HridayKh-In-Auth-Key header
 // Validates against ADMIN_API_KEYS environment variable
 ```
 
@@ -204,7 +204,7 @@ All API requests are handled through the centralized `ApiServlet` at `/v1/*` wit
 **Access Level**: FRONTEND
 
 **Headers**: 
-- `X-Hriday-Tech-Client-ID`: Required frontend client identifier
+- `X-HridayKh-In-Client-ID`: Required frontend client identifier
 
 **Request Body**:
 ```json
@@ -235,7 +235,7 @@ All API requests are handled through the centralized `ApiServlet` at `/v1/*` wit
 **Access Level**: FRONTEND
 
 **Headers**: 
-- `X-Hriday-Tech-Client-ID`: Required frontend client identifier
+- `X-HridayKh-In-Client-ID`: Required frontend client identifier
 
 **Response Success (200)**:
 ```json
@@ -253,7 +253,7 @@ All API requests are handled through the centralized `ApiServlet` at `/v1/*` wit
 **Access Level**: FRONTEND
 
 **Headers**: 
-- `X-Hriday-Tech-Client-ID`: Required frontend client identifier
+- `X-HridayKh-In-Client-ID`: Required frontend client identifier
 
 ### Registration Endpoints
 
@@ -263,7 +263,7 @@ All API requests are handled through the centralized `ApiServlet` at `/v1/*` wit
 **Access Level**: FRONTEND
 
 **Headers**: 
-- `X-Hriday-Tech-Client-ID`: Required frontend client identifier
+- `X-HridayKh-In-Client-ID`: Required frontend client identifier
 
 **Request Body**:
 ```json
@@ -295,7 +295,7 @@ All API requests are handled through the centralized `ApiServlet` at `/v1/*` wit
 **Access Level**: FRONTEND
 
 **Headers**: 
-- `X-Hriday-Tech-Client-ID`: Required frontend client identifier
+- `X-HridayKh-In-Client-ID`: Required frontend client identifier
 
 **Request Body**:
 ```json
@@ -321,7 +321,7 @@ All API requests are handled through the centralized `ApiServlet` at `/v1/*` wit
 **Access Level**: FRONTEND
 
 **Headers**: 
-- `X-Hriday-Tech-Client-ID`: Required frontend client identifier
+- `X-HridayKh-In-Client-ID`: Required frontend client identifier
 
 **Query Parameters**:
 - `token`: Email verification token
@@ -339,7 +339,7 @@ All API requests are handled through the centralized `ApiServlet` at `/v1/*` wit
 **Authentication**: Required (session cookie)
 
 **Headers**: 
-- `X-Hriday-Tech-Client-ID`: Required frontend client identifier
+- `X-HridayKh-In-Client-ID`: Required frontend client identifier
 
 **Response Success (200)**:
 ```json
@@ -367,7 +367,7 @@ All API requests are handled through the centralized `ApiServlet` at `/v1/*` wit
 **Authentication**: Required (session cookie)
 
 **Headers**: 
-- `X-Hriday-Tech-Client-ID`: Required frontend client identifier
+- `X-HridayKh-In-Client-ID`: Required frontend client identifier
 
 **Request Body** (all fields optional):
 ```json
@@ -401,7 +401,7 @@ All API requests are handled through the centralized `ApiServlet` at `/v1/*` wit
 **Authentication**: Required (Basic Auth + session cookie)
 
 **Headers**: 
-- `X-Hriday-Tech-Auth-Key`: Required backend API key
+- `X-HridayKh-In-Auth-Key`: Required backend API key
 
 **Special Requirements**: 
 - Requires `auth` header with hashed database password
@@ -425,7 +425,7 @@ All API requests are handled through the centralized `ApiServlet` at `/v1/*` wit
 **Authentication**: Required (session cookie)
 
 **Headers**: 
-- `X-Hriday-Tech-Auth-Key`: Required backend API key
+- `X-HridayKh-In-Auth-Key`: Required backend API key
 
 **Request Body**:
 ```json
@@ -466,7 +466,7 @@ All API requests are handled through the centralized `ApiServlet` at `/v1/*` wit
 **Authentication**: Required (session cookie)
 
 **Headers**: 
-- `X-Hriday-Tech-Client-ID`: Required frontend client identifier
+- `X-HridayKh-In-Client-ID`: Required frontend client identifier
 
 **Path Parameters**:
 - `userId`: User UUID (must match authenticated user)
@@ -499,7 +499,7 @@ All API requests are handled through the centralized `ApiServlet` at `/v1/*` wit
 **Authentication**: Required (session cookie)
 
 **Headers**: 
-- `X-Hriday-Tech-Client-ID`: Required frontend client identifier
+- `X-HridayKh-In-Client-ID`: Required frontend client identifier
 
 **Path Parameters**:
 - `userId`: User UUID (must match authenticated user)
@@ -530,7 +530,7 @@ All API requests are handled through the centralized `ApiServlet` at `/v1/*` wit
 **Authentication**: Required (session cookie)
 
 **Headers**: 
-- `X-Hriday-Tech-Client-ID`: Required frontend client identifier
+- `X-HridayKh-In-Client-ID`: Required frontend client identifier
 
 **Path Parameters**:
 - `userId`: User UUID (must match authenticated user)
@@ -694,7 +694,7 @@ FRONTEND_CLIENT_IDS=web_app_v1,mobile_app_v1,admin_panel_v1
 6. **Request Processing**: Authorized requests proceed to `ApiServlet` for routing
 
 ### Database Connection
-- **URL**: `jdbc:mysql://db.hriday.tech:3306/Auth_Db`
+- **URL**: `jdbc:mysql://db.HridayKh.in:3306/Auth_Db`
 - **Driver**: MySQL Connector/J 9.3.0
 - **Connection pooling**: Basic JDBC connection management
 
@@ -703,7 +703,7 @@ FRONTEND_CLIENT_IDS=web_app_v1,mobile_app_v1,admin_panel_v1
 ### Build Configuration
 ```xml
 <!-- pom.xml -->
-<groupId>tech.hriday</groupId>
+<groupId>in.hridaykh</groupId>
 <artifactId>auth</artifactId>
 <packaging>war</packaging>
 <version>0.0.1-SNAPSHOT</version>
@@ -741,13 +741,13 @@ FRONTEND_CLIENT_IDS=web_app_v1,mobile_app_v1,admin_panel_v1
 #### Common Issues
 
 1. **401 Unauthorized: Invalid or missing API Key/Client ID**
-   - Check if `X-Hriday-Tech-Auth-Key` or `X-Hriday-Tech-Client-ID` header is set correctly
+   - Check if `X-HridayKh-In-Auth-Key` or `X-HridayKh-In-Client-ID` header is set correctly
    - Verify key exists in the corresponding environment variable list
    - Ensure no extra whitespace or encoding issues
 
 2. **403 Forbidden: Insufficient application privileges**
    - Verify the correct access level for the endpoint
-   - Backend endpoints require `X-Hriday-Tech-Auth-Key` from `BACKEND_API_KEYS`
+   - Backend endpoints require `X-HridayKh-In-Auth-Key` from `BACKEND_API_KEYS`
    - Admin operations require keys from `ADMIN_API_KEYS`
 
 3. **Environment Variable Configuration Errors**

@@ -15,7 +15,7 @@ import jakarta.servlet.http.HttpServletResponse;
 import entities.User;
 
 public class HttpUtil {
-	private static final String USER_COOKIE_NAME = "hriday_tech_user_info";
+	private static final String USER_COOKIE_NAME = "hridaykh_in_user_info";
 
 	public static JSONObject readBodyJSON(HttpServletRequest req) {
 		StringBuilder sb = new StringBuilder();

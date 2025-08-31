@@ -30,7 +30,7 @@ public class TestApp extends HttpServlet {
 
 		if (cookies != null) {
 			for (Cookie cookie : cookies) {
-				if ("hriday_tech_auth_token".equals(cookie.getName())) {
+				if ("hridaykh_in_auth_token".equals(cookie.getName())) {
 					jwtCookieValue = cookie.getValue();
 					break;
 				}
@@ -49,7 +49,7 @@ public class TestApp extends HttpServlet {
 			con.setRequestMethod("GET");
 
 			// Forward the auth token to the backend
-			con.setRequestProperty("Cookie", "hriday_tech_auth_token=" + jwtCookieValue);
+			con.setRequestProperty("Cookie", "hridaykh_in_auth_token=" + jwtCookieValue);
 
 			int status = con.getResponseCode();
 

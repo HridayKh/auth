@@ -19,8 +19,8 @@ public class AuthUtil {
 	// Define your session expiry time in seconds (e.g., 7 days)
 	// Make this configurable if possible, maybe from dbAuth or a properties file
 	public static final int SESSION_EXPIRY_SECONDS = (int) TimeUnit.DAYS.toSeconds(7);
-	public static final String COOKIE_DOMAIN = "hriday.tech";
-	private static final String AUTH_COOKIE_NAME = "hriday_tech_auth_token";
+	public static final String COOKIE_DOMAIN = "HridayKh.in";
+	private static final String AUTH_COOKIE_NAME = "hridaykh_in_auth_token";
 
 	/**
 	 * Creates a new server-side session, stores it in the database, and sets the
