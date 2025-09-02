@@ -67,6 +67,6 @@ jobs:
           path: ${{ github.workspace }}/auth/target/
 
       - name: Deploy to Tomcat via Manager
-        run: curl -T "${{ github.workspace }}/auth/target/auth.war" --user "${{ secrets.TOMCAT_USER }}:${{ secrets.TOMCAT_PASS }}" "https://auth.hriday.tech/manager/text/deploy?path=/ROOT&update=true"
+        run: curl -T "${{ github.workspace }}/auth/target/auth.war" --user "${{ secrets.TOMCAT_USER }}:${{ secrets.TOMCAT_PASS }}" "https://auth.hridaykh.in/manager/text/deploy?path=/ROOT&update=true"
 
 
