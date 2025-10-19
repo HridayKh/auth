@@ -8,7 +8,7 @@ public class dbAuth {
 	public final static String DB_URL = "jdbc:mysql://db.hridaykh.in:3306/Auth_Db";
 	public final static String DB_USER = System.getenv("AUTH_DB_USER");
 	public final static String DB_PASSWORD = System.getenv("AUTH_DB_PASSWORD");
-	
+	// https://auth.HridayKh.in/v1
 	public static final String CLIENT_ID = System.getenv("GOOGLE_CLIENT_ID");
 	public static final String CLIENT_SECRET = System.getenv("GOOGLE_CLIENT_SECRET");
 

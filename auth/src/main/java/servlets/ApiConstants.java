@@ -30,4 +30,5 @@ public final class ApiConstants {
     public static final String GET_USER_SESSIONS_URL = "/v1/users/{userId}/sessions"; // GET
     public static final String REMOVE_USER_SESSION_URL = "/v1/users/{userId}/sessions/{sessionId}"; // POST
     public static final String UPDATE_PASSWORD_URL = "/v1/users/{userId}/password"; // POST
+    
 }

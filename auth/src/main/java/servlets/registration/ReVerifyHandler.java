@@ -14,9 +14,9 @@ import entities.User;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import servlets.ApiConstants;
 import utils.HttpUtil;
 import utils.MailUtil;
-
 
 public class ReVerifyHandler extends HttpServlet {
 	private static final long serialVersionUID = 1L;
@@ -51,7 +51,8 @@ public class ReVerifyHandler extends HttpServlet {
 				return;
 			}
 
-			String verifyLink = dbAuth.BACK_HOST + "/v1/verify?token=" + newToken + "&redirect=" + redir;
+			String verifyLink = dbAuth.BACK_HOST + ApiConstants.VERIFY_URL + "?token=" + newToken + "&redirect="
+					+ redir;
 			MailUtil.sendMail(email, "Your new HridayKh.in email verification link",
 					MailUtil.templateVerifyMail(verifyLink));
 
