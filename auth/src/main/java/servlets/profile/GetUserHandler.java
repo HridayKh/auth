@@ -2,6 +2,7 @@ package servlets.profile;
 
 import java.io.IOException;
 import java.sql.Connection;
+import java.util.Map;
 
 import utils.AuthUtil;
 import utils.HttpUtil;
@@ -13,7 +14,7 @@ import jakarta.servlet.http.HttpServletResponse;
 
 public class GetUserHandler {
 
-	public static void getUser(HttpServletRequest req, HttpServletResponse resp) throws IOException {
+	public static void getUser(HttpServletRequest req, HttpServletResponse resp, Map<String, String> params) throws IOException {
 		try (Connection conn = dbAuth.getConnection()) {
 			String uuid = AuthUtil.getUserUUIDFromAuthCookie(req, resp, conn);
 			if (uuid == null) {

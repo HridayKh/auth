@@ -2,6 +2,7 @@ package servlets.security;
 
 import java.io.IOException;
 import java.sql.Connection;
+import java.util.Map;
 
 import db.SessionDAO;
 import db.dbAuth;
@@ -13,7 +14,7 @@ import utils.HttpUtil;
 
 public class RemoveUserSessionHandler {
 
-	public static void removeUserSession(HttpServletRequest req, HttpServletResponse resp)
+	public static void removeUserSession(HttpServletRequest req, HttpServletResponse resp, Map<String, String> params)
 			throws IOException, ServletException {
 
 		try (Connection conn = dbAuth.getConnection()) {
@@ -23,7 +24,7 @@ public class RemoveUserSessionHandler {
 				return;
 			}
 
-			String sessionId = (String) req.getAttribute("sessionId");
+			String sessionId = (String) params.get("sessionId");
 			if (sessionId == null || sessionId.isBlank() || sessionId.isEmpty()) {
 				HttpUtil.sendJson(resp, HttpServletResponse.SC_BAD_REQUEST, "error", "Session Id Missing");
 				return;

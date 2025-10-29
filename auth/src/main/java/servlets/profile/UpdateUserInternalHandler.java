@@ -2,6 +2,7 @@ package servlets.profile;
 
 import java.io.IOException;
 import java.sql.Connection;
+import java.util.Map;
 
 import db.UsersDAO;
 import db.dbAuth;
@@ -12,9 +13,9 @@ import jakarta.servlet.http.HttpServletResponse;
 import utils.AuthUtil;
 import utils.HttpUtil;
 
-public class UpdateUserAdminProfileHandler {
+public class UpdateUserInternalHandler {
 
-	public static void updateUserAdminProfile(HttpServletRequest req, HttpServletResponse resp)
+	public static void updateUserAdminProfile(HttpServletRequest req, HttpServletResponse resp, Map<String, String> params)
 			throws ServletException, IOException {
 		try (Connection conn = dbAuth.getConnection()) {
 			String uuid = AuthUtil.getUserUUIDFromAuthCookie(req, resp, conn);

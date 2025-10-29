@@ -2,6 +2,7 @@ package servlets.authentication;
 
 import java.io.IOException;
 import java.sql.Connection;
+import java.util.Map;
 
 import org.json.JSONObject;
 
@@ -16,7 +17,7 @@ import utils.PassUtil;
 
 public class LoginHandler {
 
-	public static void loginUser(HttpServletRequest req, HttpServletResponse resp) throws IOException {
+	public static void loginUser(HttpServletRequest req, HttpServletResponse resp, Map<String, String> params) throws IOException {
 		JSONObject body = HttpUtil.readBodyJSON(req);
 		String email = body.getString("email");
 		String pass = body.getString("pass");

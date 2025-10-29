@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.Iterator;
+import java.util.Map;
 
 import org.json.JSONObject;
 import org.json.JSONException;
@@ -17,9 +18,9 @@ import jakarta.servlet.http.HttpServletResponse;
 import utils.AuthUtil;
 import utils.HttpUtil;
 
-public class GetUserAdminProfileHandler {
+public class GetUserInternalHandler {
 
-	public static void getUserAdminProfile(HttpServletRequest req, HttpServletResponse resp) throws IOException {
+	public static void getUserAdminProfile(HttpServletRequest req, HttpServletResponse resp, Map<String, String> params) throws IOException {
 		resp.setContentType("application/json");
 		resp.setCharacterEncoding("UTF-8");
 

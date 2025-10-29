@@ -1,22 +1,17 @@
 package auth;
 
-import java.io.IOException;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Set;
-
-import jakarta.servlet.Filter;
-import jakarta.servlet.FilterChain;
-import jakarta.servlet.FilterConfig;
-import jakarta.servlet.ServletException;
-import jakarta.servlet.ServletRequest;
-import jakarta.servlet.ServletResponse;
+import jakarta.servlet.*;
 import jakarta.servlet.annotation.WebFilter;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import servlets.ApiConstants;
 import utils.ApiKeyManager;
 import utils.HttpUtil;
+
+import java.io.IOException;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Set;
 
 @WebFilter("/v1/*")
 public class ApiKeyFilter implements Filter {
@@ -28,7 +23,7 @@ public class ApiKeyFilter implements Filter {
 	private final AuthenticationService authService = new AuthenticationService();
 
 	@Override
-	public void init(FilterConfig filterConfig) throws ServletException {
+	public void init(FilterConfig filterConfig) {
 		System.out.println("ApiKeyFilter initialized");
 	}
 
@@ -39,7 +34,7 @@ public class ApiKeyFilter implements Filter {
 
 	@Override
 	public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain)
-			throws IOException, ServletException {
+		throws IOException, ServletException {
 
 		HttpServletRequest httpRequest = (HttpServletRequest) request;
 		HttpServletResponse httpResponse = (HttpServletResponse) response;
@@ -62,7 +57,7 @@ public class ApiKeyFilter implements Filter {
 		} catch (Exception e) {
 			System.err.println("Authentication error: " + e.getMessage());
 			HttpUtil.sendJson(httpResponse, HttpServletResponse.SC_INTERNAL_SERVER_ERROR, "error",
-					"Authentication service error");
+				"Authentication service error");
 		}
 
 		chain.doFilter(request, response);
@@ -76,6 +71,14 @@ public class ApiKeyFilter implements Filter {
 		PUBLIC, FRONTEND, BACKEND, ADMIN
 	}
 
+	private interface AuthenticationStrategy {
+		AuthResult authenticate(HttpServletRequest request);
+	}
+
+	// ================================
+	// Path Access Control
+	// ================================
+
 	private static class AuthResult {
 		private final boolean authenticated;
 		private final String clientId;
@@ -84,7 +87,7 @@ public class ApiKeyFilter implements Filter {
 		private final int statusCode;
 
 		private AuthResult(boolean authenticated, String clientId, String clientType, String errorMessage,
-				int statusCode) {
+		                   int statusCode) {
 			this.authenticated = authenticated;
 			this.clientId = clientId;
 			this.clientType = clientType;
@@ -126,20 +129,20 @@ public class ApiKeyFilter implements Filter {
 	}
 
 	// ================================
-	// Path Access Control
+	// Authentication Service & Strategies
 	// ================================
 
 	private static class PathAccessControl {
 		private final Set<String> publicPaths = Set.of();
 
-		private final Set<String> frontendPaths = Set.of(ApiConstants.LOGIN_URL, ApiConstants.LOGOUT_URL,
-				ApiConstants.FORGOT_PASSWORD_URL, ApiConstants.GET_USER_URL, ApiConstants.UPDATE_USER_PROFILE_URL,
-				ApiConstants.REGISTER_URL, ApiConstants.VERIFY_URL, ApiConstants.RE_VERIFY_URL,
-				ApiConstants.UPDATE_PASSWORD_URL, ApiConstants.GET_USER_SESSIONS_URL,
-				ApiConstants.REMOVE_USER_SESSION_URL);
+		private final Set<String> frontendPaths = Set.of(ApiConstants.USERS_SESSIONS_CREATE, ApiConstants.USERS_SESSIONS_DELETE_CURRENT,
+			ApiConstants.USERS_PASSWORD_RESET_INIT, ApiConstants.USERS_INFO_GET, ApiConstants.USERS_INFO_UPDATE,
+			ApiConstants.USERS_CREATE, ApiConstants.USERS_EMAIL_VERIFY, ApiConstants.USERS_EMAIL_VERIFY_RESEND,
+			ApiConstants.USERS_PASSWORD_UPDATE, ApiConstants.USERS_SESSIONS_LIST,
+			ApiConstants.USERS_SESSION_DELETE);
 
-		private final Set<String> backendPaths = Set.of(ApiConstants.GET_USER_ADMIN_PROFILE_URL,
-				ApiConstants.UPDATE_USER_ADMIN_PROFILE_URL);
+		private final Set<String> backendPaths = Set.of(ApiConstants.USERS_INTERNAL_INFO_GET,
+			ApiConstants.USERS_INTERNAL_INFO_UPDATE);
 
 		private final Set<String> adminPaths = Set.of();
 
@@ -168,12 +171,8 @@ public class ApiKeyFilter implements Filter {
 	}
 
 	// ================================
-	// Authentication Service & Strategies
+	// Authentication Strategy Implementations
 	// ================================
-
-	private interface AuthenticationStrategy {
-		AuthResult authenticate(HttpServletRequest request);
-	}
 
 	private class AuthenticationService {
 		private final Map<AccessType, AuthenticationStrategy> strategies = new HashMap<>();
@@ -191,11 +190,7 @@ public class ApiKeyFilter implements Filter {
 		}
 	}
 
-	// ================================
-	// Authentication Strategy Implementations
-	// ================================
-
-	private static class PublicAuthStrategy implements AuthenticationStrategy {
+	private class PublicAuthStrategy implements AuthenticationStrategy {
 		@Override
 		public AuthResult authenticate(HttpServletRequest request) {
 			return AuthResult.allowed("public", "public");

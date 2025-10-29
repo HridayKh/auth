@@ -2,6 +2,7 @@ package servlets.security;
 
 import java.io.IOException;
 import java.sql.Connection;
+import java.util.Map;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -19,7 +20,7 @@ import jakarta.servlet.http.HttpServletResponse;
 
 public class GetUserSessionsHandler  {
 
-	public static void getUserSessions(HttpServletRequest req, HttpServletResponse resp) throws IOException, ServletException {
+	public static void getUserSessions(HttpServletRequest req, HttpServletResponse resp, Map<String, String> params) throws IOException, ServletException {
 		try (Connection conn = dbAuth.getConnection()) {
 			String uuid = AuthUtil.getUserUUIDFromAuthCookie(req, resp, conn);
 			if (uuid == null) {
@@ -28,7 +29,7 @@ public class GetUserSessionsHandler  {
 			}
 
 			// Get userId from path parameter (set by the routing servlet)
-			String requestedUserId = (String) req.getAttribute("userId");
+			String requestedUserId = (String) params.get("userId");
 			
 			// For security, users can only view their own sessions unless they have admin permissions
 			// For now, enforce that users can only see their own sessions

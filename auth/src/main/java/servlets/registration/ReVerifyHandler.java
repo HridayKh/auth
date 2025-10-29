@@ -2,6 +2,7 @@ package servlets.registration;
 
 import java.io.IOException;
 import java.sql.Connection;
+import java.util.Map;
 import java.util.UUID;
 
 import org.json.JSONObject;
@@ -21,10 +22,10 @@ import utils.MailUtil;
 public class ReVerifyHandler extends HttpServlet {
 	private static final long serialVersionUID = 1L;
 
-	public static void reVerifyUser(HttpServletRequest req, HttpServletResponse resp) throws IOException {
+	public static void reVerifyUser(HttpServletRequest req, HttpServletResponse resp, Map<String, String> params) throws IOException {
 		JSONObject body = HttpUtil.readBodyJSON(req);
 		String email = body.getString("email").toLowerCase();
-		String redir = body.getString("redirect");
+		String redirectUrl = body.getString("redirect");
 
 		try (Connection conn = dbAuth.getConnection()) {
 			User user = UsersDAO.getUserByEmail(conn, email);
@@ -51,8 +52,8 @@ public class ReVerifyHandler extends HttpServlet {
 				return;
 			}
 
-			String verifyLink = dbAuth.BACK_HOST + ApiConstants.VERIFY_URL + "?token=" + newToken + "&redirect="
-					+ redir;
+			String verifyLink = dbAuth.BACK_HOST + ApiConstants.USERS_EMAIL_VERIFY + "?token=" + newToken + "&redirect="
+					+ redirectUrl;
 			MailUtil.sendMail(email, "Your new HridayKh.in email verification link",
 					MailUtil.templateVerifyMail(verifyLink));
 

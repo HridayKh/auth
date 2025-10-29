@@ -3,6 +3,7 @@ package servlets.profile;
 import java.io.IOException;
 import java.sql.Connection;
 import java.sql.SQLException;
+import java.util.Map;
 
 import org.json.JSONObject;
 
@@ -17,7 +18,7 @@ import utils.HttpUtil;
 
 public class UpdateUserProfileHandler {
 
-	public static void updateUserProfile(HttpServletRequest req, HttpServletResponse resp) throws IOException {
+	public static void updateUserProfile(HttpServletRequest req, HttpServletResponse resp, Map<String, String> params) throws IOException {
 		Connection conn = null;
 		try {
 			conn = dbAuth.getConnection();

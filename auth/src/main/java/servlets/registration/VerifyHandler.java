@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.time.Instant; // Added for precise timestamp handling if needed in AuthUtil
+import java.util.Map;
 
 import utils.AuthUtil;
 import db.EmailDAO;
@@ -29,7 +30,7 @@ public class VerifyHandler {
 	 * @throws IOException      If an input or output error occurs.
 	 * @throws ServletException If a servlet-specific error occurs.
 	 */
-	public static void verifyUser(HttpServletRequest req, HttpServletResponse resp)
+	public static void verifyUser(HttpServletRequest req, HttpServletResponse resp, Map<String, String> params)
 			throws IOException, ServletException {
 		String token = req.getParameter("token");
 		String redir = req.getParameter("redirect");

@@ -3,6 +3,7 @@ package servlets.registration;
 import java.io.IOException;
 import java.sql.Connection;
 import java.sql.SQLException;
+import java.util.Map;
 import java.util.UUID;
 
 import org.json.JSONObject;
@@ -21,14 +22,14 @@ import utils.PassUtil;
 
 public class RegisterHandler {
 
-	public static void registerUser(HttpServletRequest req, HttpServletResponse resp) {
+	public static void registerUser(HttpServletRequest req, HttpServletResponse resp, Map<String, String> params) {
 
 		JSONObject body = HttpUtil.readBodyJSON(req);
 		
 		String email = body.getString("email").toLowerCase();
 		String pass = body.getString("pass");
 		String FullName = body.getString("fullName");
-		String redir = body.getString("redirect");
+		String redirectUrl = body.getString("redirect");
 
 		long time = System.currentTimeMillis() / 1000L;
 		String user_uuid = UUID.randomUUID().toString();
@@ -68,7 +69,7 @@ public class RegisterHandler {
 				return;
 			}
 
-			String verifyLink = dbAuth.BACK_HOST + ApiConstants.VERIFY_URL + "?token=" + token + "&redirect=" + redir;
+			String verifyLink = dbAuth.BACK_HOST + ApiConstants.USERS_EMAIL_VERIFY + "?token=" + token + "&redirect=" + redirectUrl;
 			MailUtil.sendMail(email, "Verify your E-Mail for HridayKh.in", MailUtil.templateVerifyMail(verifyLink));
 
 			conn.commit();

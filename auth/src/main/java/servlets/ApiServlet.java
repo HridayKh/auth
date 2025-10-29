@@ -1,23 +1,16 @@
 package servlets;
 
-import java.io.IOException;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
-
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
-
 import servlets.authentication.ForgotPassHandler;
 import servlets.authentication.LoginHandler;
 import servlets.authentication.LogoutHandler;
-import servlets.profile.GetUserAdminProfileHandler;
 import servlets.profile.GetUserHandler;
-import servlets.profile.UpdateUserAdminProfileHandler;
+import servlets.profile.GetUserInternalHandler;
+import servlets.profile.UpdateUserInternalHandler;
 import servlets.profile.UpdateUserProfileHandler;
 import servlets.registration.ReVerifyHandler;
 import servlets.registration.RegisterHandler;
@@ -26,48 +19,37 @@ import servlets.security.GetUserSessionsHandler;
 import servlets.security.RemoveUserSessionHandler;
 import servlets.security.UpdatePassHandler;
 
+import java.io.IOException;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
 @WebServlet("/v1/*")
 public class ApiServlet extends HttpServlet {
-	private static final long serialVersionUID = 1L;
 
-	// Route definitions with HTTP method and handler
 	private static final Map<String, Map<String, RouteHandler>> routes = new HashMap<>();
 
 	static {
-		// Authentication routes
-		addRoute("POST", ApiConstants.LOGIN_URL, (req, resp, params) -> LoginHandler.loginUser(req, resp));
-		addRoute("GET", ApiConstants.LOGOUT_URL, (req, resp, params) -> LogoutHandler.logoutUser(req, resp));
-		addRoute("POST", ApiConstants.FORGOT_PASSWORD_URL,
-				(req, resp, params) -> ForgotPassHandler.forgotPass(req, resp));
+		addRoute("POST", ApiConstants.USERS_CREATE, RegisterHandler::registerUser);
 
-		// Profile routes
-		addRoute("GET", ApiConstants.GET_USER_ADMIN_PROFILE_URL,
-				(req, resp, params) -> GetUserAdminProfileHandler.getUserAdminProfile(req, resp));
-		addRoute("GET", ApiConstants.GET_USER_URL, (req, resp, params) -> GetUserHandler.getUser(req, resp));
-		addRoute("POST", ApiConstants.UPDATE_USER_ADMIN_PROFILE_URL,
-				(req, resp, params) -> UpdateUserAdminProfileHandler.updateUserAdminProfile(req, resp));
-		addRoute("POST", ApiConstants.UPDATE_USER_PROFILE_URL,
-				(req, resp, params) -> UpdateUserProfileHandler.updateUserProfile(req, resp));
+		addRoute("GET", ApiConstants.USERS_INFO_GET, GetUserHandler::getUser);
+		addRoute("PATCH", ApiConstants.USERS_INFO_UPDATE, UpdateUserProfileHandler::updateUserProfile);
+		addRoute("POST", ApiConstants.USERS_PASSWORD_UPDATE, UpdatePassHandler::updateUserPass);
 
-		// Registration routes
-		addRoute("POST", ApiConstants.REGISTER_URL, (req, resp, params) -> RegisterHandler.registerUser(req, resp));
-		addRoute("POST", ApiConstants.RE_VERIFY_URL, (req, resp, params) -> ReVerifyHandler.reVerifyUser(req, resp));
-		addRoute("GET", ApiConstants.VERIFY_URL, (req, resp, params) -> VerifyHandler.verifyUser(req, resp));
+		addRoute("GET", ApiConstants.USERS_INTERNAL_INFO_GET, GetUserInternalHandler::getUserAdminProfile);
+		addRoute("PATCH", ApiConstants.USERS_INTERNAL_INFO_UPDATE, UpdateUserInternalHandler::updateUserAdminProfile);
 
-		// Security routes with path parameters
-		addRoute("GET", ApiConstants.GET_USER_SESSIONS_URL, (req, resp, params) -> {
-			req.setAttribute("userId", params.get("userId"));
-			GetUserSessionsHandler.getUserSessions(req, resp);
-		});
-		addRoute("POST", ApiConstants.REMOVE_USER_SESSION_URL, (req, resp, params) -> {
-			req.setAttribute("userId", params.get("userId"));
-			req.setAttribute("sessionId", params.get("sessionId"));
-			RemoveUserSessionHandler.removeUserSession(req, resp);
-		});
-		addRoute("POST", ApiConstants.UPDATE_PASSWORD_URL, (req, resp, params) -> {
-			req.setAttribute("userId", params.get("userId"));
-			UpdatePassHandler.updateUserPass(req, resp);
-		});
+		addRoute("GET", ApiConstants.USERS_EMAIL_VERIFY, VerifyHandler::verifyUser);
+		addRoute("POST", ApiConstants.USERS_EMAIL_VERIFY_RESEND, ReVerifyHandler::reVerifyUser);
+
+		addRoute("POST", ApiConstants.USERS_PASSWORD_RESET_INIT, ForgotPassHandler::forgotPass);
+		addRoute("PUT", ApiConstants.USERS_PASSWORD_RESET_UPDATE, ForgotPassHandler::forgotPass);
+
+		addRoute("GET", ApiConstants.USERS_SESSIONS_LIST, GetUserSessionsHandler::getUserSessions);
+		addRoute("POST", ApiConstants.USERS_SESSIONS_CREATE, LoginHandler::loginUser);
+		addRoute("DELETE", ApiConstants.USERS_SESSION_DELETE, RemoveUserSessionHandler::removeUserSession);
+		addRoute("DELETE", ApiConstants.USERS_SESSIONS_DELETE_CURRENT, LogoutHandler::logoutUser);
 	}
 
 	private static void addRoute(String method, String path, RouteHandler handler) {
@@ -139,7 +121,6 @@ public class ApiServlet extends HttpServlet {
 
 	@FunctionalInterface
 	private interface RouteHandler {
-		void handle(HttpServletRequest req, HttpServletResponse resp, Map<String, String> pathParams)
-				throws IOException, ServletException;
+		void handle(HttpServletRequest req, HttpServletResponse resp, Map<String, String> pathParams) throws IOException, ServletException;
 	}
 }

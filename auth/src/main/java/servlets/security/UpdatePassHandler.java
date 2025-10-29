@@ -2,6 +2,7 @@ package servlets.security;
 
 import java.io.IOException;
 import java.sql.Connection;
+import java.util.Map;
 
 import org.json.JSONObject;
 
@@ -17,7 +18,7 @@ import jakarta.servlet.http.HttpServletResponse;
 
 public class UpdatePassHandler {
 
-	public static void updateUserPass(HttpServletRequest req, HttpServletResponse resp) throws IOException, ServletException {
+	public static void updateUserPass(HttpServletRequest req, HttpServletResponse resp, Map<String, String> params) throws IOException, ServletException {
 
 		try (Connection conn = dbAuth.getConnection()) {
 
@@ -28,7 +29,7 @@ public class UpdatePassHandler {
 			}
 
 			// Get userId from path parameter (set by the routing servlet)
-			String requestedUserId = (String) req.getAttribute("userId");
+			String requestedUserId = (String) params.get("userId");
 			
 			// For security, users can only update their own password unless they have admin permissions
 			// For now, enforce that users can only update their own password

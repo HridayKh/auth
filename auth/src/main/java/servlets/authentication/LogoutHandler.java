@@ -1,6 +1,7 @@
 package servlets.authentication;
 
 import java.io.IOException;
+import java.util.Map;
 
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
@@ -10,7 +11,7 @@ import utils.HttpUtil;
 
 public class LogoutHandler {
 
-	public static void logoutUser(HttpServletRequest req, HttpServletResponse resp) throws IOException {
+	public static void logoutUser(HttpServletRequest req, HttpServletResponse resp, Map<String, String> params) throws IOException {
 		HttpSession session = req.getSession(false);
 		if (session != null) {
 			session.invalidate();

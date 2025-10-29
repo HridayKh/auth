@@ -70,7 +70,6 @@ src/main/java/
     └── ...                 # Other utilities
 ```
 
-
 ## Database Schema
 
 ### Users Table
@@ -117,7 +116,6 @@ CREATE TABLE email_tokens (
     FOREIGN KEY (user_uuid) REFERENCES users(uuid) ON DELETE CASCADE
 );
 ```
-
 
 ## Authentication and Security
 
@@ -352,8 +350,8 @@ All API requests are handled through the centralized `ApiServlet` at `/v1/*` wit
     "accType": "password",
     "createdAt": 1640995200,
     "lastLogin": 1640995200,
-    "metadata": {...},
-    "permissions": {...}
+    "metadata": {"example": "value"},
+    "permissions": {"example": "value"}
 }
 ```
 
