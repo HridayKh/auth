@@ -5,19 +5,19 @@ import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
-import servlets.authentication.ForgotPassHandler;
-import servlets.authentication.LoginHandler;
-import servlets.authentication.LogoutHandler;
-import servlets.profile.GetUserHandler;
-import servlets.profile.GetUserInternalHandler;
-import servlets.profile.UpdateUserInternalHandler;
-import servlets.profile.UpdateUserProfileHandler;
-import servlets.registration.ReVerifyHandler;
-import servlets.registration.RegisterHandler;
-import servlets.registration.VerifyHandler;
-import servlets.security.GetUserSessionsHandler;
-import servlets.security.RemoveUserSessionHandler;
-import servlets.security.UpdatePassHandler;
+import servlets.authentication.UsersPassResetInit;
+import servlets.authentication.UsersSessionCreate;
+import servlets.authentication.UsersSessionDeleteCurrent;
+import servlets.profile.UsersInfoGetter;
+import servlets.profile.UsersInfoUpdater;
+import servlets.profile.UsersInternalInfoGetter;
+import servlets.profile.UsersInternalInfoUpdater;
+import servlets.registration.UsersResendVerifyEmail;
+import servlets.registration.UsersCreator;
+import servlets.registration.UsersVerifyEmail;
+import servlets.security.UsersSessionList;
+import servlets.security.UsersSessionDelete;
+import servlets.security.UsersPassUpdater;
 
 import java.io.IOException;
 import java.util.HashMap;
@@ -31,25 +31,25 @@ public class ApiServlet extends HttpServlet {
 	private static final Map<String, Map<String, RouteHandler>> routes = new HashMap<>();
 
 	static {
-		addRoute("POST", ApiConstants.USERS_CREATE, RegisterHandler::registerUser);
+		addRoute("POST", ApiConstants.USERS_CREATE, UsersCreator::createUser);
 
-		addRoute("GET", ApiConstants.USERS_INFO_GET, GetUserHandler::getUser);
-		addRoute("PATCH", ApiConstants.USERS_INFO_UPDATE, UpdateUserProfileHandler::updateUserProfile);
-		addRoute("POST", ApiConstants.USERS_PASSWORD_UPDATE, UpdatePassHandler::updateUserPass);
+		addRoute("GET", ApiConstants.USERS_INFO_GET, UsersInfoGetter::getUser);
+		addRoute("PATCH", ApiConstants.USERS_INFO_UPDATE, UsersInfoUpdater::updateUserInfo);
+		addRoute("POST", ApiConstants.USERS_PASSWORD_UPDATE, UsersPassUpdater::updateUserPass);
 
-		addRoute("GET", ApiConstants.USERS_INTERNAL_INFO_GET, GetUserInternalHandler::getUserAdminProfile);
-		addRoute("PATCH", ApiConstants.USERS_INTERNAL_INFO_UPDATE, UpdateUserInternalHandler::updateUserAdminProfile);
+		addRoute("GET", ApiConstants.USERS_INTERNAL_INFO_GET, UsersInternalInfoGetter::getUserInternalInfo);
+		addRoute("PATCH", ApiConstants.USERS_INTERNAL_INFO_UPDATE, UsersInternalInfoUpdater::updateUserInternalInfo);
 
-		addRoute("GET", ApiConstants.USERS_EMAIL_VERIFY, VerifyHandler::verifyUser);
-		addRoute("POST", ApiConstants.USERS_EMAIL_VERIFY_RESEND, ReVerifyHandler::reVerifyUser);
+		addRoute("GET", ApiConstants.USERS_VERIFY_EMAIL, UsersVerifyEmail::verifyUser);
+		addRoute("POST", ApiConstants.USERS_VERIFY_EMAIL_RESEND, UsersResendVerifyEmail::resendVerifyEmail);
 
-		addRoute("POST", ApiConstants.USERS_PASSWORD_RESET_INIT, ForgotPassHandler::forgotPass);
-		addRoute("PUT", ApiConstants.USERS_PASSWORD_RESET_UPDATE, ForgotPassHandler::forgotPass);
+		addRoute("POST", ApiConstants.USERS_PASSWORD_RESET_INIT, UsersPassResetInit::initPassReset);
+		addRoute("PUT", ApiConstants.USERS_PASSWORD_RESET_UPDATE, UsersPassResetInit::initPassReset);
 
-		addRoute("GET", ApiConstants.USERS_SESSIONS_LIST, GetUserSessionsHandler::getUserSessions);
-		addRoute("POST", ApiConstants.USERS_SESSIONS_CREATE, LoginHandler::loginUser);
-		addRoute("DELETE", ApiConstants.USERS_SESSION_DELETE, RemoveUserSessionHandler::removeUserSession);
-		addRoute("DELETE", ApiConstants.USERS_SESSIONS_DELETE_CURRENT, LogoutHandler::logoutUser);
+		addRoute("GET", ApiConstants.USERS_SESSIONS_LIST, UsersSessionList::listUserSessions);
+		addRoute("POST", ApiConstants.USERS_SESSIONS_CREATE, UsersSessionCreate::createUserSession);
+		addRoute("DELETE", ApiConstants.USERS_SESSION_DELETE, UsersSessionDelete::deleteUserSession);
+		addRoute("DELETE", ApiConstants.USERS_SESSIONS_DELETE_CURRENT, UsersSessionDeleteCurrent::deleteCurrentUserSession);
 	}
 
 	private static void addRoute(String method, String path, RouteHandler handler) {
@@ -97,7 +97,7 @@ public class ApiServlet extends HttpServlet {
 
 	private Map<String, String> matchRoute(String routePattern, String actualPath) {
 		// Convert route pattern to regex
-		String regex = routePattern.replaceAll("\\{([^}]+)\\}", "([^/]+)");
+		String regex = routePattern.replaceAll("\\{([^}]+)}", "([^/]+)");
 		Pattern pattern = Pattern.compile("^" + regex + "$");
 		Matcher matcher = pattern.matcher(actualPath);
 
@@ -106,7 +106,7 @@ public class ApiServlet extends HttpServlet {
 		}
 
 		Map<String, String> params = new HashMap<>();
-		Pattern paramPattern = Pattern.compile("\\{([^}]+)\\}");
+		Pattern paramPattern = Pattern.compile("\\{([^}]+)}");
 		Matcher paramMatcher = paramPattern.matcher(routePattern);
 
 		int groupIndex = 1;

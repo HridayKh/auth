@@ -33,8 +33,7 @@ public class ApiKeyFilter implements Filter {
 	}
 
 	@Override
-	public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain)
-		throws IOException, ServletException {
+	public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain) throws IOException, ServletException {
 
 		HttpServletRequest httpRequest = (HttpServletRequest) request;
 		HttpServletResponse httpResponse = (HttpServletResponse) response;
@@ -56,8 +55,7 @@ public class ApiKeyFilter implements Filter {
 
 		} catch (Exception e) {
 			System.err.println("Authentication error: " + e.getMessage());
-			HttpUtil.sendJson(httpResponse, HttpServletResponse.SC_INTERNAL_SERVER_ERROR, "error",
-				"Authentication service error");
+			HttpUtil.sendJson(httpResponse, HttpServletResponse.SC_INTERNAL_SERVER_ERROR, "error", "Authentication service error");
 		}
 
 		chain.doFilter(request, response);
@@ -86,8 +84,7 @@ public class ApiKeyFilter implements Filter {
 		private final String errorMessage;
 		private final int statusCode;
 
-		private AuthResult(boolean authenticated, String clientId, String clientType, String errorMessage,
-		                   int statusCode) {
+		private AuthResult(boolean authenticated, String clientId, String clientType, String errorMessage, int statusCode) {
 			this.authenticated = authenticated;
 			this.clientId = clientId;
 			this.clientType = clientType;
@@ -135,26 +132,17 @@ public class ApiKeyFilter implements Filter {
 	private static class PathAccessControl {
 		private final Set<String> publicPaths = Set.of();
 
-		private final Set<String> frontendPaths = Set.of(ApiConstants.USERS_SESSIONS_CREATE, ApiConstants.USERS_SESSIONS_DELETE_CURRENT,
-			ApiConstants.USERS_PASSWORD_RESET_INIT, ApiConstants.USERS_INFO_GET, ApiConstants.USERS_INFO_UPDATE,
-			ApiConstants.USERS_CREATE, ApiConstants.USERS_EMAIL_VERIFY, ApiConstants.USERS_EMAIL_VERIFY_RESEND,
-			ApiConstants.USERS_PASSWORD_UPDATE, ApiConstants.USERS_SESSIONS_LIST,
-			ApiConstants.USERS_SESSION_DELETE);
+		private final Set<String> frontendPaths = Set.of(ApiConstants.USERS_SESSIONS_CREATE, ApiConstants.USERS_SESSIONS_DELETE_CURRENT, ApiConstants.USERS_PASSWORD_RESET_INIT, ApiConstants.USERS_INFO_GET, ApiConstants.USERS_INFO_UPDATE, ApiConstants.USERS_CREATE, ApiConstants.USERS_VERIFY_EMAIL, ApiConstants.USERS_VERIFY_EMAIL_RESEND, ApiConstants.USERS_PASSWORD_UPDATE, ApiConstants.USERS_SESSIONS_LIST, ApiConstants.USERS_SESSION_DELETE);
 
-		private final Set<String> backendPaths = Set.of(ApiConstants.USERS_INTERNAL_INFO_GET,
-			ApiConstants.USERS_INTERNAL_INFO_UPDATE);
+		private final Set<String> backendPaths = Set.of(ApiConstants.USERS_INTERNAL_INFO_GET, ApiConstants.USERS_INTERNAL_INFO_UPDATE);
 
 		private final Set<String> adminPaths = Set.of();
 
 		public AccessType getRequiredAccess(String path) {
-			if (matches(path, publicPaths))
-				return AccessType.PUBLIC;
-			if (matches(path, frontendPaths))
-				return AccessType.FRONTEND;
-			if (matches(path, adminPaths))
-				return AccessType.ADMIN;
-			if (matches(path, backendPaths))
-				return AccessType.BACKEND;
+			if (matches(path, publicPaths)) return AccessType.PUBLIC;
+			if (matches(path, frontendPaths)) return AccessType.FRONTEND;
+			if (matches(path, adminPaths)) return AccessType.ADMIN;
+			if (matches(path, backendPaths)) return AccessType.BACKEND;
 			return AccessType.ADMIN;
 		}
 
@@ -163,9 +151,8 @@ public class ApiKeyFilter implements Filter {
 		}
 
 		private boolean matchesPattern(String path, String pattern) {
-			if (!pattern.contains("{"))
-				return false;
-			String regex = pattern.replaceAll("\\{[^}]+\\}", "[^/]+");
+			if (!pattern.contains("{")) return false;
+			String regex = pattern.replaceAll("\\{[^}]+}", "[^/]+");
 			return path.matches("^" + regex + "$");
 		}
 	}
@@ -174,7 +161,57 @@ public class ApiKeyFilter implements Filter {
 	// Authentication Strategy Implementations
 	// ================================
 
-	private class AuthenticationService {
+	private static class PublicAuthStrategy implements AuthenticationStrategy {
+		@Override
+		public AuthResult authenticate(HttpServletRequest request) {
+			return AuthResult.allowed("public", "public");
+		}
+	}
+
+	private static class FrontendAuthStrategy implements AuthenticationStrategy {
+		@Override
+		public AuthResult authenticate(HttpServletRequest request) {
+			String clientId = request.getHeader(CLIENT_ID_HEADER);
+
+			if (clientId != null && !clientId.trim().isEmpty()) {
+
+				System.out.println(ApiKeyManager.API_KEY_TO_ROLE_MAP.toString());
+
+				String role = ApiKeyManager.getRoleForApiKey(clientId);
+				if (ApiKeyManager.ROLE_FRONTEND.equals(role)) {
+					return AuthResult.allowed(clientId, "frontend");
+				}
+			}
+
+			return AuthResult.denied("Valid client ID required", HttpServletResponse.SC_UNAUTHORIZED);
+		}
+	}
+
+	private static class BackendAuthStrategy implements AuthenticationStrategy {
+		@Override
+		public AuthResult authenticate(HttpServletRequest request) {
+			String apiKey = request.getHeader(API_KEY_HEADER);
+			String role = ApiKeyManager.getRoleForApiKey(apiKey);
+			if (ApiKeyManager.ROLE_BACKEND.equals(role)) {
+				return AuthResult.allowed(apiKey, "admin");
+			}
+			return AuthResult.denied("Valid API key required", HttpServletResponse.SC_UNAUTHORIZED);
+		}
+	}
+
+	private static class AdminAuthStrategy implements AuthenticationStrategy {
+		@Override
+		public AuthResult authenticate(HttpServletRequest request) {
+			String apiKey = request.getHeader(API_KEY_HEADER);
+			String role = ApiKeyManager.getRoleForApiKey(apiKey);
+			if (ApiKeyManager.ROLE_ADMIN.equals(role)) {
+				return AuthResult.allowed(apiKey, "admin");
+			}
+			return AuthResult.denied("Admin privileges required", HttpServletResponse.SC_FORBIDDEN);
+		}
+	}
+
+	private static class AuthenticationService {
 		private final Map<AccessType, AuthenticationStrategy> strategies = new HashMap<>();
 
 		public AuthenticationService() {
@@ -187,64 +224,6 @@ public class ApiKeyFilter implements Filter {
 		public AuthResult authenticate(HttpServletRequest request, AccessType accessType) {
 			AuthenticationStrategy strategy = strategies.get(accessType);
 			return strategy != null ? strategy.authenticate(request) : AuthResult.denied("Invalid access type");
-		}
-	}
-
-	private class PublicAuthStrategy implements AuthenticationStrategy {
-		@Override
-		public AuthResult authenticate(HttpServletRequest request) {
-			return AuthResult.allowed("public", "public");
-		}
-	}
-
-	private class FrontendAuthStrategy implements AuthenticationStrategy {
-		@Override
-		public AuthResult authenticate(HttpServletRequest request) {
-			String clientId = request.getHeader(CLIENT_ID_HEADER);
-
-			if (clientId != null && !clientId.trim().isEmpty()) {
-
-				System.out.println(ApiKeyManager.API_KEY_TO_ROLE_MAP.toString());
-
-				String role = ApiKeyManager.getRoleForApiKey(clientId);
-				if (role != null && ApiKeyManager.ROLE_FRONTEND.equals(role)) {
-					return AuthResult.allowed(clientId, "frontend");
-				}
-			}
-
-			return AuthResult.denied("Valid client ID required", HttpServletResponse.SC_UNAUTHORIZED);
-		}
-	}
-
-	private class BackendAuthStrategy implements AuthenticationStrategy {
-		@Override
-		public AuthResult authenticate(HttpServletRequest request) {
-			String apiKey = request.getHeader(API_KEY_HEADER);
-
-			if (apiKey != null) {
-				String role = ApiKeyManager.getRoleForApiKey(apiKey);
-				if (role != null && ApiKeyManager.ROLE_BACKEND.equals(role)) {
-					return AuthResult.allowed(apiKey, "admin");
-				}
-			}
-
-			return AuthResult.denied("Valid API key required", HttpServletResponse.SC_UNAUTHORIZED);
-		}
-	}
-
-	private class AdminAuthStrategy implements AuthenticationStrategy {
-		@Override
-		public AuthResult authenticate(HttpServletRequest request) {
-			String apiKey = request.getHeader(API_KEY_HEADER);
-
-			if (apiKey != null) {
-				String role = ApiKeyManager.getRoleForApiKey(apiKey);
-				if (role != null && ApiKeyManager.ROLE_ADMIN.equals(role)) {
-					return AuthResult.allowed(apiKey, "admin");
-				}
-			}
-
-			return AuthResult.denied("Admin privileges required", HttpServletResponse.SC_FORBIDDEN);
 		}
 	}
 }

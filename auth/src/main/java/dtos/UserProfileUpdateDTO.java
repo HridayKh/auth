@@ -6,9 +6,9 @@ package dtos;
  * directly from an incoming JSON request body.
  */
 public class UserProfileUpdateDTO {
-	private String email;
-	private String profilePic;
-	private String fullName;
+	private String email = null;
+	private String profilePic = null;
+	private String fullName = null;
 
 	// Getters and Setters
 	public String getEmail() {

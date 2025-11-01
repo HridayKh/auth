@@ -4,6 +4,8 @@ import java.io.IOException;
 import java.sql.Connection;
 import java.util.Map;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
@@ -14,13 +16,13 @@ import db.UsersDAO;
 import db.dbAuth;
 import entities.Session;
 import entities.User;
-import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 
-public class GetUserSessionsHandler  {
+public class UsersSessionList {
 
-	public static void getUserSessions(HttpServletRequest req, HttpServletResponse resp, Map<String, String> params) throws IOException, ServletException {
+	private static final Logger log = LogManager.getLogger(UsersSessionList.class);
+	public static void listUserSessions(HttpServletRequest req, HttpServletResponse resp, Map<String, String> params) throws IOException {
 		try (Connection conn = dbAuth.getConnection()) {
 			String uuid = AuthUtil.getUserUUIDFromAuthCookie(req, resp, conn);
 			if (uuid == null) {
@@ -29,7 +31,7 @@ public class GetUserSessionsHandler  {
 			}
 
 			// Get userId from path parameter (set by the routing servlet)
-			String requestedUserId = (String) params.get("userId");
+			String requestedUserId = params.get("userId");
 			
 			// For security, users can only view their own sessions unless they have admin permissions
 			// For now, enforce that users can only see their own sessions
@@ -45,12 +47,6 @@ public class GetUserSessionsHandler  {
 			}
 
 			Session[] sessions = SessionDAO.getAllSessionsOfUser(conn, uuid);
-
-			if (sessions == null) {
-				HttpUtil.sendJson(resp, HttpServletResponse.SC_INTERNAL_SERVER_ERROR, "error",
-						"Internal error: Session data could not be retrieved.");
-				return;
-			}
 
 			JSONArray sessionsJsonArr = new JSONArray();
 			for (Session s : sessions) {
@@ -73,7 +69,7 @@ public class GetUserSessionsHandler  {
 			resp.getWriter().write(respJson.toString());
 
 		} catch (Exception e) {
-			e.printStackTrace(); // Log the exception for debugging
+			log.catching(e);
 			HttpUtil.sendJson(resp, HttpServletResponse.SC_INTERNAL_SERVER_ERROR, "error", "Internal Server Error");
 		}
 	}

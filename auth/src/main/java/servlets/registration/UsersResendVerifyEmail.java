@@ -5,6 +5,8 @@ import java.sql.Connection;
 import java.util.Map;
 import java.util.UUID;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.json.JSONObject;
 
 import db.EmailDAO;
@@ -19,10 +21,10 @@ import servlets.ApiConstants;
 import utils.HttpUtil;
 import utils.MailUtil;
 
-public class ReVerifyHandler extends HttpServlet {
-	private static final long serialVersionUID = 1L;
+public class UsersResendVerifyEmail extends HttpServlet {
 
-	public static void reVerifyUser(HttpServletRequest req, HttpServletResponse resp, Map<String, String> params) throws IOException {
+	private static final Logger log = LogManager.getLogger(UsersResendVerifyEmail.class);
+	public static void resendVerifyEmail(HttpServletRequest req, HttpServletResponse resp, Map<String, String> ignoredParams) throws IOException {
 		JSONObject body = HttpUtil.readBodyJSON(req);
 		String email = body.getString("email").toLowerCase();
 		String redirectUrl = body.getString("redirect");
@@ -52,14 +54,14 @@ public class ReVerifyHandler extends HttpServlet {
 				return;
 			}
 
-			String verifyLink = dbAuth.BACK_HOST + ApiConstants.USERS_EMAIL_VERIFY + "?token=" + newToken + "&redirect="
+			String verifyLink = dbAuth.BACK_HOST + ApiConstants.USERS_VERIFY_EMAIL + "?token=" + newToken + "&redirect="
 					+ redirectUrl;
 			MailUtil.sendMail(email, "Your new HridayKh.in email verification link",
 					MailUtil.templateVerifyMail(verifyLink));
 
 			HttpUtil.sendJson(resp, HttpServletResponse.SC_OK, "success", "A new verification email has been sent.");
 		} catch (Exception e) {
-			e.printStackTrace();
+			log.catching(e);
 			HttpUtil.sendJson(resp, HttpServletResponse.SC_INTERNAL_SERVER_ERROR, "error", "Server error occurred.");
 		}
 	}

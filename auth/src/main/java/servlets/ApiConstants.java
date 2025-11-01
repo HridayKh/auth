@@ -16,8 +16,8 @@ public final class ApiConstants {
 	public static final String USERS_INTERNAL_INFO_UPDATE = "/v1/users/internal/me"; // PATCH
 
 	// `USERS_EMAIL_VERIFY` to be opened directly in browser by user
-	public static final String USERS_EMAIL_VERIFY = "/v1/users/verify"; // GET
-	public static final String USERS_EMAIL_VERIFY_RESEND = "/v1/users/verify/resend"; // POST
+	public static final String USERS_VERIFY_EMAIL = "/v1/users/verify"; // GET
+	public static final String USERS_VERIFY_EMAIL_RESEND = "/v1/users/verify/resend"; // POST
 
 	public static final String USERS_PASSWORD_RESET_INIT = "/v1/users/password-resets"; // POST
 	public static final String USERS_PASSWORD_RESET_UPDATE = "/v1/users/password-resets"; // PUT

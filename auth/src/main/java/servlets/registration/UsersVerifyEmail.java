@@ -6,19 +6,21 @@ import java.sql.SQLException;
 import java.time.Instant; // Added for precise timestamp handling if needed in AuthUtil
 import java.util.Map;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import utils.AuthUtil;
 import db.EmailDAO;
 import db.UsersDAO;
 import db.dbAuth;
-import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 
 // Assuming SessionDAO is used internally by AuthUtil for session management
 // import dao.SessionDAO; // Not directly used here, but essential for AuthUtil
 
-public class VerifyHandler {
+public class UsersVerifyEmail {
 
+	private static final Logger log = LogManager.getLogger(UsersVerifyEmail.class);
 	/**
 	 * Handles the email verification process for a user. It verifies the provided
 	 * token, updates the user's verification status, expires the token, and creates
@@ -28,10 +30,9 @@ public class VerifyHandler {
 	 *             parameters.
 	 * @param resp The HttpServletResponse to send redirects.
 	 * @throws IOException      If an input or output error occurs.
-	 * @throws ServletException If a servlet-specific error occurs.
 	 */
-	public static void verifyUser(HttpServletRequest req, HttpServletResponse resp, Map<String, String> params)
-			throws IOException, ServletException {
+	public static void verifyUser(HttpServletRequest req, HttpServletResponse resp, Map<String, String> ignoredParams)
+			throws IOException {
 		String token = req.getParameter("token");
 		String redir = req.getParameter("redirect");
 
@@ -88,12 +89,10 @@ public class VerifyHandler {
 
 			// Redirect to the success page
 			resp.sendRedirect(redir + "?type=success&msg=Email verified successfully.");
-			return;
 		} catch (SQLException e) {
-			e.printStackTrace();
+			log.catching(e);
 			resp.sendRedirect(
 					dbAuth.FRONT_HOST + "/register?redirect=" + redir + "&type=error&msg=Unexpected server error");
-			return;
 		}
 	}
 }

@@ -1,24 +1,27 @@
 package servlets.profile;
 
-import java.io.IOException;
-import java.sql.Connection;
-import java.sql.SQLException;
-import java.util.Map;
-
-import org.json.JSONObject;
-
 import db.UsersDAO;
 import db.dbAuth;
 import dtos.UserProfileUpdateDTO;
 import entities.User;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+import org.json.JSONObject;
 import utils.AuthUtil;
 import utils.HttpUtil;
 
-public class UpdateUserProfileHandler {
+import java.io.IOException;
+import java.sql.Connection;
+import java.sql.SQLException;
+import java.util.Map;
 
-	public static void updateUserProfile(HttpServletRequest req, HttpServletResponse resp, Map<String, String> params) throws IOException {
+public class UsersInfoUpdater {
+
+	private static final Logger log = LogManager.getLogger(UsersInfoUpdater.class);
+
+	public static void updateUserInfo(HttpServletRequest req, HttpServletResponse resp, Map<String, String> ignoredParams) throws IOException {
 		Connection conn = null;
 		try {
 			conn = dbAuth.getConnection();
@@ -27,7 +30,7 @@ public class UpdateUserProfileHandler {
 			String userUuid = AuthUtil.getUserUUIDFromAuthCookie(req, resp, conn);
 			if (userUuid == null) {
 				HttpUtil.sendJson(resp, HttpServletResponse.SC_UNAUTHORIZED, "error",
-						"Unauthorized: No valid session.");
+					"Unauthorized: No valid session.");
 				return;
 			}
 
@@ -62,11 +65,11 @@ public class UpdateUserProfileHandler {
 			// --- Handle Email Update ---
 			String newEmail = updateDTO.getEmail().toLowerCase();
 			// Only proceed if email is actually changing
-			if (newEmail != null && !newEmail.isEmpty() && !currentUser.email().equals(newEmail)) {
+			if (!newEmail.isEmpty() && !currentUser.email().equals(newEmail)) {
 				if (!"password".equals(currentUser.accType())) {
 					conn.rollback();
 					HttpUtil.sendJson(resp, HttpServletResponse.SC_FORBIDDEN, "error",
-							"Email change is not allowed if you have a google account linked, unlink it first.");
+						"Email change is not allowed if you have a google account linked, unlink it first.");
 					return;
 				}
 				// Validate new email format (optional, but recommended)
@@ -80,7 +83,7 @@ public class UpdateUserProfileHandler {
 				if (existingUserWithNewEmail != null && !existingUserWithNewEmail.uuid().equals(userUuid)) {
 					conn.rollback();
 					HttpUtil.sendJson(resp, HttpServletResponse.SC_CONFLICT, "error",
-							"Email already in use by another account.");
+						"Email already in use by another account.");
 					return;
 				}
 
@@ -89,7 +92,7 @@ public class UpdateUserProfileHandler {
 				} else {
 					conn.rollback();
 					HttpUtil.sendJson(resp, HttpServletResponse.SC_INTERNAL_SERVER_ERROR, "error",
-							"Failed to update email.");
+						"Failed to update email.");
 					return;
 				}
 			}
@@ -107,7 +110,7 @@ public class UpdateUserProfileHandler {
 				} else {
 					conn.rollback();
 					HttpUtil.sendJson(resp, HttpServletResponse.SC_INTERNAL_SERVER_ERROR, "error",
-							"Failed to update profile info.");
+						"Failed to update profile info.");
 					return;
 				}
 			}
@@ -115,7 +118,7 @@ public class UpdateUserProfileHandler {
 			// If no fields were provided in the request, or nothing changed
 			if (!emailUpdated && !profileInfoUpdated) {
 				HttpUtil.sendJson(resp, HttpServletResponse.SC_OK, "success",
-						"No changes provided or no update necessary.");
+					"No changes provided or no update necessary.");
 			} else {
 				conn.commit(); // Commit transaction if all updates were successful
 				HttpUtil.sendJson(resp, HttpServletResponse.SC_OK, "success", "Profile updated successfully.");
@@ -126,30 +129,30 @@ public class UpdateUserProfileHandler {
 				try {
 					conn.rollback(); // Rollback on SQL error
 				} catch (SQLException ex) {
-					ex.printStackTrace();
+					log.catching(ex);
 				}
 			}
-			e.printStackTrace();
+			log.catching(e);
 			HttpUtil.sendJson(resp, HttpServletResponse.SC_INTERNAL_SERVER_ERROR, "error",
-					"Database error during profile update.");
+				"Database error during profile update.");
 		} catch (Exception e) {
 			if (conn != null) {
 				try {
 					conn.rollback(); // Rollback on any other error
 				} catch (SQLException ex) {
-					ex.printStackTrace();
+					log.catching(ex);
 				}
 			}
-			e.printStackTrace();
+			log.catching(e);
 			HttpUtil.sendJson(resp, HttpServletResponse.SC_INTERNAL_SERVER_ERROR, "error",
-					"Internal Server Error during profile update.");
+				"Internal Server Error during profile update.");
 		} finally {
 			if (conn != null) {
 				try {
 					conn.setAutoCommit(true); // Reset auto-commit
 					conn.close();
 				} catch (SQLException e) {
-					e.printStackTrace();
+					log.catching(e);
 				}
 			}
 		}

@@ -150,13 +150,13 @@ The service implements a completely redesigned multi-tier authentication system 
 
 The system automatically determines required access level based on request paths:
 
-| Path Category | Access Level | Examples |
-|---------------|-------------|----------|
-| Authentication | FRONTEND | `/v1/auth/login`, `/v1/auth/logout` |
-| Registration | FRONTEND | `/v1/register/*` |
-| Profile Management | FRONTEND | `/v1/profile/get-user`, `/v1/profile/update-profile` |
-| Admin Operations | BACKEND | `/v1/profile/admin-profile`, `/v1/profile/update-admin-metadata` |
-| Security Operations | FRONTEND | `/v1/users/{userId}/sessions/*`, `/v1/users/{userId}/password` |
+| Path Category       | Access Level | Examples                                                         |
+|---------------------|--------------|------------------------------------------------------------------|
+| Authentication      | FRONTEND     | `/v1/auth/login`, `/v1/auth/logout`                              |
+| Registration        | FRONTEND     | `/v1/register/*`                                                 |
+| Profile Management  | FRONTEND     | `/v1/profile/get-user`, `/v1/profile/update-profile`             |
+| Admin Operations    | BACKEND      | `/v1/profile/admin-profile`, `/v1/profile/update-admin-metadata` |
+| Security Operations | FRONTEND     | `/v1/users/{userId}/sessions/*`, `/v1/users/{userId}/password`   |
 
 #### Authentication Strategies
 

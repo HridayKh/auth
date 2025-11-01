@@ -1,4 +1,4 @@
-<%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
+<%@ page contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
 <!DOCTYPE html>
 <html>
 <head>
@@ -8,10 +8,10 @@
 <body>
     <h2>login New User</h2>
     <form id="loginForm">
-        <label>Email:</label><br>
+        <label for="email">Email:</label><br>
         <input type="email" id="email" required><br><br>
 
-        <label>Password:</label><br>
+        <label for="pass">Password:</label><br>
         <input type="password" id="pass" required><br><br>
 
         <button type="submit">login</button>

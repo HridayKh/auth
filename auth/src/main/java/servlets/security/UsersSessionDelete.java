@@ -1,21 +1,23 @@
 package servlets.security;
 
+import db.SessionDAO;
+import db.dbAuth;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+import utils.AuthUtil;
+import utils.HttpUtil;
+
 import java.io.IOException;
 import java.sql.Connection;
 import java.util.Map;
 
-import db.SessionDAO;
-import db.dbAuth;
-import jakarta.servlet.ServletException;
-import jakarta.servlet.http.HttpServletRequest;
-import jakarta.servlet.http.HttpServletResponse;
-import utils.AuthUtil;
-import utils.HttpUtil;
+public class UsersSessionDelete {
 
-public class RemoveUserSessionHandler {
+	private static final Logger log = LogManager.getLogger(UsersSessionDelete.class);
 
-	public static void removeUserSession(HttpServletRequest req, HttpServletResponse resp, Map<String, String> params)
-			throws IOException, ServletException {
+	public static void deleteUserSession(HttpServletRequest req, HttpServletResponse resp, Map<String, String> params) throws IOException {
 
 		try (Connection conn = dbAuth.getConnection()) {
 			String uuid = AuthUtil.getUserUUIDFromAuthCookie(req, resp, conn);
@@ -24,19 +26,18 @@ public class RemoveUserSessionHandler {
 				return;
 			}
 
-			String sessionId = (String) params.get("sessionId");
-			if (sessionId == null || sessionId.isBlank() || sessionId.isEmpty()) {
+			String sessionId = params.get("sessionId");
+			if (sessionId == null || sessionId.isBlank()) {
 				HttpUtil.sendJson(resp, HttpServletResponse.SC_BAD_REQUEST, "error", "Session Id Missing");
 				return;
 			}
 			if (!SessionDAO.invalidateSession(conn, sessionId, uuid)) {
-				HttpUtil.sendJson(resp, HttpServletResponse.SC_INTERNAL_SERVER_ERROR, "error",
-						"Session not found or you do not have permission to invalidate it.");
+				HttpUtil.sendJson(resp, HttpServletResponse.SC_INTERNAL_SERVER_ERROR, "error", "Session not found or you do not have permission to invalidate it.");
 				return;
 			}
 			HttpUtil.sendJson(resp, HttpServletResponse.SC_OK, "success", "Session Removed Successfully");
 		} catch (Exception e) {
-			e.printStackTrace();
+			log.catching(e);
 			HttpUtil.sendJson(resp, HttpServletResponse.SC_INTERNAL_SERVER_ERROR, "error", "Internal Server Error");
 		}
 	}

@@ -10,6 +10,12 @@
 
 #### 6. Enhanced Session Management Features
 
+# TODO:
+- verify acc type is consistent and use enums
+- store session creation method, google or password
+- forgot password flow
+
+
 # Refactor to be more restful
 
 Objects:

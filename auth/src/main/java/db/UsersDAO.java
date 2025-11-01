@@ -1,14 +1,9 @@
 package db;
 
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.sql.Types;
-
+import entities.User;
 import org.json.JSONObject;
 
-import entities.User;
+import java.sql.*;
 
 public class UsersDAO {
 
@@ -22,17 +17,15 @@ public class UsersDAO {
 	 * @param conn The active database connection.
 	 * @param uuid The unique identifier (UUID) of the user to retrieve.
 	 * @return A {@link User} object if a user with the specified UUID is found,
-	 *         otherwise returns {@code null}.
+	 * otherwise returns {@code null}.
 	 * @throws SQLException If a database access error occurs.
 	 */
 	public static User getUserByUuid(Connection conn, String uuid) throws SQLException {
 		// Updated SQL query to use snake_case column names
-		String sql = "SELECT uuid, email, password_hash, is_verified, created_at, updated_at, last_login, "
-				+ "profile_pic, full_name, metadata, permissions, google_id, acc_type, refresh_token, refresh_token_expires_at "
-				+ "FROM users WHERE uuid = ?";
-		try (PreparedStatement pstmt = conn.prepareStatement(sql)) {
-			pstmt.setString(1, uuid);
-			try (ResultSet rs = pstmt.executeQuery()) {
+		String sql = "SELECT uuid, email, password_hash, is_verified, created_at, updated_at, last_login, " + "profile_pic, full_name, metadata, permissions, google_id, acc_type, refresh_token, refresh_token_expires_at " + "FROM users WHERE uuid = ?";
+		try (PreparedStatement stmt = conn.prepareStatement(sql)) {
+			stmt.setString(1, uuid);
+			try (ResultSet rs = stmt.executeQuery()) {
 				if (rs.next()) {
 					return parseUser(rs); // Use the helper method to parse the ResultSet into a User object
 				}
@@ -49,8 +42,8 @@ public class UsersDAO {
 	 * @param conn  The active database connection.
 	 * @param email The email address of the user to retrieve.
 	 * @return A {@link User} object if a user with the specified email is found,
-	 *         otherwise returns {@code null}. Returns the first matching user if
-	 *         multiple exist (though email should be unique).
+	 * otherwise returns {@code null}. Returns the first matching user if
+	 * multiple exist (though email should be unique).
 	 * @throws SQLException If a database access error occurs.
 	 */
 	public static User getUserByEmail(Connection conn, String email) throws SQLException {
@@ -65,54 +58,6 @@ public class UsersDAO {
 	}
 
 	/**
-	 * Retrieves a {@link User} object by their email address and password hash.
-	 * This method is specifically used for traditional email/password login to
-	 * authenticate a user against their stored hashed password.
-	 *
-	 * @param conn          The active database connection.
-	 * @param email         The email address of the user.
-	 * @param password_hash The hashed password to verify against.
-	 * @return A {@link User} object if a user matches both the email and password
-	 *         hash, otherwise returns {@code null}.
-	 * @throws SQLException If a database access error occurs.
-	 */
-	public static User getUserByEmailPass(Connection conn, String email, String password_hash) throws SQLException {
-		// Updated SQL query to use snake_case column names
-		String sql = "SELECT * FROM users WHERE email = ? AND password_hash = ? LIMIT 1"; // Fixed passwordHash to
-																							// password_hash
-		try (PreparedStatement stmt = conn.prepareStatement(sql)) {
-			stmt.setString(1, email);
-			stmt.setString(2, password_hash);
-			try (ResultSet rs = stmt.executeQuery()) {
-				return rs.next() ? parseUser(rs) : null; // Parse if a user is found
-			}
-		}
-	}
-
-	/**
-	 * Retrieves a {@link User} object by their email address. This method is
-	 * typically used during the login or registration process to check for the
-	 * existence of a user with a given email.
-	 *
-	 * @param conn  The active database connection.
-	 * @param email The email address of the user to retrieve.
-	 * @return A {@link User} object if a user with the specified email is found,
-	 *         otherwise returns {@code null}. Returns the first matching user if
-	 *         multiple exist (though email should be unique).
-	 * @throws SQLException If a database access error occurs.
-	 */
-	public static User getUserByGoogleID(Connection conn, String GoogleID) throws SQLException {
-		// Updated SQL query to use snake_case column names
-		String sql = "SELECT * FROM users WHERE google_id = ? LIMIT 1"; // Limit 1 as email should be unique
-		try (PreparedStatement stmt = conn.prepareStatement(sql)) {
-			stmt.setString(1, GoogleID);
-			try (ResultSet rs = stmt.executeQuery()) {
-				return rs.next() ? parseUser(rs) : null; // Parse if a user is found
-			}
-		}
-	}
-
-	/**
 	 * Inserts a new user record into the 'users' table. This method handles setting
 	 * values for all user fields, including newly added nullable fields and JSON
 	 * objects (metadata, permissions), ensuring correct SQL type mapping.
@@ -120,16 +65,13 @@ public class UsersDAO {
 	 * @param conn The active database connection.
 	 * @param user The {@link User} object containing the data for the new user.
 	 * @return {@code true} if the user was successfully inserted, {@code false}
-	 *         otherwise.
+	 * otherwise.
 	 * @throws SQLException If a database access error occurs during the insert
 	 *                      operation.
 	 */
 	public static boolean insertUser(Connection conn, User user) throws SQLException {
 		// Updated SQL query to use snake_case column names
-		String sql = "INSERT INTO users (" + "uuid, email, password_hash, is_verified, created_at, updated_at, "
-				+ "full_name, profile_pic, last_login, metadata, permissions, "
-				+ "acc_type, google_id, refresh_token, refresh_token_expires_at"
-				+ ") VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+		String sql = "INSERT INTO users (" + "uuid, email, password_hash, is_verified, created_at, updated_at, " + "full_name, profile_pic, last_login, metadata, permissions, " + "acc_type, google_id, refresh_token, refresh_token_expires_at" + ") VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
 
 		try (PreparedStatement stmt = conn.prepareStatement(sql)) {
 			stmt.setString(1, user.uuid());
@@ -189,6 +131,70 @@ public class UsersDAO {
 	}
 
 	/**
+	 * Updates an existing user's information in the database. This method updates
+	 * all user fields, including newly added nullable fields and JSON objects
+	 * (metadata, permissions), ensuring correct SQL type mapping.
+	 *
+	 * @param conn The active database connection.
+	 * @param user The {@link User} object containing the updated data for the user.
+	 * @return {@code true} if the user was successfully updated, {@code false}
+	 * otherwise.
+	 * @throws SQLException If a database access error occurs during the update
+	 *                      operation.
+	 */
+	public static boolean updateUser(Connection conn, User user) throws SQLException {
+		// Updated SQL query to use snake_case column names
+		String sql = "UPDATE users SET " + "email = ?, " + "password_hash = ?, " + "is_verified = ?, " + "created_at = ?, " + "updated_at = ?, " + "last_login = ?, " + "acc_type = ?, " + "google_id = ?, " + "refresh_token = ?, " + "refresh_token_expires_at = ?, " + "profile_pic = ?, " + "full_name = ?, " + "metadata = ?, " + "permissions = ? " + "WHERE uuid = ?";
+
+		try (PreparedStatement stmt = conn.prepareStatement(sql)) {
+			stmt.setString(1, user.email());
+
+			// Handle nullable passwordHash
+			if (user.passwordHash() == null) {
+				stmt.setNull(2, Types.VARCHAR);
+			} else {
+				stmt.setString(2, user.passwordHash());
+			}
+
+			stmt.setBoolean(3, user.isVerified());
+			stmt.setLong(4, user.createdAt()); // Should not change, but included for completeness
+			stmt.setLong(5, user.updatedAt());
+			stmt.setObject(6, user.lastLogin(), Types.BIGINT); // Use setNull/setObject for nullable Long
+			stmt.setString(7, user.accType());
+
+			// Handle nullable googleId
+			if (user.googleId() == null) {
+				stmt.setNull(8, Types.VARCHAR);
+			} else {
+				stmt.setString(8, user.googleId());
+			}
+
+			// Handle nullable refreshToken
+			if (user.refreshToken() == null) {
+				stmt.setNull(9, Types.VARCHAR);
+			} else {
+				stmt.setString(9, user.refreshToken());
+			}
+
+			// Handle nullable refreshTokenExpiresAt
+			if (user.refreshTokenExpiresAt() == null) {
+				stmt.setNull(10, Types.BIGINT); // Use Types.BIGINT for Long
+			} else {
+				stmt.setLong(10, user.refreshTokenExpiresAt());
+			}
+
+			stmt.setString(11, user.profilePic());
+			stmt.setString(12, user.fullName());
+			stmt.setString(13, user.metadata().toString());
+			stmt.setString(14, user.permissions().toString());
+			stmt.setString(15, user.uuid());
+
+			int rowsUpdated = stmt.executeUpdate();
+			return rowsUpdated > 0;
+		}
+	}
+
+	/**
 	 * Updates the `is_verified` status of a user and sets their `last_login`
 	 * timestamp. This method is typically called after a user successfully verifies
 	 * their email address.
@@ -197,7 +203,7 @@ public class UsersDAO {
 	 * @param userUuid The UUID of the user to update.
 	 * @param timeNow  The current timestamp (in seconds) to set as `last_login`.
 	 * @return {@code true} if the user's verification status was successfully
-	 *         updated, {@code false} otherwise.
+	 * updated, {@code false} otherwise.
 	 * @throws SQLException If a database access error occurs.
 	 */
 	public static boolean updateUserVerify(Connection conn, String userUuid, long timeNow) throws SQLException {
@@ -221,7 +227,7 @@ public class UsersDAO {
 	 *                updated.
 	 * @param timeNow The current timestamp (in seconds) to set as `last_login`.
 	 * @return {@code true} if the `last_login` timestamp was successfully updated,
-	 *         {@code false} otherwise.
+	 * {@code false} otherwise.
 	 * @throws SQLException If a database access error occurs.
 	 */
 	public static boolean updateLastLogin(Connection conn, String uuid, long timeNow) throws SQLException {
@@ -251,11 +257,10 @@ public class UsersDAO {
 	 *                    {@code null} to keep existing).
 	 * @param updatedAt   The timestamp (in seconds) of the update.
 	 * @return {@code true} if the user's profile information was successfully
-	 *         updated, {@code false} otherwise.
+	 * updated, {@code false} otherwise.
 	 * @throws SQLException If a database access error occurs.
 	 */
-	public static boolean updateProfileInfo(Connection conn, String userUuid, String fullName, String profilePic,
-			JSONObject metadata, JSONObject permissions, long updatedAt) throws SQLException {
+	public static boolean updateProfileInfo(Connection conn, String userUuid, String fullName, String profilePic, JSONObject metadata, JSONObject permissions, long updatedAt) throws SQLException {
 		// Updated SQL query to use snake_case column names
 		StringBuilder sql = new StringBuilder("UPDATE users SET updated_at = ?"); // Fixed here
 		int paramIndex = 1;
@@ -274,24 +279,24 @@ public class UsersDAO {
 		}
 		sql.append(" WHERE uuid = ?");
 
-		try (PreparedStatement pstmt = conn.prepareStatement(sql.toString())) {
-			pstmt.setLong(paramIndex++, updatedAt);
+		try (PreparedStatement stmt = conn.prepareStatement(sql.toString())) {
+			stmt.setLong(paramIndex++, updatedAt);
 
 			if (fullName != null) {
-				pstmt.setString(paramIndex++, fullName);
+				stmt.setString(paramIndex++, fullName);
 			}
 			if (profilePic != null) {
-				pstmt.setString(paramIndex++, profilePic);
+				stmt.setString(paramIndex++, profilePic);
 			}
 			if (metadata != null) {
-				pstmt.setString(paramIndex++, metadata.toString()); // Store as JSON string
+				stmt.setString(paramIndex++, metadata.toString()); // Store as JSON string
 			}
 			if (permissions != null) {
-				pstmt.setString(paramIndex++, permissions.toString()); // Store as JSON string
+				stmt.setString(paramIndex++, permissions.toString()); // Store as JSON string
 			}
-			pstmt.setString(paramIndex++, userUuid);
+			stmt.setString(paramIndex, userUuid);
 
-			return pstmt.executeUpdate() > 0;
+			return stmt.executeUpdate() > 0;
 		}
 	}
 
@@ -304,17 +309,16 @@ public class UsersDAO {
 	 * @param newEmail  The new email address for the user.
 	 * @param updatedAt The timestamp (in seconds) of the update.
 	 * @return {@code true} if the email was successfully updated, {@code false}
-	 *         otherwise.
+	 * otherwise.
 	 * @throws SQLException If a database access error occurs.
 	 */
-	public static boolean updateEmail(Connection conn, String userUuid, String newEmail, long updatedAt)
-			throws SQLException {
+	public static boolean updateEmail(Connection conn, String userUuid, String newEmail, long updatedAt) throws SQLException {
 		String sql = "UPDATE users SET email = ?, updated_at = ? WHERE uuid = ?";
-		try (PreparedStatement pstmt = conn.prepareStatement(sql)) {
-			pstmt.setString(1, newEmail);
-			pstmt.setLong(2, updatedAt);
-			pstmt.setString(3, userUuid);
-			int rowsUpdated = pstmt.executeUpdate();
+		try (PreparedStatement stmt = conn.prepareStatement(sql)) {
+			stmt.setString(1, newEmail);
+			stmt.setLong(2, updatedAt);
+			stmt.setString(3, userUuid);
+			int rowsUpdated = stmt.executeUpdate();
 			return rowsUpdated > 0;
 		}
 	}
@@ -323,7 +327,7 @@ public class UsersDAO {
 	 * Updates the user's password hash and potentially their account type. If the
 	 * current account type is 'google' (meaning no email/password login
 	 * capability), setting a password will change the `acc_type` to 'both'. For
-	 * 'email' or 'both' accounts, it only updates the password hash.
+	 * 'password' or 'both' accounts, it only updates the password hash.
 	 *
 	 * @param conn            The active database connection.
 	 * @param userUuid        The UUID of the user.
@@ -334,8 +338,7 @@ public class UsersDAO {
 	 * @return {@code true} if the update was successful, {@code false} otherwise.
 	 * @throws SQLException If a database access error occurs.
 	 */
-	public static boolean updatePasswordAndAccType(Connection conn, String userUuid, String newPasswordHash,
-			String currentAccType, long updatedAt) throws SQLException {
+	public static boolean updatePasswordAndAccType(Connection conn, String userUuid, String newPasswordHash, String currentAccType, long updatedAt) throws SQLException {
 		String sql;
 		if ("google".equals(currentAccType)) {
 			// If user is 'google' only and sets a password, change to 'both'
@@ -347,81 +350,11 @@ public class UsersDAO {
 			sql = "UPDATE users SET password_hash = ?, updated_at = ? WHERE uuid = ?"; // Fixed here
 		}
 
-		try (PreparedStatement pstmt = conn.prepareStatement(sql)) {
-			pstmt.setString(1, newPasswordHash);
-			pstmt.setLong(2, updatedAt);
-			pstmt.setString(3, userUuid);
-			return pstmt.executeUpdate() > 0;
-		}
-	}
-
-	/**
-	 * Links a Google ID and associated refresh token to an existing user account.
-	 * This method updates the `google_id`, `acc_type` (typically to 'both'),
-	 * `refresh_token`, and `refresh_token_expires_at` fields for the specified
-	 * user.
-	 *
-	 * @param conn                  The active database connection.
-	 * @param userUuid              The UUID of the user to link the Google account
-	 *                              to.
-	 * @param googleId              The unique identifier provided by Google for the
-	 *                              user.
-	 * @param accType               The new account type for the user (e.g.,
-	 *                              'both').
-	 * @param refreshToken          The Google OAuth 2.0 Refresh Token. **Should be
-	 *                              encrypted at rest in the database.**
-	 * @param refreshTokenExpiresAt The expiration timestamp (in seconds) for the
-	 *                              refresh token, or {@code null} if indefinite.
-	 * @param updatedAt             The timestamp (in seconds) of the update.
-	 * @return {@code true} if the Google account was successfully linked,
-	 *         {@code false} otherwise.
-	 * @throws SQLException If a database access error occurs.
-	 */
-	public static boolean linkGoogleAccount(Connection conn, String userUuid, String googleId, String accType,
-			String refreshToken, Long refreshTokenExpiresAt, long updatedAt) throws SQLException {
-		// Updated SQL query to use snake_case column names
-		String sql = "UPDATE users SET google_id = ?, acc_type = ?, refresh_token = ?, refresh_token_expires_at = ?, updated_at = ? WHERE uuid = ?"; // Fixed
-																																						// here
-		try (PreparedStatement pstmt = conn.prepareStatement(sql)) {
-			pstmt.setString(1, googleId);
-			pstmt.setString(2, accType);
-			pstmt.setString(3, refreshToken);
-			if (refreshTokenExpiresAt != null) {
-				pstmt.setLong(4, refreshTokenExpiresAt);
-			} else {
-				pstmt.setNull(4, java.sql.Types.BIGINT); // Use SQL Types for nullable Long
-			}
-			pstmt.setLong(5, updatedAt);
-			pstmt.setString(6, userUuid);
-			return pstmt.executeUpdate() > 0;
-		}
-	}
-
-	/**
-	 * Unlinks a Google account from a user's profile. This method sets the
-	 * `google_id`, `refresh_token`, and `refresh_token_expires_at` to `NULL`, and
-	 * updates the `acc_type` to the specified new type (typically 'email' if the
-	 * user has an existing password).
-	 *
-	 * @param conn       The active database connection.
-	 * @param userUuid   The UUID of the user to unlink the Google account from.
-	 * @param newAccType The new account type for the user after unlinking (e.g.,
-	 *                   'email').
-	 * @param updatedAt  The timestamp (in seconds) of the update.
-	 * @return {@code true} if the Google account was successfully unlinked,
-	 *         {@code false} otherwise.
-	 * @throws SQLException If a database access error occurs.
-	 */
-	public static boolean unlinkGoogleAccount(Connection conn, String userUuid, String newAccType, long updatedAt)
-			throws SQLException {
-		// Updated SQL query to use snake_case column names
-		String sql = "UPDATE users SET google_id = NULL, acc_type = ?, refresh_token = NULL, refresh_token_expires_at = NULL, updated_at = ? WHERE uuid = ?"; // Fixed
-																																								// here
-		try (PreparedStatement pstmt = conn.prepareStatement(sql)) {
-			pstmt.setString(1, newAccType);
-			pstmt.setLong(2, updatedAt);
-			pstmt.setString(3, userUuid);
-			return pstmt.executeUpdate() > 0;
+		try (PreparedStatement stmt = conn.prepareStatement(sql)) {
+			stmt.setString(1, newPasswordHash);
+			stmt.setLong(2, updatedAt);
+			stmt.setString(3, userUuid);
+			return stmt.executeUpdate() > 0;
 		}
 	}
 
@@ -474,70 +407,11 @@ public class UsersDAO {
 		JSONObject metadata = new JSONObject(metadataStr != null && !metadataStr.isBlank() ? metadataStr : "{}");
 
 		String permissionsStr = rs.getString("permissions");
-		JSONObject permissions = new JSONObject(
-				permissionsStr != null && !permissionsStr.isBlank() ? permissionsStr : "{}");
+		JSONObject permissions = new JSONObject(permissionsStr != null && !permissionsStr.isBlank() ? permissionsStr : "{}");
 
 		// Build the User object using its Builder pattern (using Java object field
 		// names)
-		return new User.Builder(uuid, email, createdAt, updatedAt).passwordHash(passwordHash).isVerified(isVerified)
-				.lastLogin(lastLogin).profilePic(profilePic).fullName(fullName).metadata(metadata)
-				.permissions(permissions).accType(accType).googleId(googleId).refreshToken(refreshToken)
-				.refreshTokenExpiresAt(refreshTokenExpiresAt).build();
+		return new User.Builder(uuid, email, createdAt, updatedAt).passwordHash(passwordHash).isVerified(isVerified).lastLogin(lastLogin).profilePic(profilePic).fullName(fullName).metadata(metadata).permissions(permissions).accType(accType).googleId(googleId).refreshToken(refreshToken).refreshTokenExpiresAt(refreshTokenExpiresAt).build();
 	}
 
-	
-	public static boolean updateUser(Connection conn, User user) throws SQLException {
-		// Updated SQL query to use snake_case column names
-		String sql = "UPDATE users SET " + "email = ?, " + "password_hash = ?, " + "is_verified = ?, "
-				+ "created_at = ?, " + "updated_at = ?, " + "last_login = ?, " + "acc_type = ?, " + "google_id = ?, "
-				+ "refresh_token = ?, " + "refresh_token_expires_at = ?, " + "profile_pic = ?, " + "full_name = ?, "
-				+ "metadata = ?, " + "permissions = ? " + "WHERE uuid = ?";
-
-		try (PreparedStatement pstmt = conn.prepareStatement(sql)) {
-			pstmt.setString(1, user.email());
-
-			// Handle nullable passwordHash
-			if (user.passwordHash() == null) {
-				pstmt.setNull(2, Types.VARCHAR);
-			} else {
-				pstmt.setString(2, user.passwordHash());
-			}
-
-			pstmt.setBoolean(3, user.isVerified());
-			pstmt.setLong(4, user.createdAt()); // Should not change, but included for completeness
-			pstmt.setLong(5, user.updatedAt());
-			pstmt.setObject(6, user.lastLogin(), Types.BIGINT); // Use setNull/setObject for nullable Long
-			pstmt.setString(7, user.accType());
-
-			// Handle nullable googleId
-			if (user.googleId() == null) {
-				pstmt.setNull(8, Types.VARCHAR);
-			} else {
-				pstmt.setString(8, user.googleId());
-			}
-
-			// Handle nullable refreshToken
-			if (user.refreshToken() == null) {
-				pstmt.setNull(9, Types.VARCHAR);
-			} else {
-				pstmt.setString(9, user.refreshToken());
-			}
-
-			// Handle nullable refreshTokenExpiresAt
-			if (user.refreshTokenExpiresAt() == null) {
-				pstmt.setNull(10, Types.BIGINT); // Use Types.BIGINT for Long
-			} else {
-				pstmt.setLong(10, user.refreshTokenExpiresAt());
-			}
-
-			pstmt.setString(11, user.profilePic());
-			pstmt.setString(12, user.fullName());
-			pstmt.setString(13, user.metadata().toString());
-			pstmt.setString(14, user.permissions().toString());
-			pstmt.setString(15, user.uuid());
-
-			int rowsUpdated = pstmt.executeUpdate();
-			return rowsUpdated > 0;
-		}
-	}
 }
