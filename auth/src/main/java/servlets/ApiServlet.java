@@ -12,12 +12,11 @@ import servlets.profile.UsersInfoGetter;
 import servlets.profile.UsersInfoUpdater;
 import servlets.profile.UsersInternalInfoGetter;
 import servlets.profile.UsersInternalInfoUpdater;
-import servlets.registration.UsersResendVerifyEmail;
-import servlets.registration.UsersCreator;
-import servlets.registration.UsersVerifyEmail;
-import servlets.security.UsersSessionList;
-import servlets.security.UsersSessionDelete;
 import servlets.security.UsersPassUpdater;
+import servlets.security.UsersSessionDelete;
+import servlets.security.UsersSessionList;
+import servlets.usersCreate.UsersCreator;
+import servlets.usersCreate.UsersVerifier;
 
 import java.io.IOException;
 import java.util.HashMap;
@@ -32,6 +31,8 @@ public class ApiServlet extends HttpServlet {
 
 	static {
 		addRoute("POST", ApiConstants.USERS_CREATE, UsersCreator::createUser);
+		addRoute("GET", ApiConstants.USERS_VERIFY_EMAIL, UsersVerifier::verifyUser);
+		addRoute("POST", ApiConstants.USERS_VERIFY_EMAIL_RESEND, UsersVerifier::resendVerifyEmail);
 
 		addRoute("GET", ApiConstants.USERS_INFO_GET, UsersInfoGetter::getUser);
 		addRoute("PATCH", ApiConstants.USERS_INFO_UPDATE, UsersInfoUpdater::updateUserInfo);
@@ -39,9 +40,6 @@ public class ApiServlet extends HttpServlet {
 
 		addRoute("GET", ApiConstants.USERS_INTERNAL_INFO_GET, UsersInternalInfoGetter::getUserInternalInfo);
 		addRoute("PATCH", ApiConstants.USERS_INTERNAL_INFO_UPDATE, UsersInternalInfoUpdater::updateUserInternalInfo);
-
-		addRoute("GET", ApiConstants.USERS_VERIFY_EMAIL, UsersVerifyEmail::verifyUser);
-		addRoute("POST", ApiConstants.USERS_VERIFY_EMAIL_RESEND, UsersResendVerifyEmail::resendVerifyEmail);
 
 		addRoute("POST", ApiConstants.USERS_PASSWORD_RESET_INIT, UsersPassResetInit::initPassReset);
 		addRoute("PUT", ApiConstants.USERS_PASSWORD_RESET_UPDATE, UsersPassResetInit::initPassReset);

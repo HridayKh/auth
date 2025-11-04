@@ -1,23 +1,21 @@
 // utils/AuthUtil.java (UPDATED)
 package utils;
 
+import db.SessionDAO;
+import db.dbAuth;
+import entities.Session;
+import jakarta.servlet.http.Cookie;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
+
 import java.nio.charset.StandardCharsets;
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.Base64;
 import java.util.concurrent.TimeUnit;
 
-import db.SessionDAO; // Import the updated SessionDAO
-import db.dbAuth;
-import entities.Session; // Import your Session record
-import jakarta.servlet.http.Cookie;
-import jakarta.servlet.http.HttpServletRequest;
-import jakarta.servlet.http.HttpServletResponse;
-
 public class AuthUtil {
 
-	// Define your session expiry time in seconds (e.g., 7 days)
-	// Make this configurable if possible, maybe from dbAuth or a properties file
 	public static final int SESSION_EXPIRY_SECONDS = (int) TimeUnit.DAYS.toSeconds(7);
 	public static final String COOKIE_DOMAIN = "HridayKh.in";
 	private static final String AUTH_COOKIE_NAME = "hridaykh_in_auth_token";
@@ -34,20 +32,15 @@ public class AuthUtil {
 	 * @throws SQLException
 	 */
 	public static void createAndSetAuthCookie(Connection conn, HttpServletRequest req, HttpServletResponse resp,
-			String userUuid) throws SQLException {
+	                                          String userUuid) throws SQLException {
 		String userAgent = req.getHeader("User-Agent");
 
-		// 1. Create a new session record in the database
 		String sessionId = SessionDAO.createSession(conn, userUuid, userAgent, SESSION_EXPIRY_SECONDS);
-		// 2. Sign the sessionId. Assuming PassUtil.signUUID can securely sign any
-		// string.
 		String signedSessionId = PassUtil.signString(sessionId);
 
-		// 3. Combine sessionId and signature for the cookie value
 		String jwt = sessionId + ":|:" + signedSessionId;
 		String encodedJwt = Base64.getEncoder().encodeToString(jwt.getBytes(StandardCharsets.UTF_8));
 
-		// 4. Set the HttpOnly auth cookie
 		Cookie authCookie = new Cookie(AUTH_COOKIE_NAME, encodedJwt);
 
 		if ("yes".equals(dbAuth.PROD)) {
@@ -73,7 +66,7 @@ public class AuthUtil {
 	 *                      lookup/update.
 	 */
 	public static String getUserUUIDFromAuthCookie(HttpServletRequest req, HttpServletResponse resp, Connection conn)
-			throws SQLException {
+		throws SQLException {
 		Cookie[] cookies = req.getCookies();
 		if (cookies == null) {
 			return null; // No cookies present, user not logged in
@@ -162,7 +155,7 @@ public class AuthUtil {
 	 * "other apps" or internal services that share a static secret. It extracts the
 	 * Base64-encoded credentials, decodes them, and checks if the extracted
 	 * password matches the `dbAuth.PASS` variable.
-	 *
+	 * <p>
 	 * Note: Storing sensitive passwords directly in code or simple configuration
 	 * files (like `dbAuth.PASS`) is generally not recommended for high-security
 	 * applications. Consider environment variables or a secrets management system
@@ -171,7 +164,7 @@ public class AuthUtil {
 	 *
 	 * @param req The {@link HttpServletRequest} containing the HTTP headers.
 	 * @return {@code true} if the Basic Auth header is present and the password
-	 *         matches {@code dbAuth.PASS}, {@code false} otherwise.
+	 * matches {@code dbAuth.PASS}, {@code false} otherwise.
 	 */
 	public static boolean verifyBasicAuthHeaderWithStaticPassword(HttpServletRequest req) {
 		// 1. Get the Authorization header from the request

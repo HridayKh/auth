@@ -1,4 +1,4 @@
-package servlets.registration;
+package servlets.usersCreate;
 
 import db.EmailDAO;
 import db.UsersDAO;

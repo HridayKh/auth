@@ -22,7 +22,7 @@ public class EmailDAO {
 		}
 	}
 
-	public static String verifyToken(Connection conn, String token) {
+	public static String userUserUuidFromVerifyToken(Connection conn, String token) {
 		String sql = "SELECT user_uuid FROM email_tokens WHERE token = ? AND expires_at > (UNIX_TIMESTAMP()) LIMIT 1";
 		try (PreparedStatement stmt = conn.prepareStatement(sql)) {
 			stmt.setString(1, token);

@@ -4,6 +4,7 @@ import entities.User;
 import org.json.JSONObject;
 
 import java.sql.*;
+import java.time.Instant;
 
 public class UsersDAO {
 
@@ -201,18 +202,15 @@ public class UsersDAO {
 	 *
 	 * @param conn     The active database connection.
 	 * @param userUuid The UUID of the user to update.
-	 * @param timeNow  The current timestamp (in seconds) to set as `last_login`.
 	 * @return {@code true} if the user's verification status was successfully
 	 * updated, {@code false} otherwise.
 	 * @throws SQLException If a database access error occurs.
 	 */
-	public static boolean updateUserVerify(Connection conn, String userUuid, long timeNow) throws SQLException {
-		// Updated SQL query to use snake_case column names
-		String sql = "UPDATE users SET is_verified = ?, last_login = ? WHERE uuid = ?"; // Fixed here
+	public static boolean updateUserVerifyStatus(Connection conn, String userUuid) throws SQLException {
+		String sql = "UPDATE users SET is_verified = ?, last_login = (UNIX_TIMESTAMP() * 1000) WHERE uuid = ?";
 		try (PreparedStatement stmt = conn.prepareStatement(sql)) {
-			stmt.setBoolean(1, true); // Set is_verified to true (1)
-			stmt.setLong(2, timeNow);
-			stmt.setString(3, userUuid);
+			stmt.setBoolean(1, true);
+			stmt.setString(2, userUuid);
 			int rowsUpdated = stmt.executeUpdate();
 			return rowsUpdated > 0;
 		}
