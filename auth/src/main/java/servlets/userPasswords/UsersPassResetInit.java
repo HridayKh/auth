@@ -1,4 +1,4 @@
-package servlets.authentication;
+package servlets.userPasswords;
 
 import db.UsersDAO;
 import db.dbAuth;
@@ -10,20 +10,18 @@ import org.apache.logging.log4j.Logger;
 import org.json.JSONObject;
 import utils.AuthUtil;
 import utils.HttpUtil;
-import utils.PassUtil;
 
 import java.io.IOException;
 import java.sql.Connection;
 import java.util.Map;
 
-public class UsersSessionCreate {
+public class UsersPassResetInit {
 
-	private static final Logger log = LogManager.getLogger(UsersSessionCreate.class);
+	private static final Logger log = LogManager.getLogger(UsersPassResetInit.class);
 
-	public static void createUserSession(HttpServletRequest req, HttpServletResponse resp, Map<String, String> ignoredParams) throws IOException {
+	public static void initPassReset(HttpServletRequest req, HttpServletResponse resp, Map<String, String> ignoredParams) throws IOException {
 		JSONObject body = HttpUtil.readBodyJSON(req);
 		String email = body.getString("email");
-		String pass = body.getString("pass");
 
 		try (Connection conn = dbAuth.getConnection()) {
 			User user = UsersDAO.getUserByEmail(conn, email.toLowerCase());
@@ -34,10 +32,6 @@ public class UsersSessionCreate {
 			}
 			if (user.accType().equals("google")) {
 				HttpUtil.sendJson(resp, HttpServletResponse.SC_BAD_REQUEST, "error", "Please use google login");
-				return;
-			}
-			if (!PassUtil.sha256Hash(pass).equals(user.passwordHash())) {
-				HttpUtil.sendJson(resp, HttpServletResponse.SC_BAD_REQUEST, "error", "Invalid email/password");
 				return;
 			}
 
@@ -52,10 +46,9 @@ public class UsersSessionCreate {
 				HttpUtil.sendJson(resp, HttpServletResponse.SC_INTERNAL_SERVER_ERROR, "error", "Could not login.");
 				return;
 			}
+
 			AuthUtil.createAndSetAuthCookie(conn, req, resp, user.uuid());
-
 			HttpUtil.sendJson(resp, HttpServletResponse.SC_OK, "success", "Logged In Successfully, Redirecting....");
-
 		} catch (Exception e) {
 			log.catching(e);
 			HttpUtil.sendJson(resp, HttpServletResponse.SC_INTERNAL_SERVER_ERROR, "error", "Internal Server Error");

@@ -1,4 +1,4 @@
-package servlets.security;
+package servlets.userSessions;
 
 import java.io.IOException;
 import java.sql.Connection;

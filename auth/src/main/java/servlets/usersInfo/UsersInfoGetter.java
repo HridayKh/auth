@@ -1,8 +1,4 @@
-package servlets.profile;
-
-import java.io.IOException;
-import java.sql.Connection;
-import java.util.Map;
+package servlets.usersInfo;
 
 import db.UsersDAO;
 import db.dbAuth;
@@ -14,16 +10,19 @@ import org.apache.logging.log4j.Logger;
 import utils.AuthUtil;
 import utils.HttpUtil;
 
-public class UsersInternalInfoGetter {
+import java.io.IOException;
+import java.sql.Connection;
+import java.util.Map;
 
-	private static final Logger log = LogManager.getLogger(UsersInternalInfoGetter.class);
+public class UsersInfoGetter {
 
-	public static void getUserInternalInfo(HttpServletRequest req, HttpServletResponse resp, Map<String, String> ignoredParams)
-			throws IOException {
+	private static final Logger log = LogManager.getLogger(UsersInfoGetter.class);
+
+	public static void getUser(HttpServletRequest req, HttpServletResponse resp, Map<String, String> ignoredParams) throws IOException {
 		try (Connection conn = dbAuth.getConnection()) {
 			String uuid = AuthUtil.getUserUUIDFromAuthCookie(req, resp, conn);
 			if (uuid == null) {
-				HttpUtil.sendJson(resp, HttpServletResponse.SC_UNAUTHORIZED, "error", "Not Logged In");
+				HttpUtil.sendJson(resp, HttpServletResponse.SC_UNAUTHORIZED, "error", "Not Logged IN");
 				return;
 			}
 			User user = UsersDAO.getUserByUuid(conn, uuid);
@@ -31,11 +30,12 @@ public class UsersInternalInfoGetter {
 				HttpUtil.sendJson(resp, HttpServletResponse.SC_NOT_FOUND, "error", "User not found");
 				return;
 			}
-			HttpUtil.sendUserMetadataPerms(resp, user);
+			HttpUtil.sendUser(resp, user);
 			HttpUtil.createAndSetUserCookie(resp, user);
 		} catch (Exception e) {
 			log.catching(e);
 			HttpUtil.sendJson(resp, HttpServletResponse.SC_INTERNAL_SERVER_ERROR, "error", "Internal Server Error");
 		}
 	}
+
 }

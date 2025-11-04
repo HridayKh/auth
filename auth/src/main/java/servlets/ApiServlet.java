@@ -5,16 +5,16 @@ import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
-import servlets.authentication.UsersPassResetInit;
-import servlets.authentication.UsersSessionCreate;
-import servlets.authentication.UsersSessionDeleteCurrent;
-import servlets.profile.UsersInfoGetter;
-import servlets.profile.UsersInfoUpdater;
-import servlets.profile.UsersInternalInfoGetter;
-import servlets.profile.UsersInternalInfoUpdater;
-import servlets.security.UsersPassUpdater;
-import servlets.security.UsersSessionDelete;
-import servlets.security.UsersSessionList;
+import servlets.userPasswords.UsersPassResetInit;
+import servlets.userSessions.UsersSessionCreate;
+import servlets.userSessions.UsersSessionDeleteCurrent;
+import servlets.usersInfo.UsersInfoGetter;
+import servlets.usersInfo.UsersInfoUpdater;
+import servlets.usersInfo.UsersInternalInfoGetter;
+import servlets.usersInfo.UsersInternalInfoUpdater;
+import servlets.userPasswords.UsersPassUpdater;
+import servlets.userSessions.UsersSessionDelete;
+import servlets.userSessions.UsersSessionList;
 import servlets.usersCreate.UsersCreator;
 import servlets.usersCreate.UsersVerifier;
 
@@ -36,13 +36,12 @@ public class ApiServlet extends HttpServlet {
 
 		addRoute("GET", ApiConstants.USERS_INFO_GET, UsersInfoGetter::getUser);
 		addRoute("PATCH", ApiConstants.USERS_INFO_UPDATE, UsersInfoUpdater::updateUserInfo);
-		addRoute("POST", ApiConstants.USERS_PASSWORD_UPDATE, UsersPassUpdater::updateUserPass);
-
 		addRoute("GET", ApiConstants.USERS_INTERNAL_INFO_GET, UsersInternalInfoGetter::getUserInternalInfo);
 		addRoute("PATCH", ApiConstants.USERS_INTERNAL_INFO_UPDATE, UsersInternalInfoUpdater::updateUserInternalInfo);
 
 		addRoute("POST", ApiConstants.USERS_PASSWORD_RESET_INIT, UsersPassResetInit::initPassReset);
 		addRoute("PUT", ApiConstants.USERS_PASSWORD_RESET_UPDATE, UsersPassResetInit::initPassReset);
+		addRoute("POST", ApiConstants.USERS_PASSWORD_UPDATE, UsersPassUpdater::updateUserPass);
 
 		addRoute("GET", ApiConstants.USERS_SESSIONS_LIST, UsersSessionList::listUserSessions);
 		addRoute("POST", ApiConstants.USERS_SESSIONS_CREATE, UsersSessionCreate::createUserSession);

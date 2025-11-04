@@ -1,4 +1,4 @@
-package servlets.security;
+package servlets.userPasswords;
 
 import db.UsersDAO;
 import db.dbAuth;

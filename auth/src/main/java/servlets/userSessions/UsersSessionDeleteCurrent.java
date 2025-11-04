@@ -1,4 +1,4 @@
-package servlets.authentication;
+package servlets.userSessions;
 
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;

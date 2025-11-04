@@ -1,4 +1,4 @@
-package servlets.profile;
+package servlets.usersInfo;
 
 import db.UsersDAO;
 import db.dbAuth;
