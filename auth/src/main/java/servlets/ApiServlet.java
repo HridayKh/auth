@@ -5,18 +5,16 @@ import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
-import servlets.userPasswords.UsersPassResetInit;
-import servlets.userSessions.UsersSessionCreate;
-import servlets.userSessions.UsersSessionDeleteCurrent;
-import servlets.usersInfo.UsersInfoGetter;
-import servlets.usersInfo.UsersInfoUpdater;
-import servlets.usersInfo.UsersInternalInfoGetter;
-import servlets.usersInfo.UsersInternalInfoUpdater;
 import servlets.userPasswords.UsersPassUpdater;
+import servlets.userSessions.UsersSessionCreate;
 import servlets.userSessions.UsersSessionDelete;
+import servlets.userSessions.UsersSessionDeleteCurrent;
 import servlets.userSessions.UsersSessionList;
 import servlets.usersCreate.UsersCreator;
 import servlets.usersCreate.UsersVerifier;
+import servlets.usersInfo.UsersInfoManager;
+import servlets.usersInfo.UsersInternalManager;
+import utils.HttpUtil;
 
 import java.io.IOException;
 import java.util.HashMap;
@@ -30,19 +28,25 @@ public class ApiServlet extends HttpServlet {
 	private static final Map<String, Map<String, RouteHandler>> routes = new HashMap<>();
 
 	static {
+		// UsersCreate
 		addRoute("POST", ApiConstants.USERS_CREATE, UsersCreator::createUser);
+
 		addRoute("GET", ApiConstants.USERS_VERIFY_EMAIL, UsersVerifier::verifyUser);
 		addRoute("POST", ApiConstants.USERS_VERIFY_EMAIL_RESEND, UsersVerifier::resendVerifyEmail);
 
-		addRoute("GET", ApiConstants.USERS_INFO_GET, UsersInfoGetter::getUser);
-		addRoute("PATCH", ApiConstants.USERS_INFO_UPDATE, UsersInfoUpdater::updateUserInfo);
-		addRoute("GET", ApiConstants.USERS_INTERNAL_INFO_GET, UsersInternalInfoGetter::getUserInternalInfo);
-		addRoute("PATCH", ApiConstants.USERS_INTERNAL_INFO_UPDATE, UsersInternalInfoUpdater::updateUserInternalInfo);
+		// UsersInfo
+		addRoute("GET", ApiConstants.USERS_INFO_GET, UsersInfoManager::getUserInfo);
+		addRoute("PATCH", ApiConstants.USERS_INFO_UPDATE, UsersInfoManager::updateUserInfo);
 
-		addRoute("POST", ApiConstants.USERS_PASSWORD_RESET_INIT, UsersPassResetInit::initPassReset);
-		addRoute("PUT", ApiConstants.USERS_PASSWORD_RESET_UPDATE, UsersPassResetInit::initPassReset);
+		addRoute("GET", ApiConstants.USERS_INTERNAL_INFO_GET, UsersInternalManager::getUserInternalInfo);
+		addRoute("PATCH", ApiConstants.USERS_INTERNAL_INFO_UPDATE, UsersInternalManager::updateUserInternalInfo);
+
+		// UsersPasswords
+		addRoute("POST", ApiConstants.USERS_PASSWORD_RESET_INIT, (req, resp, params) -> HttpUtil.sendJson(resp, HttpServletResponse.SC_NOT_IMPLEMENTED, "error", "unimplemented endpoint"));
+		addRoute("PUT", ApiConstants.USERS_PASSWORD_RESET_UPDATE, (req, resp, params) -> HttpUtil.sendJson(resp, HttpServletResponse.SC_NOT_IMPLEMENTED, "error", "unimplemented endpoint"));
 		addRoute("POST", ApiConstants.USERS_PASSWORD_UPDATE, UsersPassUpdater::updateUserPass);
 
+		// UsersSessions
 		addRoute("GET", ApiConstants.USERS_SESSIONS_LIST, UsersSessionList::listUserSessions);
 		addRoute("POST", ApiConstants.USERS_SESSIONS_CREATE, UsersSessionCreate::createUserSession);
 		addRoute("DELETE", ApiConstants.USERS_SESSION_DELETE, UsersSessionDelete::deleteUserSession);

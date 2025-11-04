@@ -29,10 +29,9 @@ public class AuthUtil {
 	 * @param conn     The database connection.
 	 * @param userUuid The UUID of the user logging in.
 	 * @param req      The HttpServletRequest to get User-Agent.
-	 * @throws SQLException
+	 * @throws SQLException If a database access error occurs during session creation.
 	 */
-	public static void createAndSetAuthCookie(Connection conn, HttpServletRequest req, HttpServletResponse resp,
-	                                          String userUuid) throws SQLException {
+	public static void createAndSetAuthCookie(Connection conn, HttpServletRequest req, HttpServletResponse resp, String userUuid) throws SQLException {
 		String userAgent = req.getHeader("User-Agent");
 
 		String sessionId = SessionDAO.createSession(conn, userUuid, userAgent, SESSION_EXPIRY_SECONDS);
@@ -65,8 +64,7 @@ public class AuthUtil {
 	 * @throws SQLException If a database access error occurs during session
 	 *                      lookup/update.
 	 */
-	public static String getUserUUIDFromAuthCookie(HttpServletRequest req, HttpServletResponse resp, Connection conn)
-		throws SQLException {
+	public static String getUserUUIDFromAuthCookie(HttpServletRequest req, HttpServletResponse resp, Connection conn) throws SQLException {
 		Cookie[] cookies = req.getCookies();
 		if (cookies == null) {
 			return null; // No cookies present, user not logged in
@@ -83,7 +81,7 @@ public class AuthUtil {
 			return null; // Auth cookie not found, user not logged in
 		}
 
-		String sessionId = null;
+		String sessionId;
 		try {
 			byte[] decodedBytes = Base64.getDecoder().decode(jwtEnc);
 			String jwt = new String(decodedBytes, StandardCharsets.UTF_8);
@@ -126,8 +124,6 @@ public class AuthUtil {
 		} catch (IllegalArgumentException e) {
 			clearAuthCookie(resp);
 			return null;
-		} catch (SQLException e) {
-			throw e;
 		}
 	}
 
@@ -149,40 +145,4 @@ public class AuthUtil {
 		resp.addCookie(authCookie);
 	}
 
-	/**
-	 * Verifies an 'Authorization: Basic' HTTP header against a predefined static
-	 * password. This method is intended for authenticating requests from trusted
-	 * "other apps" or internal services that share a static secret. It extracts the
-	 * Base64-encoded credentials, decodes them, and checks if the extracted
-	 * password matches the `dbAuth.PASS` variable.
-	 * <p>
-	 * Note: Storing sensitive passwords directly in code or simple configuration
-	 * files (like `dbAuth.PASS`) is generally not recommended for high-security
-	 * applications. Consider environment variables or a secrets management system
-	 * for production environments. This method assumes `dbAuth.PASS` holds the
-	 * static password to be checked.
-	 *
-	 * @param req The {@link HttpServletRequest} containing the HTTP headers.
-	 * @return {@code true} if the Basic Auth header is present and the password
-	 * matches {@code dbAuth.PASS}, {@code false} otherwise.
-	 */
-	public static boolean verifyBasicAuthHeaderWithStaticPassword(HttpServletRequest req) {
-		// 1. Get the Authorization header from the request
-		String authHeader = req.getHeader("auth");
-
-		// 2. Check if the header exists and starts with "Basic "
-		if (authHeader == null) {
-			return false;
-		}
-
-		// 5. Convert decoded bytes to string
-		String credentials = authHeader.trim();
-
-		// 6. Compare the extracted password with the static password from dbAuth.PASS
-		if (credentials.equals(PassUtil.sha256Hash(dbAuth.DB_PASSWORD))) {
-			return true; // Password matched
-		} else {
-			return false; // Password mismatch
-		}
-	}
 }

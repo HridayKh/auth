@@ -30,11 +30,8 @@ public class UsersPassUpdater {
 				return;
 			}
 
-			// Get userId from path parameter (set by the routing servlet)
 			String requestedUserId = params.get("userId");
 
-			// For security, users can only update their own password unless they have admin permissions
-			// For now, enforce that users can only update their own password
 			if (requestedUserId != null && !requestedUserId.equals(uuid)) {
 				HttpUtil.sendJson(resp, HttpServletResponse.SC_FORBIDDEN, "error", "Access denied");
 				return;

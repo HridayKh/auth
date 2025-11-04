@@ -4,7 +4,6 @@ import entities.User;
 import org.json.JSONObject;
 
 import java.sql.*;
-import java.time.Instant;
 
 public class UsersDAO {
 
@@ -294,6 +293,16 @@ public class UsersDAO {
 			}
 			stmt.setString(paramIndex, userUuid);
 
+			return stmt.executeUpdate() > 0;
+		}
+	}
+
+	public static boolean updateInternalInfo(Connection conn, String userUuid, JSONObject internal, long updatedAt) throws SQLException {
+		String sql = "UPDATE users SET updated_at = ?, internal = ? WHERE uuid = ?";
+		try (PreparedStatement stmt = conn.prepareStatement(sql)) {
+			stmt.setLong(1, updatedAt);
+			stmt.setString(2, internal.toString());
+			stmt.setString(3, userUuid);
 			return stmt.executeUpdate() > 0;
 		}
 	}

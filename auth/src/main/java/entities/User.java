@@ -23,6 +23,7 @@ public class User {
 	private final String fullName;
 	private final JSONObject metadata;
 	private final JSONObject permissions;
+	private final JSONObject internal;
 
 	private User(Builder builder) {
 		this.uuid = builder.uuid;
@@ -44,6 +45,7 @@ public class User {
 		this.fullName = builder.fullName;
 		this.metadata = builder.metadata;
 		this.permissions = builder.permissions;
+		this.internal = builder.internal;
 	}
 
 	// --- Getters ---
@@ -108,6 +110,10 @@ public class User {
 		return permissions;
 	}
 
+	public JSONObject internal() {
+		return internal;
+	}
+
 	// --- Builder Class ---
 	public static class Builder {
 		// Required fields for initial construction
@@ -132,6 +138,7 @@ public class User {
 		private String profilePic = "https://i.pinimg.com/736x/2f/15/f2/2f15f2e8c688b3120d3d26467b06330c.jpg";
 		private JSONObject metadata = new JSONObject();
 		private JSONObject permissions = new JSONObject();
+		private JSONObject internal = new JSONObject();
 
 		/**
 		 * Constructor for the Builder class. Sets the minimum required fields for a
@@ -182,6 +189,11 @@ public class User {
 
 		public Builder permissions(JSONObject val) {
 			this.permissions = val;
+			return this;
+		}
+
+		public Builder internal(JSONObject val) {
+			this.internal = val;
 			return this;
 		}
 
