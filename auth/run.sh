@@ -2,7 +2,7 @@
 clear
 set -e
 
-TOMCAT_HOME="/home/hridaykh/Code/tomcat-11.0.7"
+TOMCAT_HOME="/home/hridaykh/Code/Servers/apache-tomcat-11.0.13-custom"
 WAR_NAME="auth"
 TARGET_WAR="target/$WAR_NAME.war"
 DEPLOY_PATH="$TOMCAT_HOME/webapps/$WAR_NAME.war"

@@ -7,8 +7,6 @@ import com.mailgun.model.message.Message.MessageBuilder;
 import com.mailgun.util.Constants;
 import db.dbAuth;
 
-import java.io.IOException;
-
 public class MailUtil {
 
 	public static String templateVerifyMail(String link) {

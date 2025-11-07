@@ -5,11 +5,11 @@ export default function Home() {
       marginTop: "5rem",
       fontFamily: "sans-serif",
     }}>
-      <h1 style={{ fontSize: "2rem" }}>Hriday.Tech Authentication</h1>
-      <p>This is the central authentication service for Hriday.Tech apps.</p>
+      <h1 style={{ fontSize: "2rem" }}>HridayKh.in Authentication</h1>
+      <p>This is the central authentication service for HridayKh.in apps.</p>
       <p>To learn more or contact the developer:</p>
       <a
-        href="https://hriday.tech"
+        href="https://HridayKh.in"
         target="_blank"
         rel="noopener noreferrer"
         style={{

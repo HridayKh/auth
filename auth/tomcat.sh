@@ -1,4 +1,4 @@
-TOMCAT_HOME="/home/hridaykh/Code/tomcat-11.0.7"
+TOMCAT_HOME="/home/hridaykh/Code/Servers/apache-tomcat-11.0.13-custom"
 
 # cd first so log files are created in the right place
 cd $TOMCAT_HOME

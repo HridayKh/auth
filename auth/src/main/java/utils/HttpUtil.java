@@ -3,7 +3,6 @@ package utils;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
-import java.sql.SQLException;
 import java.util.Base64;
 
 import org.json.JSONObject;
