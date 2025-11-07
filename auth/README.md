@@ -1,7 +1,6 @@
 # HridayKh.in Authentication Service API Documentation
 
-*Last Update Started: November 4, 2025*
-> the update of readme has started and is still ongoing.
+*Last Updated: November 7, 2025*
 
 ## Overview
 
@@ -38,7 +37,7 @@ design.
 
 - **Single Entry Point**: All API requests route through `/v1/*` via `ApiServlet`
 - **Route-to-Handler Mapping**: Declarative routing with path parameter support
-- **Pattern Matching**: Supports parameterized routes like `/v1/users/{userId}/sessions`
+- **Pattern Matching**: Supports parameterized routes like `/v1/users/sessions/{sessionId}`
 - **Method-based Routing**: HTTP methods mapped to specific handlers
 
 #### 2. Multi-tier Authentication Filter (`ApiKeyFilter`)
@@ -57,79 +56,68 @@ design.
 
 ```
 src/main/java/
-├── auth/                    # Authentication filters and test apps
-│   ├── ApiKeyFilter.java   # Multi-tier authentication filter
-│   ├── CORSFilter.java     # Cross-origin request handling
-│   └── TestApp.java        # Authentication testing endpoint
-├── db/                      # Database access layer (DAOs)
-├── dtos/                    # Data Transfer Objects
-├── entities/                # Domain entities
-├── google/                  # Google OAuth implementation
-├── servlets/                # HTTP request handlers
-│   ├── ApiServlet.java     # Central routing servlet
-│   ├── ApiConstants.java   # Endpoint URL constants
-│   ├── authentication/     # Login/logout handlers
-│   ├── profile/            # User profile management
-│   ├── registration/       # User registration and verification
-│   └── security/           # Session and password management
-└── utils/                   # Utility classes
-    ├── ApiKeyManager.java  # API key management and validation
-    ├── AuthUtil.java       # Authentication utilities
-    └── ...                 # Other utilities
+├── auth/                  # Authentication filters and test apps
+│   ├── ApiKeyFilter.java      # Multi-tier authentication filter
+│   ├── CORSFilter.java        # Cross-origin request handling
+│   └── TestApp.java           # Authentication testing endpoint
+├── db/                    # Database access layer (DAOs)
+├── entities/              # Domain entities
+├── google/                # Google OAuth implementation
+├── servlets/              # HTTP request handlers
+│   ├── ApiServlet.java        # Central routing servlet
+│   ├── ApiConstants.java      # Endpoint URL constants
+│   ├── userPasswords/         # Password Update and reset servlets
+│   ├── userSessions/          # Sessions related servlets
+│   ├── usersCreate/           # User creation and email verification
+│   └── usersInfo/             # User info related
+└── utils/                 # Utility classes
+    ├── ApiKeyManager.java 	# API key management and validation
+    ├── AuthUtil.java      	# Authentication utilities
+    └── ...                	# Other utilities
 ```
 
 ## Database Schema
 
 ### Users Table
 
-```sql
-CREATE TABLE users
-(
-    uuid                     VARCHAR(36) PRIMARY KEY,
-    email                    VARCHAR(255) NOT NULL UNIQUE,
-    password_hash            VARCHAR(255),
-    is_verified              BOOLEAN DEFAULT FALSE,
-    created_at               BIGINT       NOT NULL,
-    updated_at               BIGINT       NOT NULL,
-    last_login               BIGINT,
-    profile_pic              TEXT,
-    full_name                VARCHAR(255),
-    metadata                 JSON,
-    permissions              JSON,
-    google_id                VARCHAR(255),
-    acc_type                 VARCHAR(50)  NOT NULL,
-    refresh_token            TEXT,
-    refresh_token_expires_at BIGINT
-);
-```
+| Field                    | Type         | Null | Key | Default |
+|--------------------------|--------------|------|-----|---------|
+| uuid                     | varchar(36)  | NO   | PRI | NULL    |
+| email                    | varchar(255) | NO   | UNI | NULL    |
+| password_hash            | varchar(255) | YES  |     | NULL    |
+| is_verified              | tinyint(1)   | YES  |     | 0       |
+| created_at               | bigint       | NO   |     | NULL    |
+| updated_at               | bigint       | NO   |     | NULL    |
+| last_login               | bigint       | YES  |     | NULL    |
+| profile_pic              | varchar(255) | YES  |     | NULL    |
+| full_name                | varchar(100) | YES  |     | NULL    |
+| metadata                 | json         | YES  |     | NULL    |
+| permissions              | json         | YES  |     | NULL    |
+| acc_type                 | varchar(50)  | NO   |     | both    |
+| google_id                | varchar(255) | YES  |     | NULL    |
+| refresh_token            | text         | YES  |     | NULL    |
+| refresh_token_expires_at | bigint       | YES  |     | NULL    |
+| internal                 | json         | YES  |     | NULL    |
 
 ### Sessions Table
 
-```sql
-CREATE TABLE sessions
-(
-    session_id       VARCHAR(36) PRIMARY KEY,
-    user_uuid        VARCHAR(36) NOT NULL,
-    created_at       BIGINT      NOT NULL,
-    last_accessed_at BIGINT      NOT NULL,
-    expires_at       BIGINT      NOT NULL,
-    user_agent       TEXT,
-    is_active        BOOLEAN DEFAULT TRUE,
-    FOREIGN KEY (user_uuid) REFERENCES users (uuid) ON DELETE CASCADE
-);
-```
+| Field            | Type         | Null | Key | Default |
+|------------------|--------------|------|-----|---------|
+| session_id       | varchar(36)  | NO   | PRI | NULL    |
+| user_uuid        | varchar(36)  | NO   |     | NULL    |
+| created_at       | bigint       | NO   |     | NULL    |
+| last_accessed_at | bigint       | NO   |     | NULL    |
+| expires_at       | bigint       | NO   |     | NULL    |
+| user_agent       | varchar(255) | YES  |     | NULL    |
+| is_active        | tinyint(1)   | NO   |     | 1       |
 
 ### Email Tokens Table
 
-```sql
-CREATE TABLE email_tokens
-(
-    token      VARCHAR(255) PRIMARY KEY,
-    user_uuid  VARCHAR(36) NOT NULL,
-    expires_at BIGINT      NOT NULL,
-    FOREIGN KEY (user_uuid) REFERENCES users (uuid) ON DELETE CASCADE
-);
-```
+| Field      | Type         | Null | Key | Default |
+|------------|--------------|------|-----|---------|
+| token      | varchar(255) | NO   | PRI | NULL    |
+| user_uuid  | varchar(36)  | NO   | MUL | NULL    |
+| expires_at | bigint       | NO   |     | NULL    |
 
 ## Authentication and Security
 
@@ -707,7 +695,6 @@ MAILGUN_KEY=your_mailgun_api_key
 # Environment
 VITE_PROD=yes  # "yes" for production, anything else for development
 
-# New API Key System (Comma-separated values)
 # Admin keys for privileged operations
 ADMIN_API_KEYS=admin_key_1,admin_key_2,admin_key_3
 

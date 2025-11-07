@@ -2,7 +2,6 @@ package servlets.usersInfo;
 
 import db.UsersDAO;
 import db.dbAuth;
-import dtos.UserProfileUpdateDTO;
 import entities.User;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
@@ -144,4 +143,35 @@ public class UsersInfoManager {
 		}
 	}
 
+}
+
+class UserProfileUpdateDTO {
+	private String email = null;
+	private String profilePic = null;
+	private String fullName = null;
+
+	// Getters and Setters
+	public String getEmail() {
+		return email.toLowerCase();
+	}
+
+	public void setEmail(String email) {
+		this.email = email.toLowerCase();
+	}
+
+	public String getProfilePic() {
+		return profilePic;
+	}
+
+	public void setProfilePic(String profilePic) {
+		this.profilePic = profilePic;
+	}
+
+	public String getFullName() {
+		return fullName;
+	}
+
+	public void setFullName(String fullName) {
+		this.fullName = fullName;
+	}
 }
