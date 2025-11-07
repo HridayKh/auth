@@ -132,9 +132,20 @@ public class ApiKeyFilter implements Filter {
 	private static class PathAccessControl {
 		private final Set<String> publicPaths = Set.of();
 
-		private final Set<String> frontendPaths = Set.of(ApiConstants.USERS_SESSIONS_CREATE, ApiConstants.USERS_SESSIONS_DELETE_CURRENT, ApiConstants.USERS_PASSWORD_RESET_INIT, ApiConstants.USERS_INFO_GET, ApiConstants.USERS_INFO_UPDATE, ApiConstants.USERS_CREATE, ApiConstants.USERS_VERIFY_EMAIL, ApiConstants.USERS_VERIFY_EMAIL_RESEND, ApiConstants.USERS_PASSWORD_UPDATE, ApiConstants.USERS_SESSIONS_LIST, ApiConstants.USERS_SESSION_DELETE);
+		private final Set<String> frontendPaths = Set.of(
+			ApiConstants.USERS_CREATE,
+			ApiConstants.USERS_INFO,
+			ApiConstants.USERS_PASSWORD_UPDATE,
+			ApiConstants.USERS_VERIFY_EMAIL,
+			ApiConstants.USERS_VERIFY_EMAIL_RESEND,
+			ApiConstants.USERS_PASSWORD_RESET,
+			ApiConstants.USERS_SESSIONS_LIST,
+			ApiConstants.USERS_SESSIONS_CREATE,
+			ApiConstants.USERS_SESSION_DELETE,
+			ApiConstants.USERS_SESSIONS_DELETE_CURRENT
+		);
 
-		private final Set<String> backendPaths = Set.of(ApiConstants.USERS_INTERNAL_INFO_GET, ApiConstants.USERS_INTERNAL_INFO_UPDATE);
+		private final Set<String> backendPaths = Set.of(ApiConstants.USERS_INTERNAL_INFO);
 
 		private final Set<String> adminPaths = Set.of();
 

@@ -1,5 +1,6 @@
 package servlets;
 
+import auth.test;
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
@@ -27,6 +28,7 @@ public class ApiServlet extends HttpServlet {
 	private static final Map<String, Map<String, RouteHandler>> routes = new HashMap<>();
 
 	static {
+		addRoute("GET", "/v1/test", test::doGet);
 		// UsersCreate
 		addRoute("POST", ApiConstants.USERS_CREATE, UsersCreator::createUser);
 
@@ -34,15 +36,15 @@ public class ApiServlet extends HttpServlet {
 		addRoute("POST", ApiConstants.USERS_VERIFY_EMAIL_RESEND, UsersVerifier::resendVerifyEmail);
 
 		// UsersInfo
-		addRoute("GET", ApiConstants.USERS_INFO_GET, UsersInfoManager::getUserInfo);
-		addRoute("PATCH", ApiConstants.USERS_INFO_UPDATE, UsersInfoManager::updateUserInfo);
+		addRoute("GET", ApiConstants.USERS_INFO, UsersInfoManager::getUserInfo);
+		addRoute("PATCH", ApiConstants.USERS_INFO, UsersInfoManager::updateUserInfo);
 
-		addRoute("GET", ApiConstants.USERS_INTERNAL_INFO_GET, UsersInternalManager::getUserInternalInfo);
-		addRoute("PATCH", ApiConstants.USERS_INTERNAL_INFO_UPDATE, UsersInternalManager::updateUserInternalInfo);
+		addRoute("GET", ApiConstants.USERS_INTERNAL_INFO, UsersInternalManager::getUserInternalInfo);
+		addRoute("PATCH", ApiConstants.USERS_INTERNAL_INFO, UsersInternalManager::updateUserInternalInfo);
 
 		// UsersPasswords
-		addRoute("POST", ApiConstants.USERS_PASSWORD_RESET_INIT, (req, resp, params) -> HttpUtil.sendJson(resp, HttpServletResponse.SC_NOT_IMPLEMENTED, "error", "unimplemented endpoint"));
-		addRoute("PUT", ApiConstants.USERS_PASSWORD_RESET_UPDATE, (req, resp, params) -> HttpUtil.sendJson(resp, HttpServletResponse.SC_NOT_IMPLEMENTED, "error", "unimplemented endpoint"));
+		addRoute("POST", ApiConstants.USERS_PASSWORD_RESET, (req, resp, params) -> HttpUtil.sendJson(resp, HttpServletResponse.SC_NOT_IMPLEMENTED, "error", "unimplemented endpoint"));
+		addRoute("PUT", ApiConstants.USERS_PASSWORD_RESET, (req, resp, params) -> HttpUtil.sendJson(resp, HttpServletResponse.SC_NOT_IMPLEMENTED, "error", "unimplemented endpoint"));
 		addRoute("POST", ApiConstants.USERS_PASSWORD_UPDATE, UsersPassUpdater::updateUserPass);
 
 		// UsersSessions
