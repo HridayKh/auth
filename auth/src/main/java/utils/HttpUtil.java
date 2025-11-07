@@ -111,7 +111,7 @@ public class HttpUtil {
 		resp.getWriter().write(json.toString());
 	}
 
-	public static void createAndSetUserCookie(HttpServletResponse resp, User user) throws SQLException {
+	public static void createAndSetUserCookie(HttpServletResponse resp, User user) {
 		resp.setStatus(HttpServletResponse.SC_OK);
 		resp.setContentType("application/json");
 

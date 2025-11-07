@@ -1,13 +1,15 @@
 package db;
 
+import entities.EmailToken;
+
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
-
-import entities.EmailToken;
+import java.sql.SQLException;
 
 public class EmailDAO {
 
+	@SuppressWarnings("BooleanMethodIsAlwaysInverted")
 	public static boolean insertEmailToken(Connection conn, EmailToken et) {
 		String sql = "INSERT INTO email_tokens (token, user_uuid, expires_at) VALUES (?, ?, ?)";
 		try (PreparedStatement stmt = conn.prepareStatement(sql)) {
@@ -16,8 +18,7 @@ public class EmailDAO {
 			stmt.setLong(3, et.expires_at());
 			int rowsInserted = stmt.executeUpdate();
 			return rowsInserted > 0;
-		} catch (Exception e) {
-			e.printStackTrace();
+		} catch (SQLException e) {
 			return false;
 		}
 	}

@@ -1,16 +1,12 @@
 package auth;
 
-import java.io.IOException;
-
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
-
 import io.sentry.Sentry;
-import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 @WebServlet("/test")
 public class test extends HttpServlet {
@@ -18,7 +14,7 @@ public class test extends HttpServlet {
 	private static final Logger log = LogManager.getLogger(test.class);
 
 	@Override
-	protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws IOException, ServletException {
+	protected void doGet(HttpServletRequest req, HttpServletResponse resp) {
 		log.trace("Trace level log");
 		log.debug("Debug level log");
 		log.info("Info level log");

@@ -1,6 +1,5 @@
 package servlets;
 
-import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
@@ -58,7 +57,7 @@ public class ApiServlet extends HttpServlet {
 	}
 
 	@Override
-	protected void service(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+	protected void service(HttpServletRequest req, HttpServletResponse resp) throws IOException {
 		String method = req.getMethod();
 		String path = req.getRequestURI();
 
@@ -122,6 +121,6 @@ public class ApiServlet extends HttpServlet {
 
 	@FunctionalInterface
 	private interface RouteHandler {
-		void handle(HttpServletRequest req, HttpServletResponse resp, Map<String, String> pathParams) throws IOException, ServletException;
+		void handle(HttpServletRequest req, HttpServletResponse resp, Map<String, String> pathParams) throws IOException;
 	}
 }

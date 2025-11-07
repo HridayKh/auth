@@ -1,5 +1,7 @@
 package db;
 
+import entities.Session;
+
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -7,8 +9,6 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
-
-import entities.Session;
 
 public class SessionDAO {
 
@@ -25,22 +25,22 @@ public class SessionDAO {
 	 * @throws SQLException If a database access error occurs.
 	 */
 	public static String createSession(Connection conn, String userUuid, String userAgent, int expiresInSeconds)
-			throws SQLException {
+		throws SQLException {
 		String sessionId = UUID.randomUUID().toString();
 		long now = System.currentTimeMillis() / 1000L; // Current time in seconds
 		long expiresAt = now + expiresInSeconds;
 
 		// Adjusted SQL to exclude ip_address as per your request
 		String sql = "INSERT INTO sessions (session_id, user_uuid, created_at, last_accessed_at, expires_at, user_agent, is_active) VALUES (?, ?, ?, ?, ?, ?, ?)";
-		try (PreparedStatement pstmt = conn.prepareStatement(sql)) {
-			pstmt.setString(1, sessionId);
-			pstmt.setString(2, userUuid);
-			pstmt.setLong(3, now);
-			pstmt.setLong(4, now);
-			pstmt.setLong(5, expiresAt);
-			pstmt.setString(6, userAgent);
-			pstmt.setBoolean(7, true); // is_active
-			pstmt.executeUpdate();
+		try (PreparedStatement stmt = conn.prepareStatement(sql)) {
+			stmt.setString(1, sessionId);
+			stmt.setString(2, userUuid);
+			stmt.setLong(3, now);
+			stmt.setLong(4, now);
+			stmt.setLong(5, expiresAt);
+			stmt.setString(6, userAgent);
+			stmt.setBoolean(7, true); // is_active
+			stmt.executeUpdate();
 		}
 		return sessionId;
 	}
@@ -56,13 +56,13 @@ public class SessionDAO {
 	public static Session getSessionById(Connection conn, String sessionId) throws SQLException {
 		// Adjusted SQL to exclude ip_address as per your request
 		String sql = "SELECT * FROM sessions WHERE session_id = ?";
-		try (PreparedStatement pstmt = conn.prepareStatement(sql)) {
-			pstmt.setString(1, sessionId);
-			try (ResultSet rs = pstmt.executeQuery()) {
+		try (PreparedStatement stmt = conn.prepareStatement(sql)) {
+			stmt.setString(1, sessionId);
+			try (ResultSet rs = stmt.executeQuery()) {
 				if (rs.next()) {
 					return new Session(rs.getString("session_id"), rs.getString("user_uuid"), rs.getLong("created_at"),
-							rs.getLong("last_accessed_at"), rs.getLong("expires_at"), rs.getString("user_agent"),
-							rs.getBoolean("is_active"));
+						rs.getLong("last_accessed_at"), rs.getLong("expires_at"), rs.getString("user_agent"),
+						rs.getBoolean("is_active"));
 				}
 			}
 		}
@@ -73,23 +73,23 @@ public class SessionDAO {
 	 * Retrieves all sessions of a user.
 	 *
 	 * @param conn The database connection.
-	 * @param uuid The uuid of the user whose sessions are retreieved.
+	 * @param uuid The uuid of the user whose sessions are retrieved.
 	 * @return A Session object if found, or null if not found.
 	 * @throws SQLException If a database access error occurs.
 	 */
 	public static Session[] getAllSessionsOfUser(Connection conn, String uuid) throws SQLException {
 		String sql = "SELECT * FROM sessions WHERE user_uuid = ? AND is_active = ?";
 		List<Session> sessions = new ArrayList<>();
-		try (PreparedStatement pstmt = conn.prepareStatement(sql)) {
-			pstmt.setString(1, uuid);
-			pstmt.setBoolean(2, true);
-			ResultSet rs = pstmt.executeQuery();
+		try (PreparedStatement stmt = conn.prepareStatement(sql)) {
+			stmt.setString(1, uuid);
+			stmt.setBoolean(2, true);
+			ResultSet rs = stmt.executeQuery();
 			while (rs.next()) {
 				sessions.add(new Session(rs.getString("session_id"), rs.getString("user_uuid"),
-						rs.getLong("created_at"), rs.getLong("last_accessed_at"), rs.getLong("expires_at"),
-						rs.getString("user_agent"), rs.getBoolean("is_active")));
+					rs.getLong("created_at"), rs.getLong("last_accessed_at"), rs.getLong("expires_at"),
+					rs.getString("user_agent"), rs.getBoolean("is_active")));
 			}
-			return (Session[]) sessions.toArray();
+			return sessions.toArray(new Session[0]);
 		}
 	}
 
@@ -104,14 +104,14 @@ public class SessionDAO {
 	 * @return True if the update was successful, false otherwise.
 	 * @throws SQLException If a database access error occurs.
 	 */
-	public static boolean updateSessionLastAccessed(Connection conn, String sessionId, long newLastAccessedAt,
-			long newExpiresAt) throws SQLException {
+	public static void updateSessionLastAccessed(Connection conn, String sessionId, long newLastAccessedAt,
+	                                             long newExpiresAt) throws SQLException {
 		String sql = "UPDATE sessions SET last_accessed_at = ?, expires_at = ? WHERE session_id = ?";
-		try (PreparedStatement pstmt = conn.prepareStatement(sql)) {
-			pstmt.setLong(1, newLastAccessedAt);
-			pstmt.setLong(2, newExpiresAt);
-			pstmt.setString(3, sessionId);
-			return pstmt.executeUpdate() > 0;
+		try (PreparedStatement stmt = conn.prepareStatement(sql)) {
+			stmt.setLong(1, newLastAccessedAt);
+			stmt.setLong(2, newExpiresAt);
+			stmt.setString(3, sessionId);
+			stmt.executeUpdate();
 		}
 	}
 
@@ -126,48 +126,12 @@ public class SessionDAO {
 	 */
 	public static boolean invalidateSession(Connection conn, String sessionId, String uuid) throws SQLException {
 		String sql = "UPDATE sessions SET is_active = FALSE WHERE session_id = ? AND user_uuid = ?";
-		try (PreparedStatement pstmt = conn.prepareStatement(sql)) {
-			pstmt.setString(1, sessionId);
-			pstmt.setString(2, uuid);
-			return pstmt.executeUpdate() > 0;
+		try (PreparedStatement stmt = conn.prepareStatement(sql)) {
+			stmt.setString(1, sessionId);
+			stmt.setString(2, uuid);
+			return stmt.executeUpdate() > 0;
 		}
 	}
 
-	/**
-	 * Invalidates all sessions for a given user, except the current one. This is
-	 * for "Sign out other devices" functionality.
-	 *
-	 * @param conn             The database connection.
-	 * @param userUuid         The UUID of the user whose sessions to invalidate.
-	 * @param currentSessionId The ID of the current session to exclude from
-	 *                         invalidation.
-	 * @return The number of sessions invalidated.
-	 * @throws SQLException If a database access error occurs.
-	 */
-	public static int invalidateAllUserSessionsExceptCurrent(Connection conn, String userUuid, String currentSessionId)
-			throws SQLException {
-		String sql = "UPDATE sessions SET is_active = FALSE WHERE user_uuid = ? AND session_id != ?";
-		try (PreparedStatement pstmt = conn.prepareStatement(sql)) {
-			pstmt.setString(1, userUuid);
-			pstmt.setString(2, currentSessionId);
-			return pstmt.executeUpdate();
-		}
-	}
 
-	/**
-	 * Invalidates all sessions for a given user. This is for a complete logout from
-	 * all devices.
-	 *
-	 * @param conn     The database connection.
-	 * @param userUuid The UUID of the user whose sessions to invalidate.
-	 * @return The number of sessions invalidated.
-	 * @throws SQLException If a database access error occurs.
-	 */
-	public static int invalidateAllUserSessions(Connection conn, String userUuid) throws SQLException {
-		String sql = "UPDATE sessions SET is_active = FALSE WHERE user_uuid = ?";
-		try (PreparedStatement pstmt = conn.prepareStatement(sql)) {
-			pstmt.setString(1, userUuid);
-			return pstmt.executeUpdate();
-		}
-	}
 }

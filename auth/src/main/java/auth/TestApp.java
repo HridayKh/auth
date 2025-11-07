@@ -1,18 +1,6 @@
 package auth;
 
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStreamReader;
-import java.net.HttpURLConnection;
-import java.net.MalformedURLException;
-import java.net.URI;
-import java.net.URISyntaxException;
-import java.net.URL;
-import java.util.List;
-import java.util.Map;
-
 import db.dbAuth;
-import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServlet;
@@ -20,11 +8,18 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import utils.HttpUtil;
 
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.net.*;
+import java.util.List;
+import java.util.Map;
+
 @WebServlet("/app")
 public class TestApp extends HttpServlet {
 	private static final long serialVersionUID = 1L;
 
-	public void doGet(HttpServletRequest req, HttpServletResponse resp) throws IOException, ServletException {
+	public void doGet(HttpServletRequest req, HttpServletResponse resp) throws IOException {
 		Cookie[] cookies = req.getCookies();
 		String jwtCookieValue = null;
 
@@ -61,7 +56,7 @@ public class TestApp extends HttpServlet {
 			for (Map.Entry<String, List<String>> entry : headerFields.entrySet()) {
 				String headerName = entry.getKey();
 				if (headerName != null && headerName.equalsIgnoreCase("Set-Cookie")) { // Header names are
-																						// case-insensitive
+					// case-insensitive
 					List<String> headerValues = entry.getValue();
 					for (String headerValue : headerValues) {
 						// Add each Set-Cookie header value to the response going back to the browser
@@ -79,7 +74,7 @@ public class TestApp extends HttpServlet {
 			// --- NEW CODE END ---
 
 			BufferedReader in = new BufferedReader(
-					new InputStreamReader(status == 200 ? con.getInputStream() : con.getErrorStream()));
+				new InputStreamReader(status == 200 ? con.getInputStream() : con.getErrorStream()));
 
 			String inputLine;
 			StringBuilder content = new StringBuilder();
@@ -98,7 +93,7 @@ public class TestApp extends HttpServlet {
 		} catch (MalformedURLException | URISyntaxException e) { // Combined catch block for similar handling
 			e.printStackTrace();
 			HttpUtil.sendJson(resp, HttpServletResponse.SC_INTERNAL_SERVER_ERROR, "error",
-					"Unable to get User info due to URL/URI syntax error."); // Changed to 500
+				"Unable to get User info due to URL/URI syntax error."); // Changed to 500
 		} catch (IOException e) {
 			e.printStackTrace();
 			// You might want to distinguish between network errors and backend 4xx/5xx
@@ -106,7 +101,7 @@ public class TestApp extends HttpServlet {
 			// For example, if status is not 200, it goes to errorStream, which is handled.
 			// This catch is for actual connection/IO problems.
 			HttpUtil.sendJson(resp, HttpServletResponse.SC_SERVICE_UNAVAILABLE, "error",
-					"Failed to connect to backend user service."); // Changed to 503
+				"Failed to connect to backend user service."); // Changed to 503
 		}
 	}
 }
