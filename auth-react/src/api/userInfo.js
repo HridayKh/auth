@@ -19,7 +19,7 @@ export function changePassword({ old, newPass }) {
 	return apiRequest({
 		path: '/v1/users/me/password',
 		method: 'POST',
-		body: { old, new: newPass },
+		body: {old: old, new: newPass },
 	});
 }
 

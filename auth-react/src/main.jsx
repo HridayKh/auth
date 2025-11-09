@@ -14,6 +14,7 @@ import Register from "./pages/Register.jsx";
 import Profile from "./pages/Profile.jsx";
 import Logout from "./pages/Logout.jsx";
 import Sessions from './pages/Sessions';
+import ChangePass from './pages/ChangePass';
 
 
 createRoot(document.getElementById('root')).render(
@@ -27,7 +28,7 @@ createRoot(document.getElementById('root')).render(
 					<Route path="/profile" element={<Profile />} />
 					<Route path="/logout" element={<Logout />} />
 					<Route path="/sessions" element={<Sessions />} />
-					<Route path="/change-password" element={<Unimplemented />} />
+					<Route path="/change-password" element={<ChangePass />} />
 					<Route path="/forgot-password" element={<Unimplemented />} />
 					<Route path="*" element={<NotFound />} />
 				</Routes>
