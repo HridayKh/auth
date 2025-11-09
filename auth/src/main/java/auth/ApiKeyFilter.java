@@ -70,7 +70,7 @@ public class ApiKeyFilter implements Filter {
 	// ================================
 
 	private enum AccessType {
-		PUBLIC, FRONTEND, BACKEND, ADMIN
+		PUBLIC, FRONTEND, BACKEND
 	}
 
 	private interface AuthenticationStrategy {
@@ -151,18 +151,14 @@ public class ApiKeyFilter implements Filter {
 
 		private final Set<String> backendPaths = Set.of(ApiConstants.USERS_INTERNAL_INFO);
 
-		private final Set<String> adminPaths = Set.of();
-
 		public AccessType getRequiredAccess(String path) {
 			if (matches(path, publicPaths))
 				return AccessType.PUBLIC;
 			if (matches(path, frontendPaths))
 				return AccessType.FRONTEND;
-			if (matches(path, adminPaths))
-				return AccessType.ADMIN;
 			if (matches(path, backendPaths))
 				return AccessType.BACKEND;
-			return AccessType.ADMIN;
+			return AccessType.BACKEND;
 		}
 
 		private boolean matches(String path, Set<String> patterns) {
@@ -198,7 +194,7 @@ public class ApiKeyFilter implements Filter {
 
 				String role = ApiKeyManager.getRoleForApiKey(clientId);
 				if (ApiKeyManager.ROLE_FRONTEND.equals(role)) {
-					return AuthResult.allowed(clientId, "frontend");
+					return AuthResult.allowed(clientId, ApiKeyManager.ROLE_FRONTEND);
 				}
 			}
 
@@ -212,21 +208,9 @@ public class ApiKeyFilter implements Filter {
 			String apiKey = request.getHeader(API_KEY_HEADER);
 			String role = ApiKeyManager.getRoleForApiKey(apiKey);
 			if (ApiKeyManager.ROLE_BACKEND.equals(role)) {
-				return AuthResult.allowed(apiKey, "admin");
+				return AuthResult.allowed(apiKey, ApiKeyManager.ROLE_BACKEND);
 			}
 			return AuthResult.denied("Valid API key required", HttpServletResponse.SC_UNAUTHORIZED);
-		}
-	}
-
-	private static class AdminAuthStrategy implements AuthenticationStrategy {
-		@Override
-		public AuthResult authenticate(HttpServletRequest request) {
-			String apiKey = request.getHeader(API_KEY_HEADER);
-			String role = ApiKeyManager.getRoleForApiKey(apiKey);
-			if (ApiKeyManager.ROLE_ADMIN.equals(role)) {
-				return AuthResult.allowed(apiKey, "admin");
-			}
-			return AuthResult.denied("Admin privileges required", HttpServletResponse.SC_FORBIDDEN);
 		}
 	}
 
@@ -237,7 +221,6 @@ public class ApiKeyFilter implements Filter {
 			strategies.put(AccessType.PUBLIC, new PublicAuthStrategy());
 			strategies.put(AccessType.FRONTEND, new FrontendAuthStrategy());
 			strategies.put(AccessType.BACKEND, new BackendAuthStrategy());
-			strategies.put(AccessType.ADMIN, new AdminAuthStrategy());
 		}
 
 		public AuthResult authenticate(HttpServletRequest request, AccessType accessType) {

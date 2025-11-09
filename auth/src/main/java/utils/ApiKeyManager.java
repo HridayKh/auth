@@ -10,7 +10,6 @@ public final class ApiKeyManager {
 	private static final Logger LOGGER = Logger.getLogger(ApiKeyManager.class.getName());
 
 	// Define roles as constants for type safety and maintainability
-	public static final String ROLE_ADMIN = "ADMIN";
 	public static final String ROLE_BACKEND = "BACKEND";
 	public static final String ROLE_FRONTEND = "FRONTEND";
 
@@ -21,7 +20,6 @@ public final class ApiKeyManager {
 		Map<String, String> keys = new HashMap<>();
 
 		// Load keys for each role using a helper method
-		loadKeysForRole(keys, "ADMIN_API_KEYS", ROLE_ADMIN);
 		loadKeysForRole(keys, "BACKEND_API_KEYS", ROLE_BACKEND);
 		loadKeysForRole(keys, "FRONTEND_CLIENT_IDS", ROLE_FRONTEND);
 
