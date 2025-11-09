@@ -31,7 +31,7 @@ public class SessionDAO {
 		long expiresAt = now + expiresInSeconds;
 
 		// Adjusted SQL to exclude ip_address as per your request
-		String sql = "INSERT INTO sessions (session_id, user_uuid, created_at, last_accessed_at, expires_at, user_agent, is_active) VALUES (?, ?, ?, ?, ?, ?, ?)";
+		String sql = "INSERT INTO sessions (session_id, user_uuid, created_at, last_accessed_at, expires_at, user_agent) VALUES (?, ?, ?, ?, ?, ?, ?)";
 		try (PreparedStatement stmt = conn.prepareStatement(sql)) {
 			stmt.setString(1, sessionId);
 			stmt.setString(2, userUuid);
@@ -39,7 +39,6 @@ public class SessionDAO {
 			stmt.setLong(4, now);
 			stmt.setLong(5, expiresAt);
 			stmt.setString(6, userAgent);
-			stmt.setBoolean(7, true); // is_active
 			stmt.executeUpdate();
 		}
 		return sessionId;
@@ -63,8 +62,7 @@ public class SessionDAO {
 					return new Session(rs.getString("session_id"), rs.getString("user_uuid"),
 							rs.getLong("created_at"),
 							rs.getLong("last_accessed_at"), rs.getLong("expires_at"),
-							rs.getString("user_agent"),
-							rs.getBoolean("is_active"));
+							rs.getString("user_agent"));
 				}
 			}
 		}
@@ -80,17 +78,16 @@ public class SessionDAO {
 	 * @throws SQLException If a database access error occurs.
 	 */
 	public static Session[] getAllSessionsOfUser(Connection conn, String uuid) throws SQLException {
-		String sql = "SELECT * FROM sessions WHERE user_uuid = ? AND is_active = ?";
+		String sql = "SELECT * FROM sessions WHERE user_uuid = ";
 		List<Session> sessions = new ArrayList<>();
 		try (PreparedStatement stmt = conn.prepareStatement(sql)) {
 			stmt.setString(1, uuid);
-			stmt.setBoolean(2, true);
 			ResultSet rs = stmt.executeQuery();
 			while (rs.next()) {
 				sessions.add(new Session(rs.getString("session_id"), rs.getString("user_uuid"),
 						rs.getLong("created_at"), rs.getLong("last_accessed_at"),
 						rs.getLong("expires_at"),
-						rs.getString("user_agent"), rs.getBoolean("is_active")));
+						rs.getString("user_agent")));
 			}
 			return sessions.toArray(new Session[0]);
 		}
@@ -119,7 +116,7 @@ public class SessionDAO {
 	}
 
 	/**
-	 * Invalidates a specific session by setting is_active to FALSE.
+	 * Invalidates a specific session by deleting it.
 	 *
 	 * @param conn      The database connection.
 	 * @param sessionId The ID of the session to invalidate.
@@ -128,10 +125,9 @@ public class SessionDAO {
 	 * @throws SQLException If a database access error occurs.
 	 */
 	public static boolean invalidateSession(Connection conn, String sessionId) throws SQLException {
-		String sql = "UPDATE sessions SET is_active = ? WHERE session_id = ?";
+		String sql = "delete from sessions WHERE session_id = ?";
 		try (PreparedStatement stmt = conn.prepareStatement(sql)) {
-			stmt.setBoolean(1, false);
-			stmt.setString(2, sessionId);
+			stmt.setString(1, sessionId);
 			return stmt.executeUpdate() > 0;
 		}
 	}

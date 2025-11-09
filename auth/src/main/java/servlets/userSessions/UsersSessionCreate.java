@@ -25,7 +25,7 @@ public class UsersSessionCreate {
 		JSONObject body = HttpUtil.readBodyJSON(req);
 		String email = body.optString("email", null);
 		String pass = body.optString("pass", null);
-		if (email == null || pass == null || email.isBlank() || pass.isBlank()) {
+		if (email == null || pass == null ||  email.isBlank() || pass.isBlank()) {
 			HttpUtil.sendJson(resp, HttpServletResponse.SC_BAD_REQUEST, "error",
 					"Missing required fields: email, pass");
 			return;

@@ -62,7 +62,6 @@ public class AuthUtil {
 	 * @param req  The HttpServletRequest to get the cookie from.
 	 * @param resp The HttpServletResponse to clear the cookie if invalid.
 	 * @param conn The database connection.
-	 * @return The user UUID if the session is valid and active, null otherwise.
 	 * @throws SQLException If a database access error occurs during session
 	 *                      lookup/update.
 	 */
@@ -109,8 +108,8 @@ public class AuthUtil {
 			if (session != null) {
 				long now = System.currentTimeMillis() / 1000L;
 
-				// 3. Check if session is active and not expired
-				if (session.isActive() && session.expiresAt() > now) {
+				// 3. Check if session is not expired
+				if (session.expiresAt() > now) {
 					// 4. Update last_accessed_at and re-extend expiration (rolling session)
 					long newExpiresAt = now + SESSION_EXPIRY_SECONDS;
 					SessionDAO.updateSessionLastAccessed(conn, sessionId, now, newExpiresAt);
@@ -139,7 +138,6 @@ public class AuthUtil {
 	 * @param req  The HttpServletRequest to get the cookie from.
 	 * @param resp The HttpServletResponse to clear the cookie if invalid.
 	 * @param conn The database connection.
-	 * @return The user UUID if the session is valid and active, null otherwise.
 	 * @throws SQLException If a database access error occurs during session
 	 *                      lookup/update.
 	 */
@@ -186,8 +184,8 @@ public class AuthUtil {
 			if (session != null) {
 				long now = System.currentTimeMillis() / 1000L;
 
-				// 3. Check if session is active and not expired
-				if (session.isActive() && session.expiresAt() > now) {
+				// 3. Check if session is not expired
+				if (session.expiresAt() > now) {
 					// 4. Update last_accessed_at and re-extend expiration (rolling session)
 					long newExpiresAt = now + SESSION_EXPIRY_SECONDS;
 					SessionDAO.updateSessionLastAccessed(conn, sessionId, now, newExpiresAt);

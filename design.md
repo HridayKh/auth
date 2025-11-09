@@ -104,7 +104,6 @@ export interface Session {
 	expiresAt: number;
 	ip?: string;
 	userAgent?: string;
-	isActive: boolean;
 }
 
 // API error response

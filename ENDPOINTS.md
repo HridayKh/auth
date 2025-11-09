@@ -136,7 +136,7 @@ Notes: see `auth/src/main/java/servlets/usersCreate/UsersCreator.java` for exact
 
 ### 12) GET /v1/users/sessions/me
 - Handler: `servlets.userSessions.UsersSessionList::listUserSessions`
-- Purpose: list active sessions for the authenticated user.
+- Purpose: list sessions for the authenticated user.
 - Auth: required.
 - Response: 200 with array of session objects: { sessionId, createdAt, lastAccessAt, ip, userAgent, expiresAt }
 

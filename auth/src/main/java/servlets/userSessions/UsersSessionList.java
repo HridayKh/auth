@@ -57,12 +57,13 @@ public class UsersSessionList {
 				sJson.put("last_accessed_at", s.lastAccessedAt());
 				sJson.put("expires_at", s.expiresAt());
 				sJson.put("user_agent", s.userAgent());
-				sJson.put("is_active", s.isActive());
+				sJson.put("is_current", s.sessionId().equals(AuthUtil.getCurrentSessionFromAuthCookie(req, resp, conn)));
 				sessionsJsonArr.put(sJson);
 			}
 
 			JSONObject respJson = new JSONObject();
 			respJson.put("type", "success");
+			respJson.put("message", "fetched sessions successfully");
 			respJson.put("sessions", sessionsJsonArr);
 			resp.setStatus(HttpServletResponse.SC_OK);
 			resp.setContentType("application/json");

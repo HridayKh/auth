@@ -109,7 +109,6 @@ src/main/java/
 | last_accessed_at | bigint       | NO   |     | NULL    |
 | expires_at       | bigint       | NO   |     | NULL    |
 | user_agent       | varchar(255) | YES  |     | NULL    |
-| is_active        | tinyint(1)   | NO   |     | 1       |
 
 ### Email Tokens Table
 
@@ -125,7 +124,7 @@ src/main/java/
 
 - **Cookie-based sessions**: Uses signed JWT-like tokens stored in HTTP-only cookies
 - **Session expiry**: Configurable session timeout (default: 7 days)
-- **Multi-device support**: Users can have multiple active sessions
+- **Multi-device support**: Users can have multiple sessions
 - **Secure cookies**: HTTPS-only in production with proper domain settings
 
 ### Modern API Key Authentication System
