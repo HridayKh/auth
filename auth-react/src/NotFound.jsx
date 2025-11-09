@@ -1,4 +1,4 @@
-function NotFound() {
+export default function NotFound() {
 	return (
 		<>
 			<h1> NotFound Page </h1>
@@ -6,4 +6,11 @@ function NotFound() {
 	);
 }
 
-export default NotFound;
+export function Unimplemented() {
+	return (
+		<>
+			<h1> Unimplemented Page </h1>
+		</>
+	);
+}
+

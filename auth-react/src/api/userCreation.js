@@ -2,20 +2,20 @@
 import { apiRequest } from './client';
 
 // Create/register user
-export function createUser({ email, password, fullName }) {
+export function createUser({ email, password, fullName, redirect }) {
   return apiRequest({
     path: '/v1/users',
     method: 'POST',
-    body: { email, password, fullName },
+    body: { email, pass: password, fullName,redirect },
   });
 }
 
 // Resend verification email
-export function resendVerification({ email }) {
+export function resendVerification({ email, redirect }) {
   return apiRequest({
     path: '/v1/users/verify/resend',
     method: 'POST',
-    body: { email },
+    body: { email, redirect },
   });
 }
 

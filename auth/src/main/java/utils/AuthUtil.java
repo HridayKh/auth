@@ -29,9 +29,11 @@ public class AuthUtil {
 	 * @param conn     The database connection.
 	 * @param userUuid The UUID of the user logging in.
 	 * @param req      The HttpServletRequest to get User-Agent.
-	 * @throws SQLException If a database access error occurs during session creation.
+	 * @throws SQLException If a database access error occurs during session
+	 *                      creation.
 	 */
-	public static void createAndSetAuthCookie(Connection conn, HttpServletRequest req, HttpServletResponse resp, String userUuid) throws SQLException {
+	public static void createAndSetAuthCookie(Connection conn, HttpServletRequest req, HttpServletResponse resp,
+			String userUuid) throws SQLException {
 		String userAgent = req.getHeader("User-Agent");
 
 		String sessionId = SessionDAO.createSession(conn, userUuid, userAgent, SESSION_EXPIRY_SECONDS);
@@ -64,7 +66,8 @@ public class AuthUtil {
 	 * @throws SQLException If a database access error occurs during session
 	 *                      lookup/update.
 	 */
-	public static String getUserUUIDFromAuthCookie(HttpServletRequest req, HttpServletResponse resp, Connection conn) throws SQLException {
+	public static String getUserUUIDFromAuthCookie(HttpServletRequest req, HttpServletResponse resp,
+			Connection conn) throws SQLException {
 		Cookie[] cookies = req.getCookies();
 		if (cookies == null) {
 			return null; // No cookies present, user not logged in
@@ -111,7 +114,8 @@ public class AuthUtil {
 					// 4. Update last_accessed_at and re-extend expiration (rolling session)
 					long newExpiresAt = now + SESSION_EXPIRY_SECONDS;
 					SessionDAO.updateSessionLastAccessed(conn, sessionId, now, newExpiresAt);
-					return session.userUuid(); // Return the user UUID associated with this valid session
+					return session.userUuid(); // Return the user UUID associated with this valid
+									// session
 				} else {
 					clearAuthCookie(resp); // Clear the client's cookie for the invalid session
 					return null;

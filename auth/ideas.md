@@ -10,10 +10,14 @@
 
 #### 6. Enhanced Session Management Features
 
+#### 7. Unlink Google
+
 # TODO:
 - verify acc type is consistent and use enums
 - store session creation method, google or password
 - forgot password flow
+- unlink google
+- verify linked google acc has same email as the og password acc
 
 
 # Refactor to be more restful

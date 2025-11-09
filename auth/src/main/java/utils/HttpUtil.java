@@ -28,7 +28,8 @@ public class HttpUtil {
 		return new JSONObject(sb.toString());
 	}
 
-	public static void sendJson(HttpServletResponse resp, int status, String type, String message) throws IOException {
+	public static void sendJson(HttpServletResponse resp, int status, String type, String message)
+			throws IOException {
 		resp.setStatus(status);
 		resp.setContentType("application/json");
 		JSONObject json = new JSONObject();
@@ -53,40 +54,25 @@ public class HttpUtil {
 		resp.setContentType("application/json");
 
 		JSONObject json = new JSONObject();
-		json.put("type", "success");
-		json.put("uuid", user.uuid());
-		json.put("email", user.email().toLowerCase());
-		json.put("is_verified", user.isVerified());
-		json.put("created_at", user.createdAt());
-		json.put("updated_at", user.updatedAt());
 
-		// Optional fields
-		if (user.lastLogin() != null) {
-			json.put("last_login", user.lastLogin());
-		}
-		if (user.profilePic() != null) {
-			json.put("profile_pic", user.profilePic());
-		}
-		if (user.fullName() != null) {
-			json.put("full_name", user.fullName());
-		}
-		if (user.metadata() != null && user.metadata().has("public")) {
-			Object userPublic = user.metadata().get("public");
-			if (userPublic instanceof String) {
-				json.put("metadata_public", (String) userPublic);
-			} else if (userPublic instanceof JSONObject) {
-				json.put("metadata_public", (JSONObject) userPublic);
-			} else {
-				// Handle other types if necessary, e.g., convert to string representation
-				json.put("metadata_public", userPublic.toString());
-			}
-		}
-		if (user.permissions() != null) {
-			json.put("permissions", user.permissions());
-		}
-		if (user.accType() != null) {
-			json.put("accType", user.accType());
-		}
+		// Basic fields
+		json.put("type", "success");
+		json.put("message", "User fetched successfully");
+
+		// User details
+		json.put("uuid", user.uuid()); // not nullable
+		json.put("email", user.email().toLowerCase()); // not nullable
+		json.put("is_verified", user.isVerified());
+		json.put("created_at", user.createdAt()); // not nullable
+		json.put("updated_at", user.updatedAt()); // not nullable
+		json.put("last_login", user.lastLogin());
+
+		json.put("accType", user.accType());
+
+		json.put("profile_pic", user.profilePic());
+		json.put("full_name", user.fullName());
+		json.put("metadata", user.metadata());
+		json.put("permissions", user.permissions());
 
 		resp.getWriter().write(json.toString());
 	}

@@ -3,27 +3,26 @@ package entities;
 import org.json.JSONObject;
 
 public class User {
-	private final String uuid;
-	private final String email;
-	private final String passwordHash; // nullable
-	private final boolean isVerified;
-	private final long createdAt;
-	private final long updatedAt;
-	private final Long lastLogin; // nullable
-	
+	private final String uuid; // not nullable
+	private final String email; // not nullable
+	private final boolean isVerified; // has default
+	private final long createdAt; // not nullable
+	private final long updatedAt; // not nullable
+	private final Long lastLogin;
 
-	// New Fields
-	private final String accType;
-	private final String googleId;
-	private final String refreshToken;
-	private final Long refreshTokenExpiresAt;
+	// Auth Fields
+	private final String accType; // not nullable, has default
+	private final String passwordHash; // hidden
+	private final String googleId; // hidden
+	private final String refreshToken; // hidden
+	private final Long refreshTokenExpiresAt; // hidden
 
-	// Optional fields with defaults
-	private final String profilePic;
+	// Optional fields
+	private final String profilePic; // has default
 	private final String fullName;
-	private final JSONObject metadata;
-	private final JSONObject permissions;
-	private final JSONObject internal;
+	private final JSONObject metadata; // has default
+	private final JSONObject permissions; // has default
+	private final JSONObject internal; // has default
 
 	private User(Builder builder) {
 		this.uuid = builder.uuid;
@@ -48,72 +47,6 @@ public class User {
 		this.internal = builder.internal;
 	}
 
-	// --- Getters ---
-	public String uuid() {
-		return uuid;
-	}
-
-	public String email() {
-		return email.toLowerCase();
-	}
-
-	public String passwordHash() {
-		return passwordHash;
-	}
-
-	public boolean isVerified() {
-		return isVerified;
-	}
-
-	public long createdAt() {
-		return createdAt;
-	}
-
-	public long updatedAt() {
-		return updatedAt;
-	}
-
-	public Long lastLogin() {
-		return lastLogin;
-	}
-
-	// New Getters
-	public String accType() {
-		return accType;
-	}
-
-	public String googleId() {
-		return googleId;
-	}
-
-	public String refreshToken() {
-		return refreshToken;
-	}
-
-	public Long refreshTokenExpiresAt() {
-		return refreshTokenExpiresAt;
-	}
-
-	public String profilePic() {
-		return profilePic;
-	}
-
-	public String fullName() {
-		return fullName;
-	}
-
-	public JSONObject metadata() {
-		return metadata;
-	}
-
-	public JSONObject permissions() {
-		return permissions;
-	}
-
-	public JSONObject internal() {
-		return internal;
-	}
-
 	// --- Builder Class ---
 	public static class Builder {
 		// Required fields for initial construction
@@ -130,7 +63,7 @@ public class User {
 		private String googleId = null;
 		private String refreshToken = null;
 		private Long refreshTokenExpiresAt = null;
-		private String fullName = null;
+		private String fullName = "";
 
 		// Fields with defaults
 		private boolean isVerified = false;
@@ -220,5 +153,70 @@ public class User {
 		public User build() {
 			return new User(this);
 		}
+	}
+
+	// --- Getters ---
+	public String uuid() {
+		return uuid;
+	}
+
+	public String email() {
+		return email.toLowerCase();
+	}
+
+	public String passwordHash() {
+		return passwordHash;
+	}
+
+	public boolean isVerified() {
+		return isVerified;
+	}
+
+	public long createdAt() {
+		return createdAt;
+	}
+
+	public long updatedAt() {
+		return updatedAt;
+	}
+
+	public Long lastLogin() {
+		return lastLogin;
+	}
+
+	public String accType() {
+		return accType;
+	}
+
+	public String googleId() {
+		return googleId;
+	}
+
+	public String refreshToken() {
+		return refreshToken;
+	}
+
+	public Long refreshTokenExpiresAt() {
+		return refreshTokenExpiresAt;
+	}
+
+	public String profilePic() {
+		return profilePic;
+	}
+
+	public String fullName() {
+		return fullName;
+	}
+
+	public JSONObject metadata() {
+		return metadata;
+	}
+
+	public JSONObject permissions() {
+		return permissions;
+	}
+
+	public JSONObject internal() {
+		return internal;
 	}
 }

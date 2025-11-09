@@ -20,45 +20,57 @@ public class UsersSessionCreate {
 
 	private static final Logger log = LogManager.getLogger(UsersSessionCreate.class);
 
-	public static void createUserSession(HttpServletRequest req, HttpServletResponse resp, Map<String, String> ignoredParams) throws IOException {
+	public static void createUserSession(HttpServletRequest req, HttpServletResponse resp,
+			Map<String, String> ignoredParams) throws IOException {
 		JSONObject body = HttpUtil.readBodyJSON(req);
-		String email = body.getString("email");
-		String pass = body.getString("pass");
-
+		String email = body.optString("email", null);
+		String pass = body.optString("pass", null);
+		if (email == null || pass == null || email.isBlank() || pass.isBlank()) {
+			HttpUtil.sendJson(resp, HttpServletResponse.SC_BAD_REQUEST, "error",
+					"Missing required fields: email, pass");
+			return;
+		}
 		try (Connection conn = dbAuth.getConnection()) {
 			User user = UsersDAO.getUserByEmail(conn, email.toLowerCase());
 
 			if (user == null) {
-				HttpUtil.sendJson(resp, HttpServletResponse.SC_BAD_REQUEST, "error", "Invalid email/password");
+				HttpUtil.sendJson(resp, HttpServletResponse.SC_BAD_REQUEST, "error",
+						"Invalid email/password");
 				return;
 			}
 			if (user.accType().equals("google")) {
-				HttpUtil.sendJson(resp, HttpServletResponse.SC_BAD_REQUEST, "error", "Please use google login");
+				HttpUtil.sendJson(resp, HttpServletResponse.SC_BAD_REQUEST, "error",
+						"Please use google login");
 				return;
 			}
 			if (!PassUtil.sha256Hash(pass).equals(user.passwordHash())) {
-				HttpUtil.sendJson(resp, HttpServletResponse.SC_BAD_REQUEST, "error", "Invalid email/password");
+				HttpUtil.sendJson(resp, HttpServletResponse.SC_BAD_REQUEST, "error",
+						"Invalid email/password");
 				return;
 			}
 
 			if (!user.isVerified()) {
-				HttpUtil.sendJson(resp, HttpServletResponse.SC_BAD_REQUEST, "error", "Please verify your email");
+				HttpUtil.sendJsonReVerify(resp, HttpServletResponse.SC_CONFLICT, "error",
+						"Please verify your email to login.");
 				return;
 			}
 
-			boolean lastLoginUpdated = UsersDAO.updateLastLogin(conn, user.uuid(), System.currentTimeMillis() / 1000L);
+			boolean lastLoginUpdated = UsersDAO.updateLastLogin(conn, user.uuid(),
+					System.currentTimeMillis() / 1000L);
 
 			if (!lastLoginUpdated) {
-				HttpUtil.sendJson(resp, HttpServletResponse.SC_INTERNAL_SERVER_ERROR, "error", "Could not login.");
+				HttpUtil.sendJson(resp, HttpServletResponse.SC_INTERNAL_SERVER_ERROR, "error",
+						"Could not login.");
 				return;
 			}
 			AuthUtil.createAndSetAuthCookie(conn, req, resp, user.uuid());
 
-			HttpUtil.sendJson(resp, HttpServletResponse.SC_OK, "success", "Logged In Successfully, Redirecting....");
-
+			HttpUtil.sendJson(resp, HttpServletResponse.SC_OK, "success",
+					"Logged In Successfully, Redirecting....");
 		} catch (Exception e) {
 			log.catching(e);
-			HttpUtil.sendJson(resp, HttpServletResponse.SC_INTERNAL_SERVER_ERROR, "error", "Internal Server Error");
+			HttpUtil.sendJson(resp, HttpServletResponse.SC_INTERNAL_SERVER_ERROR, "error",
+					"Internal Server Error");
 		}
 	}
 }
