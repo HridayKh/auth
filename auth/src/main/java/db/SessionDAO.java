@@ -31,7 +31,7 @@ public class SessionDAO {
 		long expiresAt = now + expiresInSeconds;
 
 		// Adjusted SQL to exclude ip_address as per your request
-		String sql = "INSERT INTO sessions (session_id, user_uuid, created_at, last_accessed_at, expires_at, user_agent) VALUES (?, ?, ?, ?, ?, ?, ?)";
+		String sql = "INSERT INTO sessions (session_id, user_uuid, created_at, last_accessed_at, expires_at, user_agent) VALUES (?, ?, ?, ?, ?, ?)";
 		try (PreparedStatement stmt = conn.prepareStatement(sql)) {
 			stmt.setString(1, sessionId);
 			stmt.setString(2, userUuid);
@@ -78,7 +78,7 @@ public class SessionDAO {
 	 * @throws SQLException If a database access error occurs.
 	 */
 	public static Session[] getAllSessionsOfUser(Connection conn, String uuid) throws SQLException {
-		String sql = "SELECT * FROM sessions WHERE user_uuid = ";
+		String sql = "SELECT * FROM sessions WHERE user_uuid = ?";
 		List<Session> sessions = new ArrayList<>();
 		try (PreparedStatement stmt = conn.prepareStatement(sql)) {
 			stmt.setString(1, uuid);
