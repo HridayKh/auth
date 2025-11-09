@@ -19,7 +19,9 @@ public class FrontControllerServlet extends HttpServlet {
             path.startsWith("/oauth2callback") ||
             path.contains(".") // crude check for static files (js, css, png, etc)
         ) {
-            resp.sendError(HttpServletResponse.SC_NOT_FOUND);
+            resp.setStatus(HttpServletResponse.SC_NOT_FOUND);
+            resp.setContentType("text/plain");
+            resp.getWriter().write("Not forwarded by FrontControllerServlet: " + path);
             return;
         }
         req.getRequestDispatcher("/index.html").forward(req, resp);

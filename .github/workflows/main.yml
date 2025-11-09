@@ -67,6 +67,13 @@ jobs:
           path: ${{ github.workspace }}/auth/target/
 
       - name: Deploy to Tomcat via Manager
-        run: curl -T "${{ github.workspace }}/auth/target/auth.war" --user "${{ secrets.TOMCAT_USER }}:${{ secrets.TOMCAT_PASS }}" "https://auth.hridaykh.in/manager/text/deploy?path=/ROOT&update=true"
+        run: |
+          if [ ! -f "${{ github.workspace }}/auth/target/auth.war" ]; then
+            echo "WAR file not found!"
+            exit 1
+          fi
+          curl --fail --show-error --retry 3 --retry-delay 5 -T "${{ github.workspace }}/auth/target/auth.war" \
+            --user "${{ secrets.TOMCAT_USER }}:${{ secrets.TOMCAT_PASS }}" \
+            "https://auth.hridaykh.in/manager/text/deploy?path=/ROOT&update=true"
 
 
