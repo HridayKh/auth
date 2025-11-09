@@ -28,16 +28,22 @@ export default function Register() {
 			if (/^[a-zA-Z][a-zA-Z0-9+.-]*:\/\//.test(redirect)) {
 				window.location.replace(redirect);
 			} else {
-				navigate(redirect, { replace: true });
+				navigate((redirect.startsWith("/") ? redirect : "/" + redirect), { replace: true });
 			}
 		}
 	}, [user, authLoading, navigate, redirect]);
 
 	function handleGoogleRegister(e) {
 		e.preventDefault();
-		// Use backend host from env
-		const redirectUrl = redirect || window.location.origin + "/profile";
+		var redirectUrl = "";
+
+		if (/^[a-zA-Z][a-zA-Z0-9+.-]*:\/\//.test(redirect)) {
+			redirectUrl = redirect;
+		} else {
+			redirectUrl = window.location.origin + (redirect.startsWith("/") ? redirect : "/" + redirect);
+		}
 		const url = `${VITE_AUTH_BACKEND}/googleLoginInitiate?source=register&redirect=${encodeURIComponent(redirectUrl)}`;
+
 		window.location.href = url;
 	}
 

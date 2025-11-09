@@ -24,6 +24,8 @@ public final class ApiConstants {
 	public static final String USERS_SESSION_DELETE = "/v1/users/sessions/{sessionId}"; // DELETE
 	public static final String USERS_SESSIONS_DELETE_CURRENT = "/v1/users/sessions/current"; // DELETE
 
+	public static final String USERS_UNLINK_GOOGLE = "/v1/users/google/unlink"; // DELETE
+
 	private ApiConstants() {
 		// Utility class - prevent instantiation
 	}

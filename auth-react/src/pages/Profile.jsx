@@ -1,6 +1,8 @@
+
 import { useSearchParams, Link, useNavigate } from "react-router-dom";
 import { useEffect, useState } from "react";
 import { useAuth } from "../AuthContext.jsx";
+import { unlinkGoogle, linkPassword } from "../api/userInfo.js";
 const VITE_AUTH_BACKEND = import.meta.env.VITE_AUTH_BACKEND || "";
 
 export default function Profile() {
@@ -20,6 +22,47 @@ export default function Profile() {
 
 	if (loading) return <main className="flex flex-col items-center justify-center min-h-screen bg-dark text-white">Loading...</main>;
 	if (user === null) return null;
+
+
+	async function handleGoogleUnlink() {
+		if (!window.confirm("Are you sure you want to unlink your Google account?")) return;
+		setLinking(true);
+		try {
+			const res = await unlinkGoogle();
+			if (res && res.ok) {
+				setUser({ ...user, accType: "password" });
+			} else {
+				alert(res && res.message ? res.message : "Failed to unlink Google account");
+			}
+		} catch (err) {
+			alert(err.message || "Failed to unlink Google account");
+		} finally {
+			setLinking(false);
+		}
+	}
+
+
+	async function handleAddPassword() {
+		const password = window.prompt("Enter a new password for your account:");
+		if (!password || password.length < 8) {
+			alert("Password must be at least 8 characters.");
+			return;
+		}
+		setLinking(true);
+		try {
+			const res = await linkPassword({ newPass: password });
+			if (res && res.ok) {
+				setUser({ ...user, accType: "both" });
+				alert("Password added! You can now log in with email and password.");
+			} else {
+				alert(res && res.message ? res.message : "Failed to add password");
+			}
+		} catch (err) {
+			alert(err.message || "Failed to add password");
+		} finally {
+			setLinking(false);
+		}
+	}
 
 	function handleGoogleLink() {
 		setLinking(true);
@@ -59,7 +102,7 @@ export default function Profile() {
 	const urlType = searchParams.get("type");
 	const urlMessage = searchParams.get("msg");
 	const pageRedirect = redirect ? "?redirect=" + encodeURIComponent(redirect) : "";
-	
+
 	return (
 		<main className="flex flex-col items-center justify-center min-h-screen bg-dark text-white">
 			<div className="bg-gray-900 p-6 rounded shadow-md w-full max-w-lg border border-gray-800">
@@ -116,7 +159,9 @@ export default function Profile() {
 				<div className="mb-3">
 					{/* Google link/unlink logic */}
 					{user.accType === "google" && (
-						<button className="btn btn-secondary w-full mb-2" disabled>Unlink Google (not implemented)</button>
+						<button className="btn btn-secondary w-full mb-2" onClick={handleAddPassword} disabled={linking}>
+							{linking ? "Adding..." : "Add Password"}
+						</button>
 					)}
 					{user.accType === "password" && (
 						<button className="btn btn-outline-primary w-full mb-2" onClick={handleGoogleLink} disabled={linking}>
@@ -124,12 +169,22 @@ export default function Profile() {
 						</button>
 					)}
 					{user.accType === "both" && (
-						<button className="btn btn-secondary w-full mb-2" disabled>Unlink Google (not implemented)</button>
+						<button className="btn btn-secondary w-full mb-2" onClick={handleGoogleUnlink} disabled={linking}>
+							{linking ? "Unlinking..." : "Unlink Google"}
+						</button>
 					)}
 				</div>
 				<div className="d-flex flex-column gap-2 mt-4">
 					<Link to={"/sessions?redirect=/profile" + pageRedirect} className="btn btn-outline-light w-full">Manage Sessions</Link>
-					<Link to={"/change-password?redirect=/profile" + pageRedirect} className="btn btn-outline-light w-full">Change Password</Link>
+					<Link
+						to={"/change-password?redirect=/profile" + pageRedirect}
+						className={"btn btn-outline-light w-full" + (user.accType === "google" ? " disabled" : "")}
+						tabIndex={user.accType === "google" ? -1 : 0}
+						aria-disabled={user.accType === "google" ? "true" : undefined}
+						onClick={e => { if (user.accType === "google") e.preventDefault(); }}
+					>
+						{user.accType === "google" ? " Change Password (link password first)" : "Change Password"}
+					</Link>
 					<Link to={"/logout" + pageRedirect} className="btn btn-outline-danger w-full">Logout</Link>
 				</div>
 			</div>

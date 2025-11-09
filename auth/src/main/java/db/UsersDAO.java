@@ -17,17 +17,20 @@ public class UsersDAO {
 	 * @param conn The active database connection.
 	 * @param uuid The unique identifier (UUID) of the user to retrieve.
 	 * @return A {@link User} object if a user with the specified UUID is found,
-	 * otherwise returns {@code null}.
+	 *         otherwise returns {@code null}.
 	 * @throws SQLException If a database access error occurs.
 	 */
 	public static User getUserByUuid(Connection conn, String uuid) throws SQLException {
 		// Updated SQL query to use snake_case column names
-		String sql = "SELECT uuid, email, password_hash, is_verified, created_at, updated_at, last_login, " + "profile_pic, full_name, metadata, permissions, google_id, acc_type, refresh_token, refresh_token_expires_at " + "FROM users WHERE uuid = ?";
+		String sql = "SELECT uuid, email, password_hash, is_verified, created_at, updated_at, last_login, "
+				+ "profile_pic, full_name, metadata, permissions, google_id, acc_type, refresh_token, refresh_token_expires_at "
+				+ "FROM users WHERE uuid = ?";
 		try (PreparedStatement stmt = conn.prepareStatement(sql)) {
 			stmt.setString(1, uuid);
 			try (ResultSet rs = stmt.executeQuery()) {
 				if (rs.next()) {
-					return parseUser(rs); // Use the helper method to parse the ResultSet into a User object
+					return parseUser(rs); // Use the helper method to parse the ResultSet into a
+								// User object
 				}
 			}
 		}
@@ -42,8 +45,8 @@ public class UsersDAO {
 	 * @param conn  The active database connection.
 	 * @param email The email address of the user to retrieve.
 	 * @return A {@link User} object if a user with the specified email is found,
-	 * otherwise returns {@code null}. Returns the first matching user if
-	 * multiple exist (though email should be unique).
+	 *         otherwise returns {@code null}. Returns the first matching user if
+	 *         multiple exist (though email should be unique).
 	 * @throws SQLException If a database access error occurs.
 	 */
 	public static User getUserByEmail(Connection conn, String email) throws SQLException {
@@ -65,13 +68,16 @@ public class UsersDAO {
 	 * @param conn The active database connection.
 	 * @param user The {@link User} object containing the data for the new user.
 	 * @return {@code true} if the user was successfully inserted, {@code false}
-	 * otherwise.
+	 *         otherwise.
 	 * @throws SQLException If a database access error occurs during the insert
 	 *                      operation.
 	 */
 	public static boolean insertUser(Connection conn, User user) throws SQLException {
 		// Updated SQL query to use snake_case column names
-		String sql = "INSERT INTO users (" + "uuid, email, password_hash, is_verified, created_at, updated_at, " + "full_name, profile_pic, last_login, metadata, permissions, " + "acc_type, google_id, refresh_token, refresh_token_expires_at" + ") VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+		String sql = "INSERT INTO users (" + "uuid, email, password_hash, is_verified, created_at, updated_at, "
+				+ "full_name, profile_pic, last_login, metadata, permissions, "
+				+ "acc_type, google_id, refresh_token, refresh_token_expires_at"
+				+ ") VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
 
 		try (PreparedStatement stmt = conn.prepareStatement(sql)) {
 			stmt.setString(1, user.uuid());
@@ -138,13 +144,17 @@ public class UsersDAO {
 	 * @param conn The active database connection.
 	 * @param user The {@link User} object containing the updated data for the user.
 	 * @return {@code true} if the user was successfully updated, {@code false}
-	 * otherwise.
+	 *         otherwise.
 	 * @throws SQLException If a database access error occurs during the update
 	 *                      operation.
 	 */
 	public static boolean updateUser(Connection conn, User user) throws SQLException {
 		// Updated SQL query to use snake_case column names
-		String sql = "UPDATE users SET " + "email = ?, " + "password_hash = ?, " + "is_verified = ?, " + "created_at = ?, " + "updated_at = ?, " + "last_login = ?, " + "acc_type = ?, " + "google_id = ?, " + "refresh_token = ?, " + "refresh_token_expires_at = ?, " + "profile_pic = ?, " + "full_name = ?, " + "metadata = ?, " + "permissions = ? " + "WHERE uuid = ?";
+		String sql = "UPDATE users SET " + "email = ?, " + "password_hash = ?, " + "is_verified = ?, "
+				+ "created_at = ?, " + "updated_at = ?, " + "last_login = ?, " + "acc_type = ?, "
+				+ "google_id = ?, " + "refresh_token = ?, " + "refresh_token_expires_at = ?, "
+				+ "profile_pic = ?, " + "full_name = ?, " + "metadata = ?, " + "permissions = ? "
+				+ "WHERE uuid = ?";
 
 		try (PreparedStatement stmt = conn.prepareStatement(sql)) {
 			stmt.setString(1, user.email());
@@ -202,7 +212,7 @@ public class UsersDAO {
 	 * @param conn     The active database connection.
 	 * @param userUuid The UUID of the user to update.
 	 * @return {@code true} if the user's verification status was successfully
-	 * updated, {@code false} otherwise.
+	 *         updated, {@code false} otherwise.
 	 * @throws SQLException If a database access error occurs.
 	 */
 	public static boolean updateUserVerifyStatus(Connection conn, String userUuid) throws SQLException {
@@ -224,7 +234,7 @@ public class UsersDAO {
 	 *                updated.
 	 * @param timeNow The current timestamp (in seconds) to set as `last_login`.
 	 * @return {@code true} if the `last_login` timestamp was successfully updated,
-	 * {@code false} otherwise.
+	 *         {@code false} otherwise.
 	 * @throws SQLException If a database access error occurs.
 	 */
 	public static boolean updateLastLogin(Connection conn, String uuid, long timeNow) throws SQLException {
@@ -254,10 +264,11 @@ public class UsersDAO {
 	 *                    {@code null} to keep existing).
 	 * @param updatedAt   The timestamp (in seconds) of the update.
 	 * @return {@code true} if the user's profile information was successfully
-	 * updated, {@code false} otherwise.
+	 *         updated, {@code false} otherwise.
 	 * @throws SQLException If a database access error occurs.
 	 */
-	public static boolean updateProfileInfo(Connection conn, String userUuid, String fullName, String profilePic, JSONObject metadata, JSONObject permissions, long updatedAt) throws SQLException {
+	public static boolean updateProfileInfo(Connection conn, String userUuid, String fullName, String profilePic,
+			JSONObject metadata, JSONObject permissions, long updatedAt) throws SQLException {
 		// Updated SQL query to use snake_case column names
 		StringBuilder sql = new StringBuilder("UPDATE users SET updated_at = ?"); // Fixed here
 		int paramIndex = 1;
@@ -297,7 +308,8 @@ public class UsersDAO {
 		}
 	}
 
-	public static boolean updateInternalInfo(Connection conn, String userUuid, JSONObject internal, long updatedAt) throws SQLException {
+	public static boolean updateInternalInfo(Connection conn, String userUuid, JSONObject internal, long updatedAt)
+			throws SQLException {
 		String sql = "UPDATE users SET updated_at = ?, internal = ? WHERE uuid = ?";
 		try (PreparedStatement stmt = conn.prepareStatement(sql)) {
 			stmt.setLong(1, updatedAt);
@@ -316,10 +328,11 @@ public class UsersDAO {
 	 * @param newEmail  The new email address for the user.
 	 * @param updatedAt The timestamp (in seconds) of the update.
 	 * @return {@code true} if the email was successfully updated, {@code false}
-	 * otherwise.
+	 *         otherwise.
 	 * @throws SQLException If a database access error occurs.
 	 */
-	public static boolean updateEmail(Connection conn, String userUuid, String newEmail, long updatedAt) throws SQLException {
+	public static boolean updateEmail(Connection conn, String userUuid, String newEmail, long updatedAt)
+			throws SQLException {
 		String sql = "UPDATE users SET email = ?, updated_at = ? WHERE uuid = ?";
 		try (PreparedStatement stmt = conn.prepareStatement(sql)) {
 			stmt.setString(1, newEmail);
@@ -345,12 +358,14 @@ public class UsersDAO {
 	 * @return {@code true} if the update was successful, {@code false} otherwise.
 	 * @throws SQLException If a database access error occurs.
 	 */
-	public static boolean updatePasswordAndAccType(Connection conn, String userUuid, String newPasswordHash, String currentAccType, long updatedAt) throws SQLException {
+	public static boolean updatePasswordAndAccType(Connection conn, String userUuid, String newPasswordHash,
+			String currentAccType, long updatedAt) throws SQLException {
 		String sql;
 		if ("google".equals(currentAccType)) {
 			// If user is 'google' only and sets a password, change to 'both'
 			// Updated SQL query to use snake_case column names
-			sql = "UPDATE users SET password_hash = ?, acc_type = 'both', updated_at = ? WHERE uuid = ?"; // Fixed here
+			sql = "UPDATE users SET password_hash = ?, acc_type = 'both', updated_at = ? WHERE uuid = ?"; // Fixed
+															// here
 		} else {
 			// For 'email' or 'both' accounts, just update password_hash
 			// Updated SQL query to use snake_case column names
@@ -361,6 +376,20 @@ public class UsersDAO {
 			stmt.setString(1, newPasswordHash);
 			stmt.setLong(2, updatedAt);
 			stmt.setString(3, userUuid);
+			return stmt.executeUpdate() > 0;
+		}
+	}
+
+	public static boolean unlinkGoogle(Connection conn, String userUuid) throws SQLException {
+		String sql = "UPDATE users SET acc_type = ?, google_id = ?, refresh_token = ?, refresh_token_expires_at = ? WHERE uuid = ?"; // Fixed
+
+		try (PreparedStatement stmt = conn.prepareStatement(sql)) {
+			int paramIndex = 1;
+			stmt.setString(paramIndex++, "password");
+			stmt.setString(paramIndex++, null);
+			stmt.setString(paramIndex++, null);
+			stmt.setNull(paramIndex++, java.sql.Types.BIGINT);
+			stmt.setString(paramIndex, userUuid);
 			return stmt.executeUpdate() > 0;
 		}
 	}
@@ -411,14 +440,19 @@ public class UsersDAO {
 
 		// Handle metadata and permissions JSON objects - already snake_case
 		String metadataStr = rs.getString("metadata");
-		JSONObject metadata = new JSONObject(metadataStr != null && !metadataStr.isBlank() ? metadataStr : "{}");
+		JSONObject metadata = new JSONObject(
+				metadataStr != null && !metadataStr.isBlank() ? metadataStr : "{}");
 
 		String permissionsStr = rs.getString("permissions");
-		JSONObject permissions = new JSONObject(permissionsStr != null && !permissionsStr.isBlank() ? permissionsStr : "{}");
+		JSONObject permissions = new JSONObject(
+				permissionsStr != null && !permissionsStr.isBlank() ? permissionsStr : "{}");
 
 		// Build the User object using its Builder pattern (using Java object field
 		// names)
-		return new User.Builder(uuid, email, createdAt, updatedAt).passwordHash(passwordHash).isVerified(isVerified).lastLogin(lastLogin).profilePic(profilePic).fullName(fullName).metadata(metadata).permissions(permissions).accType(accType).googleId(googleId).refreshToken(refreshToken).refreshTokenExpiresAt(refreshTokenExpiresAt).build();
+		return new User.Builder(uuid, email, createdAt, updatedAt).passwordHash(passwordHash)
+				.isVerified(isVerified).lastLogin(lastLogin).profilePic(profilePic).fullName(fullName)
+				.metadata(metadata).permissions(permissions).accType(accType).googleId(googleId)
+				.refreshToken(refreshToken).refreshTokenExpiresAt(refreshTokenExpiresAt).build();
 	}
 
 }

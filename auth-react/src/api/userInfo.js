@@ -30,3 +30,10 @@ export function linkPassword({ newPass }) {
 		body: { new: newPass },
 	});
 }
+
+export function unlinkGoogle() {
+	return apiRequest({
+		path: '/v1/users/google/unlink',
+		method: 'DELETE'
+	});
+}

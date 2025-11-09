@@ -56,7 +56,7 @@
 - confirm new password
 - submit
 
-# reset forgotten password page: (not yet implemented by backend but implement here with a always disabled submit button)
+# reset forgotten password page:
 > Redirect to redirect param or /profile if redirect param is empty or null
 - send the token for pass change to backend and backend decides if password changes or not
 - new password

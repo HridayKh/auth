@@ -147,7 +147,8 @@ public class ApiKeyFilter implements Filter {
 				ApiConstants.USERS_SESSIONS_LIST,
 				ApiConstants.USERS_SESSIONS_CREATE,
 				ApiConstants.USERS_SESSION_DELETE,
-				ApiConstants.USERS_SESSIONS_DELETE_CURRENT);
+				ApiConstants.USERS_SESSIONS_DELETE_CURRENT,
+				ApiConstants.USERS_UNLINK_GOOGLE);
 
 		private final Set<String> backendPaths = Set.of(ApiConstants.USERS_INTERNAL_INFO);
 

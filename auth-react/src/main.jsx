@@ -15,6 +15,7 @@ import Profile from "./pages/Profile.jsx";
 import Logout from "./pages/Logout.jsx";
 import Sessions from './pages/Sessions';
 import ChangePass from './pages/ChangePass';
+import ResetPassword from './pages/ResetPassword';
 
 
 createRoot(document.getElementById('root')).render(
@@ -29,7 +30,7 @@ createRoot(document.getElementById('root')).render(
 					<Route path="/logout" element={<Logout />} />
 					<Route path="/sessions" element={<Sessions />} />
 					<Route path="/change-password" element={<ChangePass />} />
-					<Route path="/forgot-password" element={<Unimplemented />} />
+					<Route path="/password-reset" element={<ResetPassword />} />
 					<Route path="*" element={<NotFound />} />
 				</Routes>
 			</Router>

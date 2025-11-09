@@ -1,13 +1,12 @@
 package utils;
 
-import java.io.BufferedReader;
-import java.io.IOException;
-
-import org.json.JSONObject;
-
+import entities.User;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
-import entities.User;
+import org.json.JSONObject;
+
+import java.io.BufferedReader;
+import java.io.IOException;
 
 public class HttpUtil {
 
@@ -20,11 +19,11 @@ public class HttpUtil {
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
-		return new JSONObject(sb.toString());
+		return sb.length() > 0 ? new JSONObject(sb.toString()) : new JSONObject();
 	}
 
 	public static void sendJson(HttpServletResponse resp, int status, String type, String message)
-			throws IOException {
+		throws IOException {
 		resp.setStatus(status);
 		resp.setContentType("application/json");
 		JSONObject json = new JSONObject();
@@ -34,7 +33,7 @@ public class HttpUtil {
 	}
 
 	public static void sendJsonReVerify(HttpServletResponse res, int stat, String type, String message)
-			throws IOException {
+		throws IOException {
 		res.setStatus(stat);
 		res.setContentType("application/json");
 		JSONObject json = new JSONObject();

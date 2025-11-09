@@ -5,6 +5,7 @@ import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import servlets.userPasswords.UsersPassReset;
 import servlets.userPasswords.UsersPassUpdater;
 import servlets.userSessions.UsersSessionCreate;
 import servlets.userSessions.UsersSessionDelete;
@@ -14,7 +15,6 @@ import servlets.usersCreate.UsersCreator;
 import servlets.usersCreate.UsersVerifier;
 import servlets.usersInfo.UsersInfoManager;
 import servlets.usersInfo.UsersInternalManager;
-import utils.HttpUtil;
 
 import java.io.IOException;
 import java.util.HashMap;
@@ -43,8 +43,8 @@ public class ApiServlet extends HttpServlet {
 		addRoute("PATCH", ApiConstants.USERS_INTERNAL_INFO, UsersInternalManager::updateUserInternalInfo);
 
 		// UsersPasswords
-		addRoute("POST", ApiConstants.USERS_PASSWORD_RESET, (req, resp, params) -> HttpUtil.sendJson(resp, HttpServletResponse.SC_NOT_IMPLEMENTED, "error", "unimplemented endpoint"));
-		addRoute("PUT", ApiConstants.USERS_PASSWORD_RESET, (req, resp, params) -> HttpUtil.sendJson(resp, HttpServletResponse.SC_NOT_IMPLEMENTED, "error", "unimplemented endpoint"));
+		addRoute("POST", ApiConstants.USERS_PASSWORD_RESET, UsersPassReset::initReset);
+		addRoute("PUT", ApiConstants.USERS_PASSWORD_RESET, UsersPassReset::completeReset);
 		addRoute("POST", ApiConstants.USERS_PASSWORD_UPDATE, UsersPassUpdater::updateUserPass);
 
 		// UsersSessions
@@ -52,6 +52,8 @@ public class ApiServlet extends HttpServlet {
 		addRoute("POST", ApiConstants.USERS_SESSIONS_CREATE, UsersSessionCreate::createUserSession);
 		addRoute("DELETE", ApiConstants.USERS_SESSION_DELETE, UsersSessionDelete::deleteUserSession);
 		addRoute("DELETE", ApiConstants.USERS_SESSIONS_DELETE_CURRENT, UsersSessionDeleteCurrent::deleteCurrentUserSession);
+
+		addRoute("DELETE", ApiConstants.USERS_UNLINK_GOOGLE, UnlinkGoggle::unlinkGoogleAccount);
 	}
 
 	private static void addRoute(String method, String path, RouteHandler handler) {

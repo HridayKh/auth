@@ -1,19 +1,17 @@
 package servlets.userPasswords;
 
-import db.EmailDAO;
+import db.PassDAO;
 import db.UsersDAO;
 import db.dbAuth;
-import entities.EmailToken;
 import entities.User;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.json.JSONObject;
-import servlets.ApiConstants;
-import utils.AuthUtil;
 import utils.HttpUtil;
 import utils.MailUtil;
+import utils.PassUtil;
 
 import java.io.IOException;
 import java.sql.Connection;
@@ -25,87 +23,103 @@ public class UsersPassReset {
 
 	private static final Logger log = LogManager.getLogger(UsersPassReset.class);
 
-	public static void verifyUser(HttpServletRequest req, HttpServletResponse resp, Map<String, String> ignoredParams) throws IOException {
-		String token = req.getParameter("token");
-		String redirect = req.getParameter("redirect");
-
-		if (token == null || token.isBlank()) {
-			resp.sendRedirect(dbAuth.FRONT_HOST + "/register?redirect=" + redirect + "&type=error&msg=Missing/Invalid Token");
-			return;
-		}
-
-		try (Connection conn = dbAuth.getConnection()) {
-			conn.setAutoCommit(false);
-
-			String userUuid = EmailDAO.userUserUuidFromVerifyToken(conn, token);
-			if (userUuid == null) {
-				conn.rollback();
-				resp.sendRedirect(dbAuth.FRONT_HOST + "/register?redirect=" + redirect + "&type=error&msg=Invalid or Expired email verification token");
-				return;
-			}
-
-			boolean userVerify = UsersDAO.updateUserVerifyStatus(conn, userUuid);
-			if (!userVerify) {
-				conn.rollback();
-				resp.sendRedirect(dbAuth.FRONT_HOST + "/register?redirect=" + redirect + "&type=error&msg=Unable to verify user");
-				return;
-			}
-
-			boolean expireToken = EmailDAO.expireToken(conn, token);
-			if (!expireToken) {
-				conn.rollback();
-				resp.sendRedirect(dbAuth.FRONT_HOST + "/register?redirect=" + redirect + "&type=error&msg=Unable to expire token");
-				return;
-			}
-
-			AuthUtil.createAndSetAuthCookie(conn, req, resp, userUuid);
-
-			conn.commit();
-			resp.sendRedirect(redirect + "?type=success&msg=Email verified successfully.");
-		} catch (SQLException e) {
-			log.catching(e);
-			resp.sendRedirect(dbAuth.FRONT_HOST + "/register?redirect=" + redirect + "&type=error&msg=Unexpected server error");
-		}
-	}
-
-	public static void resendVerifyEmail(HttpServletRequest req, HttpServletResponse resp, Map<String, String> ignoredParams) throws IOException {
+	public static void initReset(HttpServletRequest req, HttpServletResponse resp, Map<String, String> ignoredParams) throws IOException {
 		JSONObject body = HttpUtil.readBodyJSON(req);
-		String email = body.getString("email").toLowerCase();
-		String redirectUrl = body.getString("redirect");
+		String email = body.optString("email", "").toLowerCase().strip();
+		String redirectUrl = body.optString("redirect", dbAuth.FRONT_HOST + "/profile");
 
 		if (email == null || email.isBlank()) {
 			HttpUtil.sendJson(resp, HttpServletResponse.SC_BAD_REQUEST, "error", "Invalid Email Provided.");
 			return;
 		}
 
-		try (Connection conn = dbAuth.getConnection()) {
+		Connection conn = null;
+		try {
+			conn = dbAuth.getConnection();
+			conn.setAutoCommit(false);
+
 			User user = UsersDAO.getUserByEmail(conn, email);
 			if (user == null) {
-				HttpUtil.sendJson(resp, HttpServletResponse.SC_NOT_FOUND, "error", "No such user found.");
-				return;
-			}
-			if (user.isVerified()) {
-				HttpUtil.sendJson(resp, HttpServletResponse.SC_BAD_REQUEST, "error", "User with given email is already verified.");
+				conn.rollback();
+				HttpUtil.sendJson(resp, HttpServletResponse.SC_NOT_FOUND, "error", "user not found.");
 				return;
 			}
 
-			String newToken = UUID.randomUUID().toString();
-
-			if (!EmailDAO.deleteEmailTokenByUser(conn, user.uuid())) {
-				HttpUtil.sendJson(resp, HttpServletResponse.SC_INTERNAL_SERVER_ERROR, "error", "Unable to invalidate old token.");
-				return;
-			}
-			if (!EmailDAO.insertEmailToken(conn, new EmailToken(newToken, user.uuid(), (System.currentTimeMillis() / 1000L) + 86_400))) {
-				HttpUtil.sendJson(resp, HttpServletResponse.SC_INTERNAL_SERVER_ERROR, "error", "Token insert failed.");
+			String token = UUID.randomUUID().toString();
+			if (!PassDAO.startPassReset(conn, token, user.uuid(), (System.currentTimeMillis() / 1000L) + 3600)) {
+				conn.rollback();
+				HttpUtil.sendJson(resp, HttpServletResponse.SC_INTERNAL_SERVER_ERROR, "error", "Unable to start password reset.");
 				return;
 			}
 
-			String verifyLink = dbAuth.BACK_HOST + ApiConstants.USERS_VERIFY_EMAIL + "?token=" + newToken + "&redirect=" + redirectUrl;
-			MailUtil.sendMail(email, "Your new HridayKh.in email verification link", MailUtil.templateVerifyMail(verifyLink));
-			HttpUtil.sendJson(resp, HttpServletResponse.SC_OK, "success", "A new verification email has been sent.");
-		} catch (Exception e) {
+			String verifyLink = dbAuth.FRONT_HOST + "/password-reset?token=" + token + "&redirect=" + redirectUrl;
+			MailUtil.sendMail(email, "Reset your HridayKh.in account password", MailUtil.templatePassReset(verifyLink));
+			conn.commit();
+			HttpUtil.sendJson(resp, HttpServletResponse.SC_OK, "success", "Password reset email sent.");
+		} catch (SQLException e) {
 			log.catching(e);
 			HttpUtil.sendJson(resp, HttpServletResponse.SC_INTERNAL_SERVER_ERROR, "error", "Server error occurred.");
+			try {
+				if (conn != null) {
+					conn.rollback();
+				}
+			} catch (SQLException ex) {
+				log.catching(ex);
+			}
+		}
+	}
+
+	public static void completeReset(HttpServletRequest req, HttpServletResponse resp, Map<String, String> ignoredParams) throws IOException {
+		JSONObject body = HttpUtil.readBodyJSON(req);
+		String password = body.optString("pass", "").strip();
+		String token = body.optString("token", "").strip();
+
+		if (password == null || password.isBlank()) {
+			HttpUtil.sendJson(resp, HttpServletResponse.SC_BAD_REQUEST, "error", "Invalid Password Provided.");
+			return;
+		}
+		if (token == null || token.isBlank()) {
+			HttpUtil.sendJson(resp, HttpServletResponse.SC_BAD_REQUEST, "error", "Invalid Token Provided.");
+			return;
+		}
+
+		Connection conn = null;
+		try {
+			conn = dbAuth.getConnection();
+			conn.setAutoCommit(false);
+
+			String userUuid = PassDAO.userUuidFromPassToken(conn, token);
+			if (userUuid == null) {
+				conn.rollback();
+				HttpUtil.sendJson(resp, HttpServletResponse.SC_BAD_REQUEST, "error", "invalid token.");
+				return;
+			}
+
+			User user = UsersDAO.getUserByUuid(conn, userUuid);
+			if(user == null) {
+				conn.rollback();
+				HttpUtil.sendJson(resp, HttpServletResponse.SC_NOT_FOUND, "error", "user not found.");
+				return;
+			}
+
+			boolean passUpdated = UsersDAO.updatePasswordAndAccType(conn, user.uuid(), PassUtil.sha256Hash(password), user.accType(), System.currentTimeMillis() / 1000L);
+			if (!passUpdated) {
+				conn.rollback();
+				HttpUtil.sendJson(resp, HttpServletResponse.SC_INTERNAL_SERVER_ERROR, "error", "Unable to update password.");
+				return;
+			}
+			conn.commit();
+			HttpUtil.sendJson(resp, HttpServletResponse.SC_OK, "success", "Password has been updated, please log in");
+		} catch (SQLException e) {
+			log.catching(e);
+			HttpUtil.sendJson(resp, HttpServletResponse.SC_INTERNAL_SERVER_ERROR, "error", "Server error occurred.");
+			try {
+				if (conn != null) {
+					conn.rollback();
+				}
+			} catch (SQLException ex) {
+				log.catching(ex);
+			}
 		}
 	}
 

@@ -31,16 +31,22 @@ export default function Login() {
 			if (/^[a-zA-Z][a-zA-Z0-9+.-]*:\/\//.test(redirect)) {
 				window.location.replace(redirect);
 			} else {
-				navigate(redirect, { replace: true });
+				navigate((redirect.startsWith("/") ? redirect : "/" + redirect), { replace: true });
 			}
 		}
 	}, [user, authLoading, navigate, redirect]);
 
 	function handleGoogleLogin(e) {
 		e.preventDefault();
-		// Use backend host from env
-		const redirectUrl = redirect || window.location.origin + "/profile";
+		var redirectUrl = "";
+
+		if (/^[a-zA-Z][a-zA-Z0-9+.-]*:\/\//.test(redirect)) {
+			redirectUrl = redirect;
+		} else {
+			redirectUrl = window.location.origin + (redirect.startsWith("/") ? redirect : "/" + redirect);
+		}
 		const url = `${VITE_AUTH_BACKEND}/googleLoginInitiate?source=login&redirect=${encodeURIComponent(redirectUrl)}`;
+
 		window.location.href = url;
 	}
 
@@ -106,6 +112,8 @@ export default function Login() {
 		}
 	}
 
+	const urlType = searchParams.get("type");
+	const urlMessage = searchParams.get("msg");
 	return (
 		<main className="flex flex-col items-center justify-center min-h-screen bg-dark">
 			<form
@@ -175,11 +183,15 @@ export default function Login() {
 				>
 					{resetSent ? "Reset link sent!" : "Forgot password?"}
 				</button>
-				{result && (
+				{(urlType && urlMessage) ? (
+					<div className={`alert mt-3 ${urlType === "success" ? "alert-success" : "alert-danger"}`} role="alert">
+						<strong>{urlType}</strong>: {urlMessage}
+					</div>
+				) : (result && (
 					<div className={`alert mt-3 ${result.type === "success" ? "alert-success" : "alert-danger"}`} role="alert">
 						<strong>{result.type}</strong>: {result.message}
 					</div>
-				)}
+				))}
 				{result && result.data && result.data.reverify === true && (
 					<button
 						type="button"
