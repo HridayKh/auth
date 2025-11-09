@@ -1,15 +1,25 @@
-import { useSearchParams, Link, Navigate } from "react-router-dom";
-import { useState } from "react";
+import { useSearchParams, Link, useNavigate } from "react-router-dom";
+import { useEffect, useState } from "react";
 import { useAuth } from "../AuthContext.jsx";
 const VITE_AUTH_BACKEND = import.meta.env.VITE_AUTH_BACKEND || "";
 
 export default function Profile() {
-	const { user, loading } = useAuth();
+	const { user, setUser, loading } = useAuth();
 	const [linking, setLinking] = useState(false);
 	const [searchParams] = useSearchParams();
-	const redirect = searchParams.get("redirect");
+	const navigate = useNavigate();
+	const redirect = searchParams.get("redirect")?.trim() || "";
 
+	useEffect(() => {
+		if (!loading) {
+			if (user === null) {
+				navigate("/login?redirect=" + encodeURIComponent(window.location.pathname + window.location.search), { replace: true });
+			}
+		}
+	}, [user, loading, redirect, navigate]);
 
+	if (loading) return <main className="flex flex-col items-center justify-center min-h-screen bg-dark text-white">Loading...</main>;
+	if (user === null) return null;
 
 	function handleGoogleLink() {
 		setLinking(true);
@@ -18,8 +28,8 @@ export default function Profile() {
 	}
 
 	function goBackLink() {
-		if (redirect) return <Link to={redirect} className="btn btn-link mb-2">Go Back</Link>;
-		return null;
+		if (redirect && redirect.length > 0) return <Link to={redirect} className="btn btn-link mb-2">Go Back</Link>;
+		return (<></>);
 	}
 
 	function formatDate(ts) {
@@ -48,15 +58,8 @@ export default function Profile() {
 	// Show type/message from URL params if present, else from user object
 	const urlType = searchParams.get("type");
 	const urlMessage = searchParams.get("msg");
-
-
-	if (loading) return <main className="flex flex-col items-center justify-center min-h-screen bg-dark text-white">Loading...</main>;
-
-	if (!user) {
-		const loginUrl = "/login?redirect=" + encodeURIComponent(window.location.pathname + window.location.search);
-		return <Navigate to={loginUrl} replace />;
-	}
-
+	const pageRedirect = redirect ? "?redirect=" + encodeURIComponent(redirect) : "";
+	
 	return (
 		<main className="flex flex-col items-center justify-center min-h-screen bg-dark text-white">
 			<div className="bg-gray-900 p-6 rounded shadow-md w-full max-w-lg border border-gray-800">
@@ -125,9 +128,9 @@ export default function Profile() {
 					)}
 				</div>
 				<div className="d-flex flex-column gap-2 mt-4">
-					<Link to={"/sessions?redirect=" + (redirect || "/profile")} className="btn btn-outline-light w-full">Manage Sessions</Link>
-					<Link to={"/change-password?redirect=" + (redirect || "/profile")} className="btn btn-outline-light w-full">Change Password</Link>
-					<Link to={"/logout" + (redirect || "/login")} className="btn btn-outline-danger w-full">Logout</Link>
+					<Link to={"/sessions?redirect=/profile" + pageRedirect} className="btn btn-outline-light w-full">Manage Sessions</Link>
+					<Link to={"/change-password?redirect=/profile" + pageRedirect} className="btn btn-outline-light w-full">Change Password</Link>
+					<Link to={"/logout" + pageRedirect} className="btn btn-outline-danger w-full">Logout</Link>
 				</div>
 			</div>
 		</main>

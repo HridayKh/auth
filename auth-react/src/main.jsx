@@ -6,12 +6,14 @@ import 'bootstrap/dist/js/bootstrap.bundle.min.js';
 import './index.css';
 
 import Home from "./Home.jsx";
+import NotFound, { Unimplemented } from "./NotFound.jsx";
+import { AuthProvider } from "./AuthContext.jsx";
+
 import Login from "./pages/Login.jsx";
 import Register from "./pages/Register.jsx";
 import Profile from "./pages/Profile.jsx";
 import Logout from "./pages/Logout.jsx";
-import NotFound, { Unimplemented } from "./NotFound.jsx";
-import { AuthProvider } from "./AuthContext.jsx";
+import Sessions from './pages/Sessions';
 
 
 createRoot(document.getElementById('root')).render(
@@ -24,7 +26,7 @@ createRoot(document.getElementById('root')).render(
 					<Route path="/register" element={<Register />} />
 					<Route path="/profile" element={<Profile />} />
 					<Route path="/logout" element={<Logout />} />
-					<Route path="/sessions" element={<Unimplemented />} />
+					<Route path="/sessions" element={<Sessions />} />
 					<Route path="/change-password" element={<Unimplemented />} />
 					<Route path="/forgot-password" element={<Unimplemented />} />
 					<Route path="*" element={<NotFound />} />

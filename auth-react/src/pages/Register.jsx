@@ -21,15 +21,14 @@ export default function Register() {
 	const { user, loading: authLoading } = useAuth();
 	const navigate = useNavigate();
 	const [searchParams] = useSearchParams();
-	const redirect = searchParams.get("redirect");
+	const redirect = searchParams.get("redirect")?.trim() || "/profile";
 
-	// Auto-redirect if already logged in
 	useEffect(() => {
 		if (!authLoading && user) {
-			if (redirect && /^(http|https):\/\//.test(redirect)) {
+			if (/^[a-zA-Z][a-zA-Z0-9+.-]*:\/\//.test(redirect)) {
 				window.location.replace(redirect);
 			} else {
-				navigate(redirect || "/profile", { replace: true });
+				navigate(redirect, { replace: true });
 			}
 		}
 	}, [user, authLoading, navigate, redirect]);

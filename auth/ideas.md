@@ -12,6 +12,8 @@
 
 #### 7. Unlink Google
 
+#### 8. session names
+
 # TODO:
 - verify acc type is consistent and use enums
 - store session creation method, google or password
