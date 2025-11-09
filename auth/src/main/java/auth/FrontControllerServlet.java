@@ -17,7 +17,7 @@ public class FrontControllerServlet extends HttpServlet {
             path.startsWith("/v1/") ||
             path.startsWith("/googleLoginInitiate") ||
             path.startsWith("/oauth2callback") ||
-            path.contains(".") // crude check for static files (js, css, png, etc)
+            (path.contains(".") && !path.equals("/index.html")) // allow /index.html to be served
         ) {
             resp.setStatus(HttpServletResponse.SC_NOT_FOUND);
             resp.setContentType("text/plain");
