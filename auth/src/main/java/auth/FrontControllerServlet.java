@@ -13,17 +13,21 @@ public class FrontControllerServlet extends HttpServlet {
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         String path = req.getRequestURI().substring(req.getContextPath().length());
         // Don't forward API/backend or static file requests
+        if (path.equals("/index.html")) {
+            // Let the container serve index.html as a static file
+            return;
+        }
         if (
             path.startsWith("/v1/") ||
             path.startsWith("/googleLoginInitiate") ||
             path.startsWith("/oauth2callback") ||
-            (path.contains(".") && !path.equals("/index.html")) // allow /index.html to be served
+            (path.contains(".") && !path.equals("/index.html")) // block all other static files
         ) {
             resp.setStatus(HttpServletResponse.SC_NOT_FOUND);
             resp.setContentType("text/plain");
             resp.getWriter().write("Not forwarded by FrontControllerServlet: " + path);
             return;
         }
-        req.getRequestDispatcher("/index.html").forward(req, resp);
+        resp.sendRedirect(req.getContextPath() + "/index.html");
     }
 }
