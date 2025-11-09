@@ -11,3 +11,6 @@ expirng passworda for accounts marked super secure
 Stress test auth and db
 
 email login link
+
+
+1. use relative links in index.html

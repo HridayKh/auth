@@ -7,6 +7,8 @@ WAR_NAME="auth"
 TARGET_WAR="target/$WAR_NAME.war"
 DEPLOY_PATH="$TOMCAT_HOME/webapps/$WAR_NAME.war"
 
+rm -rf target/
+
 echo "🧹 Building WAR (skip tests)..."
 # Skip cleaning if not needed, just package
 mvn package -DskipTests
