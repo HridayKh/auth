@@ -25,7 +25,7 @@ public class SessionDAO {
 	 * @throws SQLException If a database access error occurs.
 	 */
 	public static String createSession(Connection conn, String userUuid, String userAgent, int expiresInSeconds)
-		throws SQLException {
+			throws SQLException {
 		String sessionId = UUID.randomUUID().toString();
 		long now = System.currentTimeMillis() / 1000L; // Current time in seconds
 		long expiresAt = now + expiresInSeconds;
@@ -60,9 +60,11 @@ public class SessionDAO {
 			stmt.setString(1, sessionId);
 			try (ResultSet rs = stmt.executeQuery()) {
 				if (rs.next()) {
-					return new Session(rs.getString("session_id"), rs.getString("user_uuid"), rs.getLong("created_at"),
-						rs.getLong("last_accessed_at"), rs.getLong("expires_at"), rs.getString("user_agent"),
-						rs.getBoolean("is_active"));
+					return new Session(rs.getString("session_id"), rs.getString("user_uuid"),
+							rs.getLong("created_at"),
+							rs.getLong("last_accessed_at"), rs.getLong("expires_at"),
+							rs.getString("user_agent"),
+							rs.getBoolean("is_active"));
 				}
 			}
 		}
@@ -86,8 +88,9 @@ public class SessionDAO {
 			ResultSet rs = stmt.executeQuery();
 			while (rs.next()) {
 				sessions.add(new Session(rs.getString("session_id"), rs.getString("user_uuid"),
-					rs.getLong("created_at"), rs.getLong("last_accessed_at"), rs.getLong("expires_at"),
-					rs.getString("user_agent"), rs.getBoolean("is_active")));
+						rs.getLong("created_at"), rs.getLong("last_accessed_at"),
+						rs.getLong("expires_at"),
+						rs.getString("user_agent"), rs.getBoolean("is_active")));
 			}
 			return sessions.toArray(new Session[0]);
 		}
@@ -105,7 +108,7 @@ public class SessionDAO {
 	 * @throws SQLException If a database access error occurs.
 	 */
 	public static void updateSessionLastAccessed(Connection conn, String sessionId, long newLastAccessedAt,
-	                                             long newExpiresAt) throws SQLException {
+			long newExpiresAt) throws SQLException {
 		String sql = "UPDATE sessions SET last_accessed_at = ?, expires_at = ? WHERE session_id = ?";
 		try (PreparedStatement stmt = conn.prepareStatement(sql)) {
 			stmt.setLong(1, newLastAccessedAt);
@@ -124,14 +127,13 @@ public class SessionDAO {
 	 * @return True if the session was invalidated, false otherwise.
 	 * @throws SQLException If a database access error occurs.
 	 */
-	public static boolean invalidateSession(Connection conn, String sessionId, String uuid) throws SQLException {
-		String sql = "UPDATE sessions SET is_active = FALSE WHERE session_id = ? AND user_uuid = ?";
+	public static boolean invalidateSession(Connection conn, String sessionId) throws SQLException {
+		String sql = "UPDATE sessions SET is_active = ? WHERE session_id = ?";
 		try (PreparedStatement stmt = conn.prepareStatement(sql)) {
-			stmt.setString(1, sessionId);
-			stmt.setString(2, uuid);
+			stmt.setBoolean(1, false);
+			stmt.setString(2, sessionId);
 			return stmt.executeUpdate() > 0;
 		}
 	}
-
 
 }

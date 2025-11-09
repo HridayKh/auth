@@ -133,7 +133,6 @@ public class OAuth2CallbackServlet extends HttpServlet {
 				UsersDAO.insertUser(conn, newUser);
 
 				AuthUtil.createAndSetAuthCookie(conn, request, response, newUser.uuid());
-				HttpUtil.createAndSetUserCookie(response, newUser);
 
 			} else if (oldUser.accType().equals("google") || oldUser.accType().equals("both") || (oldUser.accType().equals("pass") && source.equals("glink"))) {
 
@@ -197,7 +196,6 @@ public class OAuth2CallbackServlet extends HttpServlet {
 				}
 				// 6. Set authentication and user cookies for the newly logged-in/updated user
 				AuthUtil.createAndSetAuthCookie(conn, request, response, newUser.uuid());
-				HttpUtil.createAndSetUserCookie(response, newUser);
 
 			} else {
 				conn.rollback();

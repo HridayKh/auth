@@ -132,6 +132,84 @@ public class AuthUtil {
 	}
 
 	/**
+	 * Validates the auth cookie, retrieves the session from the database, updates
+	 * its last access time, and returns the associated session UUID. This method
+	 * should be called by any secured endpoint or filter.
+	 *
+	 * @param req  The HttpServletRequest to get the cookie from.
+	 * @param resp The HttpServletResponse to clear the cookie if invalid.
+	 * @param conn The database connection.
+	 * @return The user UUID if the session is valid and active, null otherwise.
+	 * @throws SQLException If a database access error occurs during session
+	 *                      lookup/update.
+	 */
+	public static String getCurrentSessionFromAuthCookie(HttpServletRequest req, HttpServletResponse resp,
+			Connection conn) throws SQLException {
+		Cookie[] cookies = req.getCookies();
+		if (cookies == null) {
+			return null; // No cookies present, user not logged in
+		}
+
+		String jwtEnc = null;
+		for (Cookie cookie : cookies) {
+			if (AUTH_COOKIE_NAME.equals(cookie.getName())) {
+				jwtEnc = cookie.getValue();
+				break;
+			}
+		}
+		if (jwtEnc == null) {
+			return null; // Auth cookie not found, user not logged in
+		}
+
+		String sessionId;
+		try {
+			byte[] decodedBytes = Base64.getDecoder().decode(jwtEnc);
+			String jwt = new String(decodedBytes, StandardCharsets.UTF_8);
+			String[] parts = jwt.split(":\\|:");
+			if (parts.length != 2) {
+				clearAuthCookie(resp); // Clear malformed cookie
+				return null;
+			}
+
+			sessionId = parts[0];
+			String receivedSignature = parts[1];
+
+			// 1. Verify the signature of the sessionId
+			if (!PassUtil.signString(sessionId).equals(receivedSignature)) {
+				clearAuthCookie(resp); // Clear cookie with invalid signature
+				return null;
+			}
+
+			// 2. Look up the session in the database
+			Session session = SessionDAO.getSessionById(conn, sessionId);
+
+			if (session != null) {
+				long now = System.currentTimeMillis() / 1000L;
+
+				// 3. Check if session is active and not expired
+				if (session.isActive() && session.expiresAt() > now) {
+					// 4. Update last_accessed_at and re-extend expiration (rolling session)
+					long newExpiresAt = now + SESSION_EXPIRY_SECONDS;
+					SessionDAO.updateSessionLastAccessed(conn, sessionId, now, newExpiresAt);
+					return session.sessionId(); // Return the session UUID associated with this
+									// valid
+									// session
+				} else {
+					clearAuthCookie(resp); // Clear the client's cookie for the invalid session
+					return null;
+				}
+			} else {
+				// Session ID not found in DB (e.g., invalidated by "sign out other devices")
+				clearAuthCookie(resp); // Clear the client's cookie
+				return null;
+			}
+		} catch (IllegalArgumentException e) {
+			clearAuthCookie(resp);
+			return null;
+		}
+	}
+
+	/**
 	 * Clears the authentication cookie from the client. This should be called on
 	 * logout or when an invalid/expired session is detected.
 	 *
