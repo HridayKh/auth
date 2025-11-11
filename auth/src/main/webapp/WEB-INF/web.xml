@@ -7,7 +7,7 @@
 		<filter-name>CORSFilter</filter-name>
 		<filter-class>auth.CORSFilter</filter-class>
 	</filter>
-	
+
 	<filter>
 		<filter-name>ApiKeyFilter</filter-name>
 		<filter-class>auth.ApiKeyFilter</filter-class>
@@ -27,14 +27,21 @@
 		<servlet-name>FrontControllerServlet</servlet-name>
 		<servlet-class>auth.FrontControllerServlet</servlet-class>
 	</servlet>
-	<!-- Map static file extensions to Tomcat's default servlet -->
 	<servlet-mapping>
 		<servlet-name>default</servlet-name>
 		<url-pattern>*.js</url-pattern>
 	</servlet-mapping>
 	<servlet-mapping>
 		<servlet-name>default</servlet-name>
+		<url-pattern>*.jsp</url-pattern>
+	</servlet-mapping>
+	<servlet-mapping>
+		<servlet-name>default</servlet-name>
 		<url-pattern>*.html</url-pattern>
+	</servlet-mapping>
+	<servlet-mapping>
+		<servlet-name>default</servlet-name>
+		<url-pattern>*.jsp</url-pattern>
 	</servlet-mapping>
 	<servlet-mapping>
 		<servlet-name>default</servlet-name>

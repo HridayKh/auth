@@ -99,7 +99,7 @@ public class OAuth2CallbackServlet extends HttpServlet {
 				String email = ((String) payload.get("email")).toLowerCase();
 				String name = (String) payload.get("name");
 				String pictureUrl = (String) payload.get("picture");
-
+				log.info("userId: {}\nemail: {}\nname: {}\npic: {}\nrefrestToken: {}\nsource: {}\n", userId, email, name, pictureUrl, refreshToken, stateJson.getString("source"));
 				registerUser(userId, email, name, pictureUrl, refreshToken, stateJson.getString("source"), request, response);
 
 			} else {
@@ -131,7 +131,7 @@ public class OAuth2CallbackServlet extends HttpServlet {
 
 				AuthUtil.createAndSetAuthCookie(conn, request, response, newUser.uuid());
 
-			} else if (oldUser.accType().equals("google") || oldUser.accType().equals("both") || (oldUser.accType().equals("pass") && source.equals("glink"))) {
+			} else if (oldUser.accType().equals("google") || oldUser.accType().equals("both") || (oldUser.accType().equals("password") && source.equals("glink"))) {
 
 				// Start building the updated user object based on the old user's data
 				// All fields are initially copied from oldUser, then selectively updated
@@ -169,7 +169,7 @@ public class OAuth2CallbackServlet extends HttpServlet {
 				}
 
 				// 4. Handle Account Type (linking):
-				if (oldUser.accType().equals("pass") && source.equals("glink")) {
+				if (oldUser.accType().equals("password") && source.equals("glink")) {
 					// This is the "linking" scenario: a password user is linking their Google
 					// account
 					userBuilder.accType("both"); // Change account type to "both"
