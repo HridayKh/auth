@@ -59,6 +59,7 @@ jobs:
 
       - name: Build with Maven
         run: |
+          rm -rf auth/target
           cd auth
           mvn clean package
 
@@ -87,7 +88,7 @@ jobs:
             echo "WAR file not found!"
             exit 1
           fi
-          curl --fail --show-error --retry 3 --retry-delay 5 -T "${{ github.workspace }}/auth/target/auth.war" \
+          curl --http1.1 --fail --show-error --retry 3 --retry-delay 5 -T "${{ github.workspace }}/auth/target/auth.war" \
             --user "${{ secrets.TOMCAT_USER }}:${{ secrets.TOMCAT_PASS }}" \
             "https://auth.hridaykh.in/manager/text/deploy?path=/ROOT&update=true"
 
