@@ -112,8 +112,6 @@ public class OAuth2CallbackServlet extends HttpServlet {
 			redirectToFailure(response, "Internal server error during token exchange.");
 		} catch (GeneralSecurityException e) {
 			redirectToFailure(response, "ID token verification failed.");
-		} catch (Exception e) {
-			redirectToFailure(response, "An unexpected error occurred during login.");
 		}
 	}
 
@@ -198,7 +196,8 @@ public class OAuth2CallbackServlet extends HttpServlet {
 
 			} else {
 				conn.rollback();
-				redirectToFailure(response, "User already exists with this email");
+				redirectToFailure(response, "User already exists with this email, try a different login method.");
+				return;
 			}
 
 			conn.commit();
