@@ -25,8 +25,11 @@ jobs:
   
       - name: Copy React build to Java webapp
         run: |
+          ls auth/src/main/webapp
           find auth/src/main/webapp -mindepth 1 -maxdepth 1 ! -name 'WEB-INF' -exec rm -rf {} +
+          ls auth/src/main/webapp
           cp -r auth-react/dist/* auth/src/main/webapp/
+          ls auth/src/main/webapp
         
       - name: Set up JDK 21
         uses: actions/setup-java@v4
