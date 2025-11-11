@@ -29,13 +29,13 @@
 	- last login
 	- acc type
 	- profile pic
-	- full name
+	- full name 
 	- metadata
 	- permissons
 - option to link/unlink google based on acc_type (acc_type = password || google || both)
 	- if aacc_type is google, changing password with old password being blank automatically links apssword to a google based account
 	- to link google to a password type acc, initiate a google login exactly how a normal google login initiastes but password source=glink
-	- to unlink google, the backend hasnt implemented that so show a disabled button for it
+	- to unlink google
 - link to sessions/login management page
 - link to change password form
 - link to logout page

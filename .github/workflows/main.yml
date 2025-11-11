@@ -25,11 +25,23 @@ jobs:
   
       - name: Copy React build to Java webapp
         run: |
-          ls auth/src/main/webapp
+          set -euxo pipefail
+          echo "Before cleanup:"
+          ls -l auth/src/main/webapp || true
+          echo "Cleaning up webapp except WEB-INF..."
           find auth/src/main/webapp -mindepth 1 -maxdepth 1 ! -name 'WEB-INF' -exec rm -rf {} +
-          ls auth/src/main/webapp
-          cp -r auth-react/dist/* auth/src/main/webapp/
-          ls auth/src/main/webapp
+          echo "After cleanup:"
+          ls -l auth/src/main/webapp || true
+          echo "Checking React build output:"
+          if [ ! -d "auth-react/dist" ]; then
+            echo "ERROR: auth-react/dist does not exist!" >&2
+            exit 1
+          fi
+          ls -l auth-react/dist || true
+          echo "Copying React build to webapp..."
+          cp -av auth-react/dist/. auth/src/main/webapp/
+          echo "After copy:"
+          ls -l auth/src/main/webapp || true
         
       - name: Set up JDK 21
         uses: actions/setup-java@v4
