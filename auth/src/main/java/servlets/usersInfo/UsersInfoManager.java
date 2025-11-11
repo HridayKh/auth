@@ -20,34 +20,40 @@ public class UsersInfoManager {
 
 	private static final Logger log = LogManager.getLogger(UsersInfoManager.class);
 
-	public static void getUserInfo(HttpServletRequest req, HttpServletResponse resp, Map<String, String> ignoredParams) throws IOException {
+	public static void getUserInfo(HttpServletRequest req, HttpServletResponse resp,
+			Map<String, String> ignoredParams) throws IOException {
 		try (Connection conn = dbAuth.getConnection()) {
 			String userUuid = AuthUtil.getUserUUIDFromAuthCookie(req, resp, conn);
 			if (userUuid == null) {
-				HttpUtil.sendJson(resp, HttpServletResponse.SC_UNAUTHORIZED, "error", "User not logged in.");
+				HttpUtil.sendJson(resp, HttpServletResponse.SC_UNAUTHORIZED, "error",
+						"User not logged in.");
 				return;
 			}
 			User user = UsersDAO.getUserByUuid(conn, userUuid);
 			if (user == null) {
-				HttpUtil.sendJson(resp, HttpServletResponse.SC_NOT_FOUND, "error", "Logged in user not found.");
+				HttpUtil.sendJson(resp, HttpServletResponse.SC_NOT_FOUND, "error",
+						"Logged in user not found.");
 				AuthUtil.clearAuthCookie(resp);
 				return;
 			}
 			HttpUtil.sendUser(resp, user);
 		} catch (Exception e) {
 			log.catching(e);
-			HttpUtil.sendJson(resp, HttpServletResponse.SC_INTERNAL_SERVER_ERROR, "error", "Internal Server Error");
+			HttpUtil.sendJson(resp, HttpServletResponse.SC_INTERNAL_SERVER_ERROR, "error",
+					"Internal Server Error");
 		}
 	}
 
-	public static void updateUserInfo(HttpServletRequest req, HttpServletResponse resp, Map<String, String> ignoredParams) throws IOException {
+	public static void updateUserInfo(HttpServletRequest req, HttpServletResponse resp,
+			Map<String, String> ignoredParams) throws IOException {
 		Connection conn = null;
 		try {
 			conn = dbAuth.getConnection();
 			conn.setAutoCommit(false);
 			String userUuid = AuthUtil.getUserUUIDFromAuthCookie(req, resp, conn);
 			if (userUuid == null) {
-				HttpUtil.sendJson(resp, HttpServletResponse.SC_UNAUTHORIZED, "error", "Unauthorized: No valid session.");
+				HttpUtil.sendJson(resp, HttpServletResponse.SC_UNAUTHORIZED, "error",
+						"Unauthorized: No valid session.");
 				AuthUtil.clearAuthCookie(resp);
 				return;
 			}
@@ -71,32 +77,40 @@ public class UsersInfoManager {
 			long now = System.currentTimeMillis() / 1000; // Current timestamp in seconds
 			boolean emailUpdated = false;
 			boolean profileInfoUpdated = false;
+			boolean profileInfoMetaPermUpdated = false;
 
 			// --- Handle Email Update ---
-			String newEmail = updateDTO.getEmail().toLowerCase();
-			if (!newEmail.isBlank() && !currentUser.email().toLowerCase().equals(newEmail)) {
+			String newEmail = updateDTO.getEmail();
+			if (newEmail != null && !newEmail.isBlank()
+					&& !currentUser.email().toLowerCase().equals(newEmail.toLowerCase())) {
 				if (!"password".equals(currentUser.accType())) {
 					conn.rollback();
-					HttpUtil.sendJson(resp, HttpServletResponse.SC_FORBIDDEN, "error", "Email change is not allowed if you have a google account linked, unlink it first.");
+					HttpUtil.sendJson(resp, HttpServletResponse.SC_FORBIDDEN, "error",
+							"Email change is not allowed if you have a google account linked, unlink it first.");
 					return;
 				}
-				if (!newEmail.matches("^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\\.[a-zA-Z]{2,6}$")) {
+				if (!newEmail.toLowerCase()
+						.matches("^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\\.[a-zA-Z]{2,6}$")) {
 					conn.rollback();
-					HttpUtil.sendJson(resp, HttpServletResponse.SC_BAD_REQUEST, "error", "Invalid email format.");
+					HttpUtil.sendJson(resp, HttpServletResponse.SC_BAD_REQUEST, "error",
+							"Invalid email format.");
 					return;
 				}
-				User existingUserWithNewEmail = UsersDAO.getUserByEmail(conn, newEmail);
-				if (existingUserWithNewEmail != null && !existingUserWithNewEmail.uuid().equals(userUuid)) {
+				User existingUserWithNewEmail = UsersDAO.getUserByEmail(conn, newEmail.toLowerCase());
+				if (existingUserWithNewEmail != null
+						&& !existingUserWithNewEmail.uuid().equals(userUuid)) {
 					conn.rollback();
-					HttpUtil.sendJson(resp, HttpServletResponse.SC_CONFLICT, "error", "Email already in use by another account.");
+					HttpUtil.sendJson(resp, HttpServletResponse.SC_CONFLICT, "error",
+							"Email already in use by another account.");
 					return;
 				}
 
-				if (UsersDAO.updateEmail(conn, userUuid, newEmail, now)) {
+				if (UsersDAO.updateEmail(conn, userUuid, newEmail.toLowerCase(), now)) {
 					emailUpdated = true;
 				} else {
 					conn.rollback();
-					HttpUtil.sendJson(resp, HttpServletResponse.SC_INTERNAL_SERVER_ERROR, "error", "Failed to update email.");
+					HttpUtil.sendJson(resp, HttpServletResponse.SC_INTERNAL_SERVER_ERROR, "error",
+							"Failed to update email.");
 					return;
 				}
 			}
@@ -105,16 +119,41 @@ public class UsersInfoManager {
 			String newProfilePic = updateDTO.getProfilePic();
 			String newFullName = updateDTO.getFullName();
 			if (newProfilePic != null || newFullName != null) {
-				if (UsersDAO.updateProfileInfo(conn, userUuid, newFullName, newProfilePic, null, null, now)) {
+				if (UsersDAO.updateProfileInfo(conn, userUuid, newFullName, newProfilePic, null, null,
+						now)) {
 					profileInfoUpdated = true;
 				} else {
 					conn.rollback();
-					HttpUtil.sendJson(resp, HttpServletResponse.SC_INTERNAL_SERVER_ERROR, "error", "Failed to update profile info.");
+					HttpUtil.sendJson(resp, HttpServletResponse.SC_INTERNAL_SERVER_ERROR, "error",
+							"Failed to update profile info.");
 					return;
 				}
 			}
 
-			if (!emailUpdated && !profileInfoUpdated) {
+
+			// --- Handle Metadata and Permissions Update (with Profile Info) ---
+			JSONObject newMetadata = jsonRequest.has("metadata") ? jsonRequest.optJSONObject("metadata") : null;
+			JSONObject newPermissions = jsonRequest.has("permissions") ? jsonRequest.optJSONObject("permissions") : null;
+			JSONObject mergedMetadata = null;
+			JSONObject mergedPermissions = null;
+			if (newMetadata != null) {
+				mergedMetadata = deepMerge(newMetadata, currentUser.metadata());
+			}
+			if (newPermissions != null) {
+				mergedPermissions = deepMerge(newPermissions, currentUser.permissions());
+			}
+			// Only call updateProfileInfo if at least one of fullName, profilePic, metadata, permissions is being updated
+			if (newProfilePic != null || newFullName != null || mergedMetadata != null || mergedPermissions != null) {
+				if (UsersDAO.updateProfileInfo(conn, userUuid, newFullName, newProfilePic, mergedMetadata, mergedPermissions, now)) {
+					profileInfoMetaPermUpdated = true;
+				} else {
+					conn.rollback();
+					HttpUtil.sendJson(resp, HttpServletResponse.SC_INTERNAL_SERVER_ERROR, "error", "Failed to update profile info, metadata, or permissions.");
+					return;
+				}
+			}
+
+			if (!emailUpdated && !profileInfoUpdated && !profileInfoMetaPermUpdated) {
 				HttpUtil.sendJson(resp, HttpServletResponse.SC_OK, "success", "No changes provided or no update necessary.");
 			} else {
 				conn.commit();
@@ -130,7 +169,8 @@ public class UsersInfoManager {
 				}
 			}
 			log.catching(e);
-			HttpUtil.sendJson(resp, HttpServletResponse.SC_INTERNAL_SERVER_ERROR, "error", "Internal Server Error during profile update.");
+			HttpUtil.sendJson(resp, HttpServletResponse.SC_INTERNAL_SERVER_ERROR, "error",
+					"Internal Server Error during profile update.");
 		} finally {
 			if (conn != null) {
 				try {
@@ -143,6 +183,25 @@ public class UsersInfoManager {
 		}
 	}
 
+	private static JSONObject deepMerge(JSONObject source, JSONObject target) {
+		if (source == null)
+			return target;
+		for (String key : source.keySet()) {
+			Object sourceValue = source.get(key);
+			if (sourceValue == JSONObject.NULL || sourceValue == null) {
+				target.remove(key);
+				continue;
+			}
+			if (sourceValue instanceof JSONObject sourceJsonObject
+					&& target.opt(key) instanceof JSONObject) {
+				JSONObject targetValue = target.getJSONObject(key);
+				deepMerge(targetValue, sourceJsonObject);
+			} else {
+				target.put(key, sourceValue);
+			}
+		}
+		return target;
+	}
 }
 
 class UserProfileUpdateDTO {
@@ -152,7 +211,7 @@ class UserProfileUpdateDTO {
 
 	// Getters and Setters
 	public String getEmail() {
-		return email.toLowerCase();
+		return email;
 	}
 
 	public void setEmail(String email) {

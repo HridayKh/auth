@@ -90,4 +90,19 @@ public class HttpUtil {
 		resp.getWriter().write(json.toString());
 	}
 
+		public static void sendUserInternal(HttpServletResponse resp, User user) throws IOException {
+		resp.setStatus(HttpServletResponse.SC_OK);
+		resp.setContentType("application/json");
+
+		JSONObject json = new JSONObject();
+		json.put("type", "success");
+		json.put("message", "User internal info fetched successfully");
+		if (user.internal() != null) {
+			json.put("internal", user.internal());
+		} else {
+			json.put("internal", new JSONObject());
+		}
+		resp.getWriter().write(json.toString());
+	}
+
 }

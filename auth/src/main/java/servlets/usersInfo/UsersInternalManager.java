@@ -34,7 +34,7 @@ public class UsersInternalManager {
 				AuthUtil.clearAuthCookie(resp);
 				return;
 			}
-			HttpUtil.sendUserMetadataPerms(resp, user);
+			HttpUtil.sendUserInternal(resp, user);
 		} catch (Exception e) {
 			log.catching(e);
 			HttpUtil.sendJson(resp, HttpServletResponse.SC_INTERNAL_SERVER_ERROR, "error", "Internal Server Error");
