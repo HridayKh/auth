@@ -190,15 +190,18 @@ public class ApiKeyFilter implements Filter {
 		@Override
 		public AuthResult authenticate(HttpServletRequest request) {
 			String clientId = request.getHeader(CLIENT_ID_HEADER);
-
 			if (clientId != null && !clientId.trim().isEmpty()) {
-
 				String role = ApiKeyManager.getRoleForApiKey(clientId);
-				if (ApiKeyManager.ROLE_FRONTEND.equals(role)) {
+				if (ApiKeyManager.ROLE_FRONTEND.equals(role))
 					return AuthResult.allowed(clientId, ApiKeyManager.ROLE_FRONTEND);
-				}
 			}
-
+			// allow backend APIs to access frontend endpoints
+			String apiKey = request.getHeader(API_KEY_HEADER);
+			if (apiKey != null && !apiKey.trim().isEmpty()) {
+				String role = ApiKeyManager.getRoleForApiKey(apiKey);
+				if (ApiKeyManager.ROLE_BACKEND.equals(role))
+					return AuthResult.allowed(apiKey, ApiKeyManager.ROLE_BACKEND);
+			}
 			return AuthResult.denied("Valid client ID required", HttpServletResponse.SC_UNAUTHORIZED);
 		}
 	}
@@ -207,10 +210,12 @@ public class ApiKeyFilter implements Filter {
 		@Override
 		public AuthResult authenticate(HttpServletRequest request) {
 			String apiKey = request.getHeader(API_KEY_HEADER);
-			String role = ApiKeyManager.getRoleForApiKey(apiKey);
-			if (ApiKeyManager.ROLE_BACKEND.equals(role)) {
-				return AuthResult.allowed(apiKey, ApiKeyManager.ROLE_BACKEND);
+			if (apiKey != null && !apiKey.trim().isEmpty()) {
+				String role = ApiKeyManager.getRoleForApiKey(apiKey);
+				if (ApiKeyManager.ROLE_BACKEND.equals(role))
+					return AuthResult.allowed(apiKey, ApiKeyManager.ROLE_BACKEND);
 			}
+
 			return AuthResult.denied("Valid API key required", HttpServletResponse.SC_UNAUTHORIZED);
 		}
 	}
