@@ -18,8 +18,9 @@ import Logout from "./pages/Logout.jsx";
 import Sessions from './pages/Sessions';
 import ChangePass from './pages/ChangePass';
 import ResetPassword from './pages/ResetPassword';
+import { AUTH_BACKEND, PROD } from './vars';
 
-const routePrefix = import.meta.env.DEV ? '' : import.meta.env.VITE_PROD === "yes" ? '' : '/auth';
+const routePrefix = import.meta.env.DEV ? '' : PROD ? '/auth' : '';
 function withPrefix(path) {
 	if (!routePrefix) return path;
 	if (path === '/') return routePrefix + '/';
@@ -60,7 +61,7 @@ function RouteDebugger() {
 		console.groupCollapsed('Route Debugger');
 		console.log('Current path:', location.pathname + location.search + location.hash);
 		console.log('Route map:', routeDefinitions);
-		console.log('VITE_AUTH_BACKEND:', import.meta.env.VITE_AUTH_BACKEND);
+		console.log('VITE_AUTH_BACKEND:', AUTH_BACKEND);
 		console.groupEnd();
 	}, [location]);
 }

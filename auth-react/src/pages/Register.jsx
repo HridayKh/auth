@@ -1,10 +1,8 @@
-
 import { useState, useEffect } from "react";
 import { useNavigate, useSearchParams, Link } from "react-router-dom";
 import { resendVerification, createUser } from "../api/userCreation";
 import { useAuth } from "../AuthContext.jsx";
-
-const VITE_AUTH_BACKEND = import.meta.env.VITE_AUTH_BACKEND || "";
+import { AUTH_BACKEND } from "@/vars";
 
 export default function Register() {
 	const [email, setEmail] = useState("");
@@ -42,7 +40,7 @@ export default function Register() {
 		} else {
 			redirectUrl = window.location.origin + (redirect.startsWith("/") ? redirect : "/" + redirect);
 		}
-		const url = `${VITE_AUTH_BACKEND}/googleLoginInitiate?source=register&redirect=${encodeURIComponent(redirectUrl)}`;
+		const url = `${AUTH_BACKEND}/googleLoginInitiate?source=register&redirect=${encodeURIComponent(redirectUrl)}`;
 
 		window.location.href = url;
 	}

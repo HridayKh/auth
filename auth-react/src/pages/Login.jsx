@@ -4,11 +4,7 @@ import { useNavigate, useSearchParams, Link } from "react-router-dom";
 import { createSession } from "../api/sessions";
 import { resendVerification, requestPasswordReset } from "../api/userCreation";
 import { useAuth } from "../AuthContext.jsx";
-
-const VITE_AUTH_BACKEND = import.meta.env.VITE_AUTH_BACKEND || "";
-
-
-
+import { AUTH_BACKEND } from "@/vars";
 
 export default function Login() {
 	const [email, setEmail] = useState("");
@@ -45,7 +41,7 @@ export default function Login() {
 		} else {
 			redirectUrl = window.location.origin + (redirect.startsWith("/") ? redirect : "/" + redirect);
 		}
-		const url = `${VITE_AUTH_BACKEND}/googleLoginInitiate?source=login&redirect=${encodeURIComponent(redirectUrl)}`;
+		const url = `${AUTH_BACKEND}/googleLoginInitiate?source=login&redirect=${encodeURIComponent(redirectUrl)}`;
 
 		window.location.href = url;
 	}

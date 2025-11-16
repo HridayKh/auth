@@ -1,8 +1,8 @@
-const API_BASE_URL = import.meta.env.VITE_AUTH_BACKEND || '';
+import { AUTH_BACKEND } from "@/vars";
 const CLIENT_ID = 'f1';
 
 export async function apiRequest({ path, method = 'GET', body, headers = {} }) {
-	const url = API_BASE_URL + path;
+	const url = AUTH_BACKEND + path;
 	const fetchOptions = {
 		method,
 		headers: {
@@ -36,7 +36,3 @@ export async function apiRequest({ path, method = 'GET', body, headers = {} }) {
 	};
 }
 
-export const env = {
-	API_BASE_URL,
-	CLIENT_ID
-}

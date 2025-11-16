@@ -3,7 +3,7 @@ import { useSearchParams, Link, useNavigate } from "react-router-dom";
 import { useEffect, useState } from "react";
 import { useAuth } from "../AuthContext.jsx";
 import { unlinkGoogle, linkPassword } from "../api/userInfo.js";
-const VITE_AUTH_BACKEND = import.meta.env.VITE_AUTH_BACKEND || "";
+import { AUTH_BACKEND } from "@/vars.js";
 
 export default function Profile() {
 	const { user, setUser, loading } = useAuth();
@@ -66,7 +66,7 @@ export default function Profile() {
 
 	function handleGoogleLink() {
 		setLinking(true);
-		const url = `${VITE_AUTH_BACKEND}/googleLoginInitiate?source=glink&redirect=${encodeURIComponent(window.location.href)}`;
+		const url = `${AUTH_BACKEND}/googleLoginInitiate?source=glink&redirect=${encodeURIComponent(window.location.href)}`;
 		window.location.href = url;
 	}
 
