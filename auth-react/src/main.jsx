@@ -41,11 +41,9 @@ createRoot(document.getElementById('root')).render(
 					<Route path={withPrefix('/password-reset')} element={<ResetPassword />} />
 					<Route path={withPrefix('*')} element={<NotFound />} />
 				</Routes>
-
-				{/* Route debugger: logs current route and the route map. Visible in dev or when VITE_SHOW_ROUTE_DEBUG=yes */}
+				<RouteDebugger />
 			</Router>
 		</AuthProvider>
-		<RouteDebugger />
 	</StrictMode>
 );
 
