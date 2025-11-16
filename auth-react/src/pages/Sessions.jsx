@@ -3,7 +3,6 @@ import { useEffect, useState } from "react";
 import { useAuth } from "../AuthContext.jsx";
 import { getSessions } from "../api/sessions.js";
 import { deleteSession } from "../api/sessions.js";
-const VITE_AUTH_BACKEND = import.meta.env.VITE_AUTH_BACKEND || "";
 
 export default function Sessions() {
 	const { user, setUser, loading } = useAuth();

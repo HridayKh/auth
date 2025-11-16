@@ -1,23 +1,6 @@
 import { StrictMode } from 'react';
 import { createRoot } from 'react-dom/client';
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
-// Get route prefix from environment variable (e.g., VITE_ROUTE_PREFIX)
-let routePrefix = '';
-if (import.meta.env.DEV) {
-	routePrefix = '';
-} else {
-	const isProd = import.meta.env.VITE_PROD === "yes";
-	routePrefix = isProd ? '' : '/auth';
-}
-function withPrefix(path) {
-	console.log('Route Prefix:', routePrefix);
-	console.log('Path before prefix:', path);
-	console.log('Is Production:', import.meta.env.VITE_PROD);
-	console.log('Is Dev:', import.meta.env.DEV);
-	if (!routePrefix) return path;
-	if (path === '/') return routePrefix + '/';
-	return `${routePrefix}${path.startsWith('/') ? '' : '/'}${path}`;
-}
 import 'bootstrap/dist/css/bootstrap.min.css';
 import 'bootstrap/dist/js/bootstrap.bundle.min.js';
 import './index.css';
@@ -36,6 +19,12 @@ import Sessions from './pages/Sessions';
 import ChangePass from './pages/ChangePass';
 import ResetPassword from './pages/ResetPassword';
 
+const routePrefix = import.meta.env.DEV ? '' : import.meta.env.VITE_PROD === "yes" ? '' : '/auth';
+function withPrefix(path) {
+	if (!routePrefix) return path;
+	if (path === '/') return routePrefix + '/';
+	return `${routePrefix}${path.startsWith('/') ? '' : '/'}${path}`;
+}
 
 createRoot(document.getElementById('root')).render(
 	<StrictMode>
@@ -73,6 +62,7 @@ function RouteDebugger() {
 		console.groupCollapsed('Route Debugger');
 		console.log('Current path:', location.pathname + location.search + location.hash);
 		console.log('Route map:', routeDefinitions);
+		console.log('VITE_AUTH_BACKEND:', import.meta.env.VITE_AUTH_BACKEND);
 		console.groupEnd();
 	}, [location]);
 }
