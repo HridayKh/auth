@@ -4,13 +4,9 @@ import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import 'bootstrap/dist/css/bootstrap.min.css';
 import 'bootstrap/dist/js/bootstrap.bundle.min.js';
 import './index.css';
-import { useEffect, useState } from 'react';
-import { useLocation } from 'react-router-dom';
 
 import Home from "./Home.jsx";
-import NotFound, { Unimplemented } from "./NotFound.jsx";
 import { AuthProvider } from "./AuthContext.jsx";
-
 import Login from "./pages/Login.jsx";
 import Register from "./pages/Register.jsx";
 import Profile from "./pages/Profile.jsx";
@@ -18,7 +14,7 @@ import Logout from "./pages/Logout.jsx";
 import Sessions from './pages/Sessions';
 import ChangePass from './pages/ChangePass';
 import ResetPassword from './pages/ResetPassword';
-import { AUTH_BACKEND, PROD } from './vars';
+import { PROD } from './vars';
 
 const routePrefix = import.meta.env.DEV ? '' : PROD ? '/auth' : '';
 function withPrefix(path) {
@@ -40,28 +36,9 @@ createRoot(document.getElementById('root')).render(
 					<Route path={withPrefix('/sessions')} element={<Sessions />} />
 					<Route path={withPrefix('/change-password')} element={<ChangePass />} />
 					<Route path={withPrefix('/password-reset')} element={<ResetPassword />} />
-					<Route path={withPrefix('*')} element={<NotFound />} />
+					<Route path={withPrefix('*')} element={<h1> NotFound Page </h1>} />
 				</Routes>
-				<RouteDebugger />
 			</Router>
 		</AuthProvider>
 	</StrictMode>
 );
-
-// --- Route definitions for debugging/logging ---
-const routeDefinitions = [
-	{ path: withPrefix('/'), name: 'Home' },
-	{ path: withPrefix('/login'), name: 'Login' },
-	{ path: withPrefix('*'), name: 'NotFound' }
-];
-
-function RouteDebugger() {
-	const location = useLocation();
-	useEffect(() => {
-		console.groupCollapsed('Route Debugger');
-		console.log('Current path:', location.pathname + location.search + location.hash);
-		console.log('Route map:', routeDefinitions);
-		console.log('VITE_AUTH_BACKEND:', AUTH_BACKEND);
-		console.groupEnd();
-	}, [location]);
-}
