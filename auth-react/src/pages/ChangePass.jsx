@@ -2,6 +2,7 @@ import { useSearchParams, Link, useNavigate } from "react-router-dom";
 import { useEffect, useState } from "react";
 import { useAuth } from "../AuthContext.jsx";
 import { changePassword } from "@/api/userInfo.js";
+import { withPrefix } from "@/main.jsx";
 
 export default function ChangePass() {
 	const { user, setUser, loading } = useAuth();
@@ -15,7 +16,7 @@ export default function ChangePass() {
 
 	useEffect(() => {
 		if (!loading && user === null) {
-			navigate("/login?redirect=" + encodeURIComponent(window.location.pathname + window.location.search), { replace: true });
+			navigate(withPrefix("/login?redirect=" + encodeURIComponent(window.location.pathname + window.location.search)), { replace: true });
 		}
 	}, [user, loading, navigate]);
 
@@ -38,7 +39,7 @@ export default function ChangePass() {
 			const res = await changePassword({ old: oldPassword, newPass: password });
 			setResult(res);
 			if (res && res.type === "success") {
-				setTimeout(() => navigate("/profile?type=success&msg=Password changed successfully" + (redirect ? "&redirect=" + encodeURIComponent(redirect) : ""), { replace: true }), 1000);
+				setTimeout(() => navigate(withPrefix("/profile?type=success&msg=Password changed successfully" + (redirect ? "&redirect=" + encodeURIComponent(redirect) : "")), { replace: true }), 1000);
 			}
 		} catch (err) {
 			setResult({ type: "error", message: err.message || "Unknown error" });

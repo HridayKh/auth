@@ -3,6 +3,7 @@ import { useEffect, useState } from "react";
 import { useAuth } from "../AuthContext.jsx";
 import { getSessions } from "../api/sessions.js";
 import { deleteSession } from "../api/sessions.js";
+import { withPrefix } from "@/main.jsx";
 
 export default function Sessions() {
 	const { user, setUser, loading } = useAuth();
@@ -28,7 +29,7 @@ export default function Sessions() {
 
 	useEffect(() => {
 		if (!loading && user === null) {
-			navigate("/login?redirect=" + encodeURIComponent(window.location.pathname + window.location.search), { replace: true });
+			navigate(withPrefix("/login?redirect=" + encodeURIComponent(window.location.pathname + window.location.search)), { replace: true });
 		}
 	}, [user, loading, navigate]);
 

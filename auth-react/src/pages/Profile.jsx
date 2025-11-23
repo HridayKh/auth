@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 import { useAuth } from "../AuthContext.jsx";
 import { unlinkGoogle, linkPassword } from "../api/userInfo.js";
 import { AUTH_BACKEND } from "@/vars.js";
+import { withPrefix } from "@/main.jsx";
 
 export default function Profile() {
 	const { user, setUser, loading } = useAuth();
@@ -15,7 +16,7 @@ export default function Profile() {
 	useEffect(() => {
 		if (!loading) {
 			if (user === null) {
-				navigate("/login?redirect=" + encodeURIComponent(window.location.pathname + window.location.search), { replace: true });
+				navigate(withPrefix("/login?redirect=" + encodeURIComponent(window.location.pathname + window.location.search)), { replace: true });
 			}
 		}
 	}, [user, loading, redirect, navigate]);

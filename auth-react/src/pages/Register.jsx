@@ -3,6 +3,7 @@ import { useNavigate, useSearchParams, Link } from "react-router-dom";
 import { resendVerification, createUser } from "../api/userCreation";
 import { useAuth } from "../AuthContext.jsx";
 import { AUTH_BACKEND } from "@/vars";
+import { withPrefix } from "@/main";
 
 export default function Register() {
 	const [email, setEmail] = useState("");
@@ -26,7 +27,7 @@ export default function Register() {
 			if (/^[a-zA-Z][a-zA-Z0-9+.-]*:\/\//.test(redirect)) {
 				window.location.replace(redirect);
 			} else {
-				navigate((redirect.startsWith("/") ? redirect : "/" + redirect), { replace: true });
+				navigate(withPrefix(redirect.startsWith("/") ? redirect : "/" + redirect), { replace: true });
 			}
 		}
 	}, [user, authLoading, navigate, redirect]);

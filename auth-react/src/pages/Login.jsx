@@ -5,6 +5,7 @@ import { createSession } from "../api/sessions";
 import { resendVerification, requestPasswordReset } from "../api/userCreation";
 import { useAuth } from "../AuthContext.jsx";
 import { AUTH_BACKEND } from "@/vars";
+import { withPrefix } from "@/main";
 
 export default function Login() {
 	const [email, setEmail] = useState("");
@@ -27,7 +28,7 @@ export default function Login() {
 			if (/^[a-zA-Z][a-zA-Z0-9+.-]*:\/\//.test(redirect)) {
 				window.location.replace(redirect);
 			} else {
-				navigate((redirect.startsWith("/") ? redirect : "/" + redirect), { replace: true });
+				navigate(withPrefix(redirect.startsWith("/") ? redirect : "/" + redirect), { replace: true });
 			}
 		}
 	}, [user, authLoading, navigate, redirect]);
@@ -64,10 +65,10 @@ export default function Login() {
 						} else if (redirect.startsWith("/") || redirect.startsWith("%2F") || redirect.startsWith("%2f")) {
 							window.location.assign(redirect);
 						} else {
-							navigate("/profile", { replace: true });
+							navigate(withPrefix("/profile"), { replace: true });
 						}
 					} else {
-						navigate("/profile", { replace: true });
+						navigate(withPrefix("/profile"), { replace: true });
 					}
 				}, 300);
 			}

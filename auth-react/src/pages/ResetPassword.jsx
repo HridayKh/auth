@@ -3,6 +3,7 @@ import { useEffect, useState } from "react";
 import { useAuth } from "../AuthContext.jsx";
 import { changePassword } from "@/api/userInfo.js";
 import { resetPassword } from "@/api/userCreation.js";
+import { withPrefix } from "@/main.jsx";
 
 export default function ResetPassword() {
 	const [searchParams] = useSearchParams();
@@ -23,7 +24,7 @@ export default function ResetPassword() {
 			const res = await resetPassword({ pass: password, token: searchParams.get("token") || "" });
 			setResult(res);
 			if (res && res.type === "success") {
-				setTimeout(() => navigate("/login?type=success&msg=Password changed successfully" + (redirect ? "&redirect=" + encodeURIComponent(redirect) : ""), { replace: true }), 1000);
+				setTimeout(() => navigate(withPrefix("/login?type=success&msg=Password changed successfully" + (redirect ? "&redirect=" + encodeURIComponent(redirect) : "")), { replace: true }), 1000);
 			}
 		} catch (err) {
 			setResult({ type: "error", message: err.message || "Unknown error" });
