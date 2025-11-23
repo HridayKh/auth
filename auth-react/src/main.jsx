@@ -16,7 +16,7 @@ import ChangePass from './pages/ChangePass';
 import ResetPassword from './pages/ResetPassword';
 import { PROD } from './vars';
 
-const routePrefix = import.meta.env.DEV ? '' : PROD ? '/auth' : '';
+const routePrefix = import.meta.env.DEV ? '' : (PROD ? '' : '/auth');
 function withPrefix(path) {
 	if (!routePrefix) return path;
 	if (path === '/') return routePrefix + '/';
@@ -24,21 +24,15 @@ function withPrefix(path) {
 }
 
 createRoot(document.getElementById('root')).render(
-	<StrictMode>
-		<AuthProvider>
-			<Router>
-				<Routes>
-					<Route path={withPrefix('/')} element={<Home />} />
-					<Route path={withPrefix('/login')} element={<Login />} />
-					<Route path={withPrefix('/register')} element={<Register />} />
-					<Route path={withPrefix('/profile')} element={<Profile />} />
-					<Route path={withPrefix('/logout')} element={<Logout />} />
-					<Route path={withPrefix('/sessions')} element={<Sessions />} />
-					<Route path={withPrefix('/change-password')} element={<ChangePass />} />
-					<Route path={withPrefix('/password-reset')} element={<ResetPassword />} />
-					<Route path={withPrefix('*')} element={<h1> NotFound Page </h1>} />
-				</Routes>
-			</Router>
-		</AuthProvider>
-	</StrictMode>
+	<StrictMode><AuthProvider><Router><Routes>
+		<Route path={withPrefix('/')} element={<Home />} />
+		<Route path={withPrefix('/login')} element={<Login />} />
+		<Route path={withPrefix('/register')} element={<Register />} />
+		<Route path={withPrefix('/profile')} element={<Profile />} />
+		<Route path={withPrefix('/logout')} element={<Logout />} />
+		<Route path={withPrefix('/sessions')} element={<Sessions />} />
+		<Route path={withPrefix('/change-password')} element={<ChangePass />} />
+		<Route path={withPrefix('/password-reset')} element={<ResetPassword />} />
+		<Route path={withPrefix('*')} element={<h1> NotFound Page </h1>} />
+	</Routes></Router></AuthProvider></StrictMode>
 );

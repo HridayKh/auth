@@ -4,6 +4,9 @@ import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
 
+import com.zaxxer.hikari.HikariConfig;
+import com.zaxxer.hikari.HikariDataSource;
+
 public class dbAuth {
 	public final static String DB_URL = "jdbc:mysql://db.hridaykh.in:3306/Auth_Db";
 	public final static String DB_USER = System.getenv("AUTH_DB_USER");
@@ -18,28 +21,23 @@ public class dbAuth {
 	public final static String Mailgun = System.getenv("MAILGUN_KEY");
 	public final static String PROD = System.getenv("VITE_PROD");
 
-	public static Connection getConnection() throws SQLException {
-		try {
-			Class.forName("com.mysql.cj.jdbc.Driver");
-		} catch (ClassNotFoundException e) {
-			e.printStackTrace();
-		}
-		return DriverManager.getConnection(dbAuth.DB_URL, dbAuth.DB_USER, dbAuth.DB_PASSWORD);
-	}
-//mysql> CREATE TABLE users (
-//    ->     uuid VARCHAR(36) PRIMARY KEY,
-//    ->     email VARCHAR(255) NOT NULL UNIQUE,
-//    ->     password_hash VARCHAR(255) NOT NULL,
-//    ->     is_verified BOOLEAN DEFAULT FALSE,
-//    ->     created_at BIGINT NOT NULL,
-//    ->     updated_at BIGINT NOT NULL,
-//    ->     last_login BIGINT
-//    -> );
-//mysql> CREATE TABLE email_tokens (
-//    ->     token VARCHAR(255) PRIMARY KEY,
-//    ->     user_uuid VARCHAR(36) NOT NULL,
-//    ->     expires_at BIGINT NOT NULL,
-//    ->     FOREIGN KEY (user_uuid) REFERENCES users(uuid) ON DELETE CASCADE
-//    -> );
+	private static final HikariDataSource dataSource;
+	static {
+		HikariConfig config = new HikariConfig();
+		// config.setDataSourceClassName("com.mysql.cj.jdbc.MysqlDataSource");
+		config.setDriverClassName("com.mysql.cj.jdbc.Driver");
+		config.setJdbcUrl(DB_URL);
+		config.setUsername(DB_USER);
+		config.setPassword(DB_PASSWORD);
 
+		config.setMaximumPoolSize(10);
+		config.setMinimumIdle(5);
+
+		config.setPoolName("SecretsHikariCP");
+		dataSource = new HikariDataSource(config);
+	}
+
+	public static Connection getConnection() throws SQLException {
+		return dataSource.getConnection();
+	}
 }

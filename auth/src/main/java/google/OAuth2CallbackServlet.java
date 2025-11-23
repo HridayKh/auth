@@ -99,7 +99,6 @@ public class OAuth2CallbackServlet extends HttpServlet {
 				String email = ((String) payload.get("email")).toLowerCase();
 				String name = (String) payload.get("name");
 				String pictureUrl = (String) payload.get("picture");
-				log.info("userId: {}\nemail: {}\nname: {}\npic: {}\nrefrestToken: {}\nsource: {}\n", userId, email, name, pictureUrl, refreshToken, stateJson.getString("source"));
 				registerUser(userId, email, name, pictureUrl, refreshToken, stateJson.getString("source"), request, response);
 
 			} else {
