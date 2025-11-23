@@ -2,6 +2,7 @@ import { useEffect } from "react";
 import { useNavigate, useSearchParams } from "react-router-dom";
 import { deleteCurrentSession } from "../api/sessions";
 import { useAuth } from "@/AuthContext";
+import { withPrefix } from "@/main";
 
 export default function Logout() {
 	const { setUser } = useAuth();
@@ -16,7 +17,7 @@ export default function Logout() {
 				if (/^[a-zA-Z][a-zA-Z0-9+.-]*:\/\//.test(redirect)) {
 					window.location.replace(redirect);
 				} else {
-					navigate(redirect, { replace: true });
+					navigate(withPrefix(redirect), { replace: true });
 				}
 			}, 1000);
 		});

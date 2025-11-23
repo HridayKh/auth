@@ -17,7 +17,7 @@ import ResetPassword from './pages/ResetPassword';
 import { PROD } from './vars';
 
 const routePrefix = import.meta.env.DEV ? '' : (PROD ? '' : '/auth');
-function withPrefix(path) {
+export function withPrefix(path) {
 	if (!routePrefix) return path;
 	if (path === '/') return routePrefix + '/';
 	return `${routePrefix}${path.startsWith('/') ? '' : '/'}${path}`;
