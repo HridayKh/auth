@@ -37,7 +37,7 @@ public class GoogleLoginInitiateServlet extends HttpServlet {
 	public void init() throws ServletException {
 		super.init();
 		try {
-			flow = new GoogleAuthorizationCodeFlow.Builder(new NetHttpTransport(), GsonFactory.getDefaultInstance(), dbAuth.CLIENT_ID, dbAuth.CLIENT_SECRET, SCOPES).setAccessType("offline").setApprovalPrompt("no".equals(dbAuth.PROD) ? "force" : "auth").build();
+			flow = new GoogleAuthorizationCodeFlow.Builder(new NetHttpTransport(), GsonFactory.getDefaultInstance(), dbAuth.CLIENT_ID, dbAuth.CLIENT_SECRET, SCOPES).setAccessType("offline").setApprovalPrompt("no".equals(dbAuth.PROD) ? "force" : "auto").build();
 		} catch (Exception e) {
 			throw new ServletException("Failed to initialize Google OAuth flow", e);
 		}
@@ -62,10 +62,8 @@ public class GoogleLoginInitiateServlet extends HttpServlet {
 		session.setAttribute("oauth_state", stateJSon.getString("csrf"));
 
 		GoogleAuthorizationCodeRequestUrl authUrl = flow.newAuthorizationUrl().setRedirectUri(REDIRECT_URI).setState(URLEncoder.encode(stateJSon.toString(), StandardCharsets.UTF_8));
-		String builtUrl = authUrl.build();
-		log.info("Redirecting to Google OAuth URL: " + builtUrl);
-		response.getWriter().write(builtUrl);
-		// response.sendRedirect(builtUrl);
+		
+		response.sendRedirect(authUrl.build());
 	}
 
 }
