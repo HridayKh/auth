@@ -168,7 +168,7 @@ export default function Login() {
 					</span>
 					Login with Google
 				</button>
-				<Link to={`/register${redirect ? `?redirect=${encodeURIComponent(redirect)}` : ""}`} className="btn btn-outline-light w-full mb-2">
+				<Link to={withPrefix(`/register${redirect ? `?redirect=${encodeURIComponent(redirect)}` : ""}`)} className="btn btn-outline-light w-full mb-2">
 					Register instead
 				</Link>
 				<button

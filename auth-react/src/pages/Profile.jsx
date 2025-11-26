@@ -72,7 +72,7 @@ export default function Profile() {
 	}
 
 	function goBackLink() {
-		if (redirect && redirect.length > 0) return <Link to={redirect} className="btn btn-link mb-2">Go Back</Link>;
+		if (redirect && redirect.length > 0) return <Link to={withPrefix(redirect)} className="btn btn-link mb-2">Go Back</Link>;
 		return (<></>);
 	}
 
@@ -176,9 +176,9 @@ export default function Profile() {
 					)}
 				</div>
 				<div className="d-flex flex-column gap-2 mt-4">
-					<Link to={"/sessions?redirect=/profile" + pageRedirect} className="btn btn-outline-light w-full">Manage Sessions</Link>
+					<Link to={withPrefix("/sessions?redirect=/profile" + pageRedirect)} className="btn btn-outline-light w-full">Manage Sessions</Link>
 					<Link
-						to={"/change-password?redirect=/profile" + pageRedirect}
+						to={withPrefix("/change-password?redirect=/profile" + pageRedirect)}
 						className={"btn btn-outline-light w-full" + (user.accType === "google" ? " disabled" : "")}
 						tabIndex={user.accType === "google" ? -1 : 0}
 						aria-disabled={user.accType === "google" ? "true" : undefined}
@@ -186,7 +186,7 @@ export default function Profile() {
 					>
 						{user.accType === "google" ? " Change Password (link password first)" : "Change Password"}
 					</Link>
-					<Link to={"/logout" + pageRedirect} className="btn btn-outline-danger w-full">Logout</Link>
+					<Link to={withPrefix("/logout" + pageRedirect)} className="btn btn-outline-danger w-full">Logout</Link>
 				</div>
 			</div>
 		</main>
