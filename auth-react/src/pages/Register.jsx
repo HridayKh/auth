@@ -20,7 +20,7 @@ export default function Register() {
 	const { user, loading: authLoading } = useAuth();
 	const navigate = useNavigate();
 	const [searchParams] = useSearchParams();
-	const redirect = searchParams.get("redirect")?.trim() || "/profile";
+	const redirect = searchParams.get("redirect")?.trim() || withPrefix("/profile");
 
 	useEffect(() => {
 		if (!authLoading && user) {
@@ -39,7 +39,7 @@ export default function Register() {
 		if (/^[a-zA-Z][a-zA-Z0-9+.-]*:\/\//.test(redirect)) {
 			redirectUrl = redirect;
 		} else {
-			redirectUrl = window.location.origin + (redirect.startsWith("/") ? redirect : "/" + redirect);
+			redirectUrl = window.location.origin + withPrefix(redirect.startsWith("/") ? redirect : "/" + redirect);
 		}
 		const url = `${AUTH_BACKEND}/googleLoginInitiate?source=register&redirect=${encodeURIComponent(redirectUrl)}`;
 
@@ -57,7 +57,7 @@ export default function Register() {
 				setLoading(false);
 				return;
 			}
-			const res = await createUser({ email, password, fullName, redirect: redirect || window.location.origin + "/profile" });
+			const res = await createUser({ email, password, fullName, redirect: redirect || window.location.origin + withPrefix("/profile") });
 			setResult(res);
 		} catch (err) {
 			setResult({ type: "error", message: err.message || "Unknown error" });
@@ -71,7 +71,7 @@ export default function Register() {
 		if (!email) return;
 		setLoading(true);
 		try {
-			const res = await resendVerification({ email, redirect: redirect || window.location.origin + "/profile" });
+			const res = await resendVerification({ email, redirect: redirect || window.location.origin + withPrefix("/profile") });
 			setResend(true);
 			setResult({ type: res.type, message: res.message });
 		} catch (err) {

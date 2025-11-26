@@ -21,7 +21,7 @@ export default function Login() {
 	const { user, loading: authLoading } = useAuth();
 	const navigate = useNavigate();
 	const [searchParams] = useSearchParams();
-	const redirect = searchParams.get("redirect")?.trim() || "/profile";
+	const redirect = searchParams.get("redirect")?.trim() || withPrefix("/profile");
 
 	useEffect(() => {
 		if (!authLoading && user) {
@@ -40,7 +40,7 @@ export default function Login() {
 		if (/^[a-zA-Z][a-zA-Z0-9+.-]*:\/\//.test(redirect)) {
 			redirectUrl = redirect;
 		} else {
-			redirectUrl = window.location.origin + (redirect.startsWith("/") ? redirect : "/" + redirect);
+			redirectUrl = window.location.origin + withPrefix(redirect.startsWith("/") ? redirect : "/" + redirect);
 		}
 		const url = `${AUTH_BACKEND}/googleLoginInitiate?source=login&redirect=${encodeURIComponent(redirectUrl)}`;
 
@@ -63,7 +63,7 @@ export default function Login() {
 						if (/^(http|https):\/\//.test(redirect)) {
 							window.location.replace(redirect);
 						} else if (redirect.startsWith("/") || redirect.startsWith("%2F") || redirect.startsWith("%2f")) {
-							window.location.assign(redirect);
+							window.location.assign(withPrefix(decodeURIComponent(redirect)));
 						} else {
 							navigate(withPrefix("/profile"), { replace: true });
 						}
@@ -84,7 +84,7 @@ export default function Login() {
 		if (!email) return;
 		setLoading(true);
 		try {
-			const res = await resendVerification({ email, redirect: redirect || window.location.origin + "/profile" });
+			const res = await resendVerification({ email, redirect: redirect || window.location.origin + withPrefix("/profile") });
 			setResend(true);
 			setResult({ type: res.type, message: res.message });
 		} catch (err) {
