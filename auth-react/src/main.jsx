@@ -18,10 +18,10 @@ import { PROD } from './vars';
 
 const routePrefix = import.meta.env.DEV ? '' : (PROD ? '' : '/auth');
 export function withPrefix(path) {
-	if (path.startsWith(routePrefix)) {
+	if (path.startsWith(routePrefix) && routePrefix !== '') {
 		console.trace(`Path "${path}" already contains the route prefix "${routePrefix}"`);
 		return path
-	};
+	}
 	if (!routePrefix) return path;
 	if (path === '/') return routePrefix + '/';
 	return `${routePrefix}${path.startsWith('/') ? '' : '/'}${path}`;

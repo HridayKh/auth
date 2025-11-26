@@ -11,6 +11,9 @@ import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
+
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.json.JSONObject;
 import utils.GoogleUtil;
 import utils.HttpUtil;
@@ -23,6 +26,8 @@ import java.util.List;
 
 @WebServlet("/googleLoginInitiate")
 public class GoogleLoginInitiateServlet extends HttpServlet {
+
+	private static final Logger log = LogManager.getLogger(GoogleLoginInitiateServlet.class);
 
 	private static final String REDIRECT_URI = dbAuth.BACK_HOST + "/oauth2callback";
 	private static final List<String> SCOPES = Arrays.asList("openid", "email", "profile");
@@ -57,8 +62,10 @@ public class GoogleLoginInitiateServlet extends HttpServlet {
 		session.setAttribute("oauth_state", stateJSon.getString("csrf"));
 
 		GoogleAuthorizationCodeRequestUrl authUrl = flow.newAuthorizationUrl().setRedirectUri(REDIRECT_URI).setState(URLEncoder.encode(stateJSon.toString(), StandardCharsets.UTF_8));
-
-		response.sendRedirect(authUrl.build());
+		String builtUrl = authUrl.build();
+		log.info("Redirecting to Google OAuth URL: " + builtUrl);
+		response.getWriter().write(builtUrl);
+		// response.sendRedirect(builtUrl);
 	}
 
 }
