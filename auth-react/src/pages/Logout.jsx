@@ -8,7 +8,7 @@ export default function Logout() {
 	const { setUser } = useAuth();
 	const [searchParams] = useSearchParams();
 	const navigate = useNavigate();
-	const redirect = searchParams.get("redirect")?.trim() || "login";
+	const redirect = searchParams.get("redirect")?.trim() || "/login";
 
 	useEffect(() => {
 		deleteCurrentSession().then(() => {
@@ -17,7 +17,7 @@ export default function Logout() {
 				if (/^[a-zA-Z][a-zA-Z0-9+.-]*:\/\//.test(redirect)) {
 					window.location.replace(redirect);
 				} else {
-					navigate(withPrefix(redirect), { replace: true });
+					navigate(withPrefix(redirect.startsWith("/") ? redirect : `/${redirect}`), { replace: true });
 				}
 			}, 1000);
 		});

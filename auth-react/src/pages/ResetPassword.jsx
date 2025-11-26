@@ -1,7 +1,5 @@
-import { useSearchParams, Link, useNavigate } from "react-router-dom";
-import { useEffect, useState } from "react";
-import { useAuth } from "../AuthContext.jsx";
-import { changePassword } from "@/api/userInfo.js";
+import { useSearchParams, useNavigate } from "react-router-dom";
+import { useState } from "react";
 import { resetPassword } from "@/api/userCreation.js";
 import { withPrefix } from "@/main.jsx";
 
@@ -11,7 +9,6 @@ export default function ResetPassword() {
 	const [confirmPassword, setConfirmPassword] = useState("");
 	const [result, setResult] = useState(null); // { type, message, reverify }
 	const navigate = useNavigate();
-	const redirect = searchParams.get("redirect")?.trim() || "";
 
 	async function handleSubmit(e) {
 		e.preventDefault();
@@ -24,7 +21,7 @@ export default function ResetPassword() {
 			const res = await resetPassword({ pass: password, token: searchParams.get("token") || "" });
 			setResult(res);
 			if (res && res.type === "success") {
-				setTimeout(() => navigate(withPrefix("/login?type=success&msg=Password changed successfully" + (redirect ? "&redirect=" + encodeURIComponent(redirect) : "")), { replace: true }), 1000);
+				setTimeout(() => navigate(withPrefix("/login" + window.location.search + "&type=success&msg=Password changed successfully"), { replace: true }), 1000);
 			}
 		} catch (err) {
 			setResult({ type: "error", message: err.message || "Unknown error" });

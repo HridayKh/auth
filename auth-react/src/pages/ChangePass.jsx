@@ -24,7 +24,7 @@ export default function ChangePass() {
 	if (user === null) return null;
 
 	function goBackLink() {
-		if (redirect && redirect.length > 0) return <Link to={withPrefix(redirect)} className="btn btn-link mb-2">Go Back</Link>;
+		if (redirect && redirect.length > 0) return <Link to={redirect} className="btn btn-link mb-2">Go Back</Link>;
 		return (<Link to={withPrefix("/profile")} className="btn btn-link mb-2">Go Back</Link>);
 	}
 

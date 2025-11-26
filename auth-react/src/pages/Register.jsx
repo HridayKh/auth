@@ -20,14 +20,14 @@ export default function Register() {
 	const { user, loading: authLoading } = useAuth();
 	const navigate = useNavigate();
 	const [searchParams] = useSearchParams();
-	const redirect = searchParams.get("redirect")?.trim() || withPrefix("/profile");
+	const redirect = searchParams.get("redirect")?.trim() || "/profile";
 
 	useEffect(() => {
 		if (!authLoading && user) {
 			if (/^[a-zA-Z][a-zA-Z0-9+.-]*:\/\//.test(redirect)) {
 				window.location.replace(redirect);
 			} else {
-				navigate(withPrefix(redirect.startsWith("/") ? redirect : "/" + redirect), { replace: true });
+				navigate(withPrefix(redirect.startsWith("/") ? redirect : `/${redirect}`), { replace: true });
 			}
 		}
 	}, [user, authLoading, navigate, redirect]);

@@ -21,14 +21,14 @@ export default function Login() {
 	const { user, loading: authLoading } = useAuth();
 	const navigate = useNavigate();
 	const [searchParams] = useSearchParams();
-	const redirect = searchParams.get("redirect")?.trim() || withPrefix("/profile");
+	const redirect = searchParams.get("redirect")?.trim() || "/profile";
 
 	useEffect(() => {
 		if (!authLoading && user) {
 			if (/^[a-zA-Z][a-zA-Z0-9+.-]*:\/\//.test(redirect)) {
 				window.location.replace(redirect);
 			} else {
-				navigate(withPrefix(redirect.startsWith("/") ? redirect : "/" + redirect), { replace: true });
+				navigate(redirect.startsWith("/") ? redirect : "/" + redirect, { replace: true });
 			}
 		}
 	}, [user, authLoading, navigate, redirect]);
@@ -40,7 +40,7 @@ export default function Login() {
 		if (/^[a-zA-Z][a-zA-Z0-9+.-]*:\/\//.test(redirect)) {
 			redirectUrl = redirect;
 		} else {
-			redirectUrl = window.location.origin + withPrefix(redirect.startsWith("/") ? redirect : "/" + redirect);
+			redirectUrl = window.location.origin + (redirect.startsWith("/") ? redirect : "/" + redirect);
 		}
 		const url = `${AUTH_BACKEND}/googleLoginInitiate?source=login&redirect=${encodeURIComponent(redirectUrl)}`;
 
@@ -59,16 +59,10 @@ export default function Login() {
 			if (res && res.ok) {
 				// Give AuthProvider a moment to update, then redirect
 				setTimeout(() => {
-					if (typeof redirect === "string" && redirect.length > 0) {
-						if (/^(http|https):\/\//.test(redirect)) {
-							window.location.replace(redirect);
-						} else if (redirect.startsWith("/") || redirect.startsWith("%2F") || redirect.startsWith("%2f")) {
-							window.location.assign(withPrefix(decodeURIComponent(redirect)));
-						} else {
-							navigate(withPrefix("/profile"), { replace: true });
-						}
+					if (/^[a-zA-Z][a-zA-Z0-9+.-]*:\/\//.test(redirect)) {
+						window.location.replace(redirect);
 					} else {
-						navigate(withPrefix("/profile"), { replace: true });
+						navigate(redirect.startsWith("/") ? redirect : "/" + redirect, { replace: true });
 					}
 				}, 300);
 			}

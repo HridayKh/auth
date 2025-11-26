@@ -14,10 +14,9 @@ export default function Profile() {
 	const redirect = searchParams.get("redirect")?.trim() || "";
 
 	useEffect(() => {
-		if (!loading) {
-			if (user === null) {
-				navigate(withPrefix("/login?redirect=" + encodeURIComponent(window.location.pathname + window.location.search)), { replace: true });
-			}
+		if (!loading && user === null) {
+			navigate(withPrefix("/login?redirect=" + encodeURIComponent(window.location.pathname + window.location.search)), { replace: true });
+
 		}
 	}, [user, loading, redirect, navigate]);
 
@@ -72,7 +71,7 @@ export default function Profile() {
 	}
 
 	function goBackLink() {
-		if (redirect && redirect.length > 0) return <Link to={withPrefix(redirect)} className="btn btn-link mb-2">Go Back</Link>;
+		if (redirect && redirect.length > 0) return <Link to={redirect} className="btn btn-link mb-2">Go Back</Link>;
 		return (<></>);
 	}
 
