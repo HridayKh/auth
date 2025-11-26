@@ -8,7 +8,7 @@ export default function Logout() {
 	const { setUser } = useAuth();
 	const [searchParams] = useSearchParams();
 	const navigate = useNavigate();
-	const redirect = searchParams.get("redirect")?.trim() || login";
+	const redirect = searchParams.get("redirect")?.trim() || "login";
 
 	useEffect(() => {
 		deleteCurrentSession().then(() => {
