@@ -2,22 +2,32 @@ package auth;
 
 import db.dbAuth;
 import jakarta.servlet.*;
-import jakarta.servlet.annotation.WebFilter;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import java.io.IOException;
 
-@WebFilter("/*")
 public class CORSFilter implements Filter {
+	private static final Logger log = LogManager.getLogger(CORSFilter.class);
 
-	public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain)
-			throws IOException, ServletException {
+	@Override
+	public void init(FilterConfig filterConfig) {
+		log.info("CORSFilter initialized.");
+	}
+
+	@Override
+	public void destroy() {
+		log.info("CORSFilter destroyed.");
+	}
+
+	@Override
+	public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain) throws IOException, ServletException {
 
 		HttpServletResponse res = (HttpServletResponse) response;
 		HttpServletRequest req = (HttpServletRequest) request;
 
-		// Always set CORS headers, even on error
 		res.setHeader("Access-Control-Allow-Origin", dbAuth.FRONT_HOST);
 		res.setHeader("Access-Control-Allow-Methods", "GET, POST, PUT, PATCH, DELETE, OPTIONS");
 		res.setHeader("Access-Control-Allow-Headers", "Content-Type, X-HridayKh-In-Client-ID, Authorization");
@@ -30,18 +40,17 @@ public class CORSFilter implements Filter {
 		}
 
 		try {
+			String ip = req.getRemoteAddr();
+			int len = ip.length();
+			log.info("CORSFilter Hit by {}", ip != null && len > 0 ? ip.substring(0, len/2) : "unknown IP");
 			chain.doFilter(request, response);
 		} finally {
 			res.setHeader("Access-Control-Allow-Origin", dbAuth.FRONT_HOST);
 			res.setHeader("Access-Control-Allow-Methods", "GET, POST, PUT, PATCH, DELETE, OPTIONS");
-			res.setHeader("Access-Control-Allow-Headers",
-					"Content-Type, X-HridayKh-In-Client-ID, Authorization");
+			res.setHeader("Access-Control-Allow-Headers", "Content-Type, X-HridayKh-In-Client-ID, Authorization");
 			res.setHeader("Access-Control-Allow-Credentials", "true");
 			res.setHeader("Access-Control-Max-Age", "3600");
 		}
 	}
 
-	@Override
-	public void destroy() {
-	}
 }

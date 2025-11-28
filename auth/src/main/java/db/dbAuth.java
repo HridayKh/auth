@@ -4,14 +4,19 @@ import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
 
+import auth.AppContextListener;
 import com.zaxxer.hikari.HikariConfig;
 import com.zaxxer.hikari.HikariDataSource;
+import jakarta.servlet.Filter;
+import jakarta.servlet.annotation.WebFilter;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
-public class dbAuth {
+public class dbAuth  {
 	public final static String DB_URL = "jdbc:mysql://db.hridaykh.in:3306/Auth_Db";
 	public final static String DB_USER = System.getenv("AUTH_DB_USER");
 	public final static String DB_PASSWORD = System.getenv("AUTH_DB_PASSWORD");
-	// https://auth.HridayKh.in/v1
+
 	public static final String CLIENT_ID = System.getenv("GOOGLE_CLIENT_ID");
 	public static final String CLIENT_SECRET = System.getenv("GOOGLE_CLIENT_SECRET");
 
@@ -20,6 +25,8 @@ public class dbAuth {
 
 	public final static String Mailgun = System.getenv("MAILGUN_KEY");
 	public final static String PROD = System.getenv("VITE_PROD");
+
+	private static final Logger log = LogManager.getLogger(dbAuth.class);
 
 	private static final HikariDataSource dataSource;
 	static {
@@ -35,9 +42,16 @@ public class dbAuth {
 
 		config.setPoolName("SecretsHikariCP");
 		dataSource = new HikariDataSource(config);
+		log.info("Database connection pool initiated.");
 	}
 
 	public static Connection getConnection() throws SQLException {
 		return dataSource.getConnection();
+	}
+
+	public static void shutdown() {
+		if (dataSource != null && !dataSource.isClosed())
+			dataSource.close();
+		log.info("Database connection pool shut down.");
 	}
 }
