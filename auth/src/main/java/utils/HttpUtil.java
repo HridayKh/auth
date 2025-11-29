@@ -3,12 +3,16 @@ package utils;
 import entities.User;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.json.JSONObject;
 
 import java.io.BufferedReader;
 import java.io.IOException;
 
 public class HttpUtil {
+	private static final Logger log = LogManager.getLogger(HttpUtil.class);
 
 	public static JSONObject readBodyJSON(HttpServletRequest req) {
 		StringBuilder sb = new StringBuilder();
@@ -17,33 +21,39 @@ public class HttpUtil {
 			while ((line = reader.readLine()) != null)
 				sb.append(line);
 		} catch (IOException e) {
-			e.printStackTrace();
+			log.catching(e);
 		}
 		return sb.length() > 0 ? new JSONObject(sb.toString()) : new JSONObject();
 	}
 
-	public static void sendJson(HttpServletResponse resp, int status, String type, String message)
-		throws IOException {
+	public static void sendJson(HttpServletResponse resp, int status, String type, String message) {
 		resp.setStatus(status);
 		resp.setContentType("application/json");
 		JSONObject json = new JSONObject();
 		json.put("message", message);
 		json.put("type", type);
-		resp.getWriter().write(json.toString());
+		try {
+			resp.getWriter().write(json.toString());
+		} catch (IOException e) {
+			log.catching(e);
+		}
 	}
 
-	public static void sendJsonReVerify(HttpServletResponse res, int stat, String type, String message)
-		throws IOException {
+	public static void sendJsonReVerify(HttpServletResponse res, int stat, String type, String message) {
 		res.setStatus(stat);
 		res.setContentType("application/json");
 		JSONObject json = new JSONObject();
 		json.put("reverify", true);
 		json.put("message", message);
 		json.put("type", type);
-		res.getWriter().write(json.toString());
+		try {
+			res.getWriter().write(json.toString());
+		} catch (IOException e) {
+			log.catching(e);
+		}
 	}
 
-	public static void sendUser(HttpServletResponse resp, User user) throws IOException {
+	public static void sendUser(HttpServletResponse resp, User user) {
 		resp.setStatus(HttpServletResponse.SC_OK);
 		resp.setContentType("application/json");
 
@@ -68,10 +78,14 @@ public class HttpUtil {
 		json.put("metadata", user.metadata());
 		json.put("permissions", user.permissions());
 
-		resp.getWriter().write(json.toString());
+		try {
+			resp.getWriter().write(json.toString());
+		} catch (IOException e) {
+			log.catching(e);
+		}
 	}
 
-	public static void sendUserMetadataPerms(HttpServletResponse resp, User user) throws IOException {
+	public static void sendUserMetadataPerms(HttpServletResponse resp, User user) {
 		resp.setStatus(HttpServletResponse.SC_OK);
 		resp.setContentType("application/json");
 
@@ -87,10 +101,14 @@ public class HttpUtil {
 		} else {
 			json.put("permissions", new JSONObject());
 		}
-		resp.getWriter().write(json.toString());
+		try {
+			resp.getWriter().write(json.toString());
+		} catch (IOException e) {
+			log.catching(e);
+		}
 	}
 
-		public static void sendUserInternal(HttpServletResponse resp, User user) throws IOException {
+	public static void sendUserInternal(HttpServletResponse resp, User user) {
 		resp.setStatus(HttpServletResponse.SC_OK);
 		resp.setContentType("application/json");
 
@@ -102,7 +120,11 @@ public class HttpUtil {
 		} else {
 			json.put("internal", new JSONObject());
 		}
-		resp.getWriter().write(json.toString());
+		try {
+			resp.getWriter().write(json.toString());
+		} catch (IOException e) {
+			log.catching(e);
+		}
 	}
 
 }

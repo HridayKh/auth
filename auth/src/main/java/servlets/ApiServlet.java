@@ -78,6 +78,7 @@ public class ApiServlet extends HttpServlet {
 		try {
 			Map<String, RouteHandler> methodRoutes = routes.get(method);
 			if (methodRoutes == null) {
+				log.info("Request Failed, Invalid Method {} {}", method, path);
 				resp.sendError(HttpServletResponse.SC_METHOD_NOT_ALLOWED);
 				return;
 			}
@@ -100,6 +101,7 @@ public class ApiServlet extends HttpServlet {
 					}
 				}
 			}
+			log.info("Request Failed, Invalid Path {} {}", method, path);
 			resp.sendError(HttpServletResponse.SC_NOT_FOUND);
 		} catch (IOException e) {
 			log.catching(e);

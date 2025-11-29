@@ -41,29 +41,29 @@ public class ApiKeyFilter implements Filter {
 
 		try {
 			String requestPath = httpRequest.getRequestURI()
-				.substring(httpRequest.getContextPath().length());
+					.substring(httpRequest.getContextPath().length());
 
 			AccessType requiredAccess = pathAccessControl.getRequiredAccess(requestPath);
 
 			AuthResult authResult = authService.authenticate(httpRequest, requiredAccess);
 
 			if (authResult.isAuthenticated()) {
-				log.info(" clientId `{}` authenticated for clientType `{}`", authResult.getClientId(), authResult.getClientType());
+				log.info("Client {} ({}) Successful Authentication", authResult.getClientType(),
+						authResult.getClientId());
 				request.setAttribute("clientId", authResult.getClientId());
 				request.setAttribute("clientType", authResult.getClientType());
 			} else {
+				log.info("Client {} ({}) Failed Authentication", authResult.getClientType(),
+						authResult.getClientId());
 				HttpUtil.sendJson(httpResponse, authResult.getStatusCode(), "error",
-					authResult.getErrorMessage());
+						authResult.getErrorMessage());
 				return;
 			}
 
 		} catch (Exception e) {
-			System.err.println("Authentication error: " + e.getMessage());
-			try {
-				HttpUtil.sendJson(httpResponse, HttpServletResponse.SC_INTERNAL_SERVER_ERROR, "error", "Authentication service error");
-			} catch (IOException ex) {
-				log.catching(e);
-			}
+			log.catching(e);
+			HttpUtil.sendJson(httpResponse, HttpServletResponse.SC_INTERNAL_SERVER_ERROR, "error",
+					"Authentication service error");
 		}
 
 		try {
@@ -99,7 +99,7 @@ public class ApiKeyFilter implements Filter {
 		private final int statusCode;
 
 		private AuthResult(boolean authenticated, String clientId, String clientType, String errorMessage,
-		                   int statusCode) {
+				int statusCode) {
 			this.authenticated = authenticated;
 			this.clientId = clientId;
 			this.clientType = clientType;
@@ -146,19 +146,19 @@ public class ApiKeyFilter implements Filter {
 
 	private static class PathAccessControl {
 		private final Set<String> publicPaths = Set.of(
-			ApiConstants.USERS_VERIFY_EMAIL);
+				ApiConstants.USERS_VERIFY_EMAIL);
 
 		private final Set<String> frontendPaths = Set.of(
-			ApiConstants.USERS_CREATE,
-			ApiConstants.USERS_INFO,
-			ApiConstants.USERS_PASSWORD_UPDATE,
-			ApiConstants.USERS_VERIFY_EMAIL_RESEND,
-			ApiConstants.USERS_PASSWORD_RESET,
-			ApiConstants.USERS_SESSIONS_LIST,
-			ApiConstants.USERS_SESSIONS_CREATE,
-			ApiConstants.USERS_SESSION_DELETE,
-			ApiConstants.USERS_SESSIONS_DELETE_CURRENT,
-			ApiConstants.USERS_UNLINK_GOOGLE);
+				ApiConstants.USERS_CREATE,
+				ApiConstants.USERS_INFO,
+				ApiConstants.USERS_PASSWORD_UPDATE,
+				ApiConstants.USERS_VERIFY_EMAIL_RESEND,
+				ApiConstants.USERS_PASSWORD_RESET,
+				ApiConstants.USERS_SESSIONS_LIST,
+				ApiConstants.USERS_SESSIONS_CREATE,
+				ApiConstants.USERS_SESSION_DELETE,
+				ApiConstants.USERS_SESSIONS_DELETE_CURRENT,
+				ApiConstants.USERS_UNLINK_GOOGLE);
 
 		private final Set<String> backendPaths = Set.of(ApiConstants.USERS_INTERNAL_INFO);
 
@@ -174,7 +174,7 @@ public class ApiKeyFilter implements Filter {
 
 		private boolean matches(String path, Set<String> patterns) {
 			return patterns.contains(path)
-				|| patterns.stream().anyMatch(pattern -> matchesPattern(path, pattern));
+					|| patterns.stream().anyMatch(pattern -> matchesPattern(path, pattern));
 		}
 
 		private boolean matchesPattern(String path, String pattern) {
@@ -242,7 +242,7 @@ public class ApiKeyFilter implements Filter {
 		public AuthResult authenticate(HttpServletRequest request, AccessType accessType) {
 			AuthenticationStrategy strategy = strategies.get(accessType);
 			return strategy != null ? strategy.authenticate(request)
-				: AuthResult.denied("Invalid access type");
+					: AuthResult.denied("Invalid access type");
 		}
 	}
 }

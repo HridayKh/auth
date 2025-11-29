@@ -7,8 +7,12 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
 public class EmailDAO {
 
+	private static final Logger log = LogManager.getLogger(EmailDAO.class);
 	@SuppressWarnings("BooleanMethodIsAlwaysInverted")
 	public static boolean insertEmailToken(Connection conn, EmailToken et) {
 		String sql = "INSERT INTO email_tokens (token, user_uuid, expires_at) VALUES (?, ?, ?)";
@@ -29,8 +33,8 @@ public class EmailDAO {
 			stmt.setString(1, token);
 			ResultSet rs = stmt.executeQuery();
 			return rs.next() ? rs.getString("user_uuid") : null;
-		} catch (Exception e) {
-			e.printStackTrace();
+		} catch (SQLException e) {
+			log.catching(e);
 			return null;
 		}
 	}

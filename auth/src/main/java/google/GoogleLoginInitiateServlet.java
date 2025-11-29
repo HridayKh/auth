@@ -42,6 +42,7 @@ public class GoogleLoginInitiateServlet extends HttpServlet {
 					SCOPES).setAccessType("offline")
 					.setApprovalPrompt("no".equals(dbAuth.PROD) ? "force" : "auto").build();
 		} catch (Exception e) {
+			log.catching(e);
 			throw new ServletException("Failed to initialize Google OAuth flow", e);
 		}
 	}

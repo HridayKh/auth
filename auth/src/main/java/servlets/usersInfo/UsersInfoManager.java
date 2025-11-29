@@ -21,27 +21,33 @@ public class UsersInfoManager {
 	private static final Logger log = LogManager.getLogger(UsersInfoManager.class);
 
 	public static void getUserInfo(HttpServletRequest req, HttpServletResponse resp,
-			Map<String, String> ignoredParams) throws IOException {
+			Map<String, String> ignoredParams) {
 		try (Connection conn = dbAuth.getConnection()) {
 			String userUuid = AuthUtil.getUserUUIDFromAuthCookie(req, resp, conn);
 			if (userUuid == null) {
 				HttpUtil.sendJson(resp, HttpServletResponse.SC_UNAUTHORIZED, "error",
 						"User not logged in.");
+				log.info("Failed to get user info: No valid session.");
 				return;
 			}
+			log.info("Fetching user info for user UUID: {}", userUuid);
+
 			User user = UsersDAO.getUserByUuid(conn, userUuid);
 			if (user == null) {
 				HttpUtil.sendJson(resp, HttpServletResponse.SC_NOT_FOUND, "error",
 						"Logged in user not found.");
 				AuthUtil.clearAuthCookie(resp);
+				log.info("Failed to get user info: User not found for UUID {}", userUuid);
 				return;
 			}
 			HttpUtil.sendUser(resp, user);
+			log.info("Successfully fetched user info for user UUID: {}", userUuid);
 		} catch (Exception e) {
 			log.catching(e);
 			HttpUtil.sendJson(resp, HttpServletResponse.SC_INTERNAL_SERVER_ERROR, "error",
 					"Internal Server Error");
 		}
+
 	}
 
 	public static void updateUserInfo(HttpServletRequest req, HttpServletResponse resp,
@@ -130,10 +136,12 @@ public class UsersInfoManager {
 				}
 			}
 
-
 			// --- Handle Metadata and Permissions Update (with Profile Info) ---
-			JSONObject newMetadata = jsonRequest.has("metadata") ? jsonRequest.optJSONObject("metadata") : null;
-			JSONObject newPermissions = jsonRequest.has("permissions") ? jsonRequest.optJSONObject("permissions") : null;
+			JSONObject newMetadata = jsonRequest.has("metadata") ? jsonRequest.optJSONObject("metadata")
+					: null;
+			JSONObject newPermissions = jsonRequest.has("permissions")
+					? jsonRequest.optJSONObject("permissions")
+					: null;
 			JSONObject mergedMetadata = null;
 			JSONObject mergedPermissions = null;
 			if (newMetadata != null) {
@@ -142,22 +150,28 @@ public class UsersInfoManager {
 			if (newPermissions != null) {
 				mergedPermissions = deepMerge(newPermissions, currentUser.permissions());
 			}
-			// Only call updateProfileInfo if at least one of fullName, profilePic, metadata, permissions is being updated
-			if (newProfilePic != null || newFullName != null || mergedMetadata != null || mergedPermissions != null) {
-				if (UsersDAO.updateProfileInfo(conn, userUuid, newFullName, newProfilePic, mergedMetadata, mergedPermissions, now)) {
+			// Only call updateProfileInfo if at least one of fullName, profilePic,
+			// metadata, permissions is being updated
+			if (newProfilePic != null || newFullName != null || mergedMetadata != null
+					|| mergedPermissions != null) {
+				if (UsersDAO.updateProfileInfo(conn, userUuid, newFullName, newProfilePic,
+						mergedMetadata, mergedPermissions, now)) {
 					profileInfoMetaPermUpdated = true;
 				} else {
 					conn.rollback();
-					HttpUtil.sendJson(resp, HttpServletResponse.SC_INTERNAL_SERVER_ERROR, "error", "Failed to update profile info, metadata, or permissions.");
+					HttpUtil.sendJson(resp, HttpServletResponse.SC_INTERNAL_SERVER_ERROR, "error",
+							"Failed to update profile info, metadata, or permissions.");
 					return;
 				}
 			}
 
 			if (!emailUpdated && !profileInfoUpdated && !profileInfoMetaPermUpdated) {
-				HttpUtil.sendJson(resp, HttpServletResponse.SC_OK, "success", "No changes provided or no update necessary.");
+				HttpUtil.sendJson(resp, HttpServletResponse.SC_OK, "success",
+						"No changes provided or no update necessary.");
 			} else {
 				conn.commit();
-				HttpUtil.sendJson(resp, HttpServletResponse.SC_OK, "success", "Profile updated successfully.");
+				HttpUtil.sendJson(resp, HttpServletResponse.SC_OK, "success",
+						"Profile updated successfully.");
 			}
 
 		} catch (Exception e) {
