@@ -4,7 +4,7 @@
 	<Appenders>
 		<Console name="Console" target="SYSTEM_OUT">
 			<PatternLayout
-				pattern="%d{HH:mm:ss.SSS} [%t] %-5level %logger{36} - %msg%n" />
+				pattern="%d{HH:mm:ss.SSS} [%t] %-5level %logger{36} [AUTH]\n%msg%n" />
 		</Console>
 		<Sentry name="Sentry"
 			dsn="https://6f8c6e7ce86811df962456b9e68d1834@o4509022198431744.ingest.de.sentry.io/4509818434551888"

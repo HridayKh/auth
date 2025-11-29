@@ -1,20 +1,20 @@
 package utils;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.logging.Logger;
 
 public final class ApiKeyManager {
-
-	private static final Logger LOGGER = Logger.getLogger(ApiKeyManager.class.getName());
 
 	// Define roles as constants for type safety and maintainability
 	public static final String ROLE_BACKEND = "BACKEND";
 	public static final String ROLE_FRONTEND = "FRONTEND";
-
 	// A single map stores all valid keys and maps them to their role.
 	public static final Map<String, String> API_KEY_TO_ROLE_MAP;
+	private static final Logger log = LogManager.getLogger(ApiKeyManager.class);
 
 	static {
 		Map<String, String> keys = new HashMap<>();
@@ -25,11 +25,15 @@ public final class ApiKeyManager {
 
 		if (keys.isEmpty()) {
 			String errorMessage = "CRITICAL: No API keys were loaded. Check environment variables.";
-			LOGGER.severe(errorMessage);
+			log.fatal(errorMessage);
 			throw new IllegalStateException(errorMessage);
 		}
 
 		API_KEY_TO_ROLE_MAP = Collections.unmodifiableMap(keys);
+	}
+
+	// Private constructor to prevent instantiation
+	private ApiKeyManager() {
 	}
 
 	/**
@@ -45,8 +49,7 @@ public final class ApiKeyManager {
 		if (keysCsv == null || keysCsv.trim().isEmpty()) {
 			// This is now treated as a warning, not a critical failure,
 			// unless NO keys are loaded at all.
-			LOGGER.warning(
-					"Environment variable for API keys '" + envVar + "' is not set. No keys loaded for role: " + role);
+			log.warn("Environment variable for API keys '{}' is not set. No keys loaded for role: {}", envVar, role);
 			return;
 		}
 
@@ -59,7 +62,7 @@ public final class ApiKeyManager {
 				count++;
 			}
 		}
-		LOGGER.info("Loaded " + count + " API key(s) for role: " + role);
+		log.info("Loaded {} API key(s) for role: {}", count, role);
 	}
 
 	/**
@@ -73,9 +76,5 @@ public final class ApiKeyManager {
 			return null;
 		}
 		return API_KEY_TO_ROLE_MAP.get(apiKey);
-	}
-
-	// Private constructor to prevent instantiation
-	private ApiKeyManager() {
 	}
 }

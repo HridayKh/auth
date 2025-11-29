@@ -5,6 +5,8 @@ import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import servlets.userPasswords.UsersPassReset;
 import servlets.userPasswords.UsersPassUpdater;
 import servlets.userSessions.UsersSessionCreate;
@@ -24,6 +26,7 @@ import java.util.regex.Pattern;
 
 @WebServlet("/v1/*")
 public class ApiServlet extends HttpServlet {
+	private static final Logger log = LogManager.getLogger(ApiServlet.class);
 
 	private static final Map<String, Map<String, RouteHandler>> routes = new HashMap<>();
 
@@ -54,6 +57,8 @@ public class ApiServlet extends HttpServlet {
 		addRoute("DELETE", ApiConstants.USERS_SESSIONS_DELETE_CURRENT, UsersSessionDeleteCurrent::deleteCurrentUserSession);
 
 		addRoute("DELETE", ApiConstants.USERS_UNLINK_GOOGLE, UnlinkGoggle::unlinkGoogleAccount);
+
+		log.info("API Servlet started with {} routes", routes.size());
 	}
 
 	private static void addRoute(String method, String path, RouteHandler handler) {
@@ -61,42 +66,44 @@ public class ApiServlet extends HttpServlet {
 	}
 
 	@Override
-	protected void service(HttpServletRequest req, HttpServletResponse resp) throws IOException {
+	protected void service(HttpServletRequest req, HttpServletResponse resp) {
 		String method = req.getMethod();
 		String path = req.getRequestURI();
 
-		// Remove context path if present
 		String contextPath = req.getContextPath();
 		if (path.startsWith(contextPath)) {
 			path = path.substring(contextPath.length());
 		}
 
-		Map<String, RouteHandler> methodRoutes = routes.get(method);
-		if (methodRoutes == null) {
-			resp.sendError(HttpServletResponse.SC_METHOD_NOT_ALLOWED);
-			return;
-		}
+		try {
+			Map<String, RouteHandler> methodRoutes = routes.get(method);
+			if (methodRoutes == null) {
+				resp.sendError(HttpServletResponse.SC_METHOD_NOT_ALLOWED);
+				return;
+			}
 
-		// Try exact match first
-		RouteHandler handler = methodRoutes.get(path);
-		if (handler != null) {
-			handler.handle(req, resp, new HashMap<>());
-			return;
-		}
+			RouteHandler handler = methodRoutes.get(path);
+			if (handler != null) {
+				log.info("Matched exact route: {}", path);
+				handler.handle(req, resp, new HashMap<>());
+				return;
+			}
 
-		// Try pattern matching for parameterized routes
-		for (Map.Entry<String, RouteHandler> entry : methodRoutes.entrySet()) {
-			String routePattern = entry.getKey();
-			if (routePattern.contains("{")) {
-				Map<String, String> params = matchRoute(routePattern, path);
-				if (params != null) {
-					entry.getValue().handle(req, resp, params);
-					return;
+			for (Map.Entry<String, RouteHandler> entry : methodRoutes.entrySet()) {
+				String routePattern = entry.getKey();
+				if (routePattern.contains("{")) {
+					Map<String, String> params = matchRoute(routePattern, path);
+					if (params != null) {
+						log.info("Matched route: {} with params {}", routePattern, params);
+						entry.getValue().handle(req, resp, params);
+						return;
+					}
 				}
 			}
+			resp.sendError(HttpServletResponse.SC_NOT_FOUND);
+		} catch (IOException e) {
+			log.catching(e);
 		}
-
-		resp.sendError(HttpServletResponse.SC_NOT_FOUND);
 	}
 
 	private Map<String, String> matchRoute(String routePattern, String actualPath) {

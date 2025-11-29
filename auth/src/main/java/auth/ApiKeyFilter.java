@@ -34,8 +34,7 @@ public class ApiKeyFilter implements Filter {
 	}
 
 	@Override
-	public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain)
-		throws IOException, ServletException {
+	public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain) {
 
 		HttpServletRequest httpRequest = (HttpServletRequest) request;
 		HttpServletResponse httpResponse = (HttpServletResponse) response;
@@ -49,7 +48,7 @@ public class ApiKeyFilter implements Filter {
 			AuthResult authResult = authService.authenticate(httpRequest, requiredAccess);
 
 			if (authResult.isAuthenticated()) {
-				log.info("ApiKeyFilter authenticated request for path: {}, clientId: {}, clientType: {}", requestPath, authResult.getClientId(), authResult.getClientType());
+				log.info(" clientId `{}` authenticated for clientType `{}`", authResult.getClientId(), authResult.getClientType());
 				request.setAttribute("clientId", authResult.getClientId());
 				request.setAttribute("clientType", authResult.getClientType());
 			} else {
@@ -60,11 +59,20 @@ public class ApiKeyFilter implements Filter {
 
 		} catch (Exception e) {
 			System.err.println("Authentication error: " + e.getMessage());
-			HttpUtil.sendJson(httpResponse, HttpServletResponse.SC_INTERNAL_SERVER_ERROR, "error",
-				"Authentication service error");
+			try {
+				HttpUtil.sendJson(httpResponse, HttpServletResponse.SC_INTERNAL_SERVER_ERROR, "error", "Authentication service error");
+			} catch (IOException ex) {
+				log.catching(e);
+			}
 		}
 
-		chain.doFilter(request, response);
+		try {
+			chain.doFilter(request, response);
+		} catch (IOException e) {
+			log.catching(e);
+		} catch (ServletException e) {
+			log.catching(e);
+		}
 	}
 
 	// ================================

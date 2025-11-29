@@ -23,7 +23,7 @@ public class CORSFilter implements Filter {
 	}
 
 	@Override
-	public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain) throws IOException, ServletException {
+	public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain) {
 
 		HttpServletResponse res = (HttpServletResponse) response;
 		HttpServletRequest req = (HttpServletRequest) request;
@@ -40,10 +40,15 @@ public class CORSFilter implements Filter {
 		}
 
 		try {
-			String ip = req.getRemoteAddr();
-			int len = ip.length();
-			log.info("CORSFilter Hit by {}", ip != null && len > 0 ? ip.substring(0, len/2) : "unknown IP");
+//			String ip = req.getRemoteAddr();
+//			int len = ip.length();
+//			log.info("CORSFilter Hit by {} at {}", ip != null && len > 0 ? ip.substring(0, len/2) : "unknown IP", req.getRequestURI());
+			log.info("CORSFilter Hit by {} at {}", req.getRemoteAddr(), req.getRequestURI());
 			chain.doFilter(request, response);
+		} catch (ServletException e) {
+			log.catching(e);
+		} catch (IOException e) {
+			log.catching(e);
 		} finally {
 			res.setHeader("Access-Control-Allow-Origin", dbAuth.FRONT_HOST);
 			res.setHeader("Access-Control-Allow-Methods", "GET, POST, PUT, PATCH, DELETE, OPTIONS");
