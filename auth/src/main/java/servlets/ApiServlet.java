@@ -58,7 +58,7 @@ public class ApiServlet extends HttpServlet {
 
 		addRoute("DELETE", ApiConstants.USERS_UNLINK_GOOGLE, UnlinkGoggle::unlinkGoogleAccount);
 
-		log.info("API Servlet started with {} routes", routes.size());
+		log.info("API Servlet started for {} methods with a total {} routes", routes.size(), routes.values().stream().mapToInt(Map::size).sum());
 	}
 
 	private static void addRoute(String method, String path, RouteHandler handler) {

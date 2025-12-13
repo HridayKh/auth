@@ -4,7 +4,7 @@
 	<Appenders>
 		<Console name="Console" target="SYSTEM_OUT">
 			<PatternLayout
-				pattern="%d{HH:mm:ss.SSS} [AUTH] %level %logger - %msg%n" />
+				pattern="%d{HH:mm:ss.SSS} [AUTH] %-5level %-36logger - %msg%n" />
 		</Console>
 		<Sentry name="Sentry"
 			dsn="https://6f8c6e7ce86811df962456b9e68d1834@o4509022198431744.ingest.de.sentry.io/4509818434551888"
@@ -12,6 +12,11 @@
 			minimumLevel="TRACE" />
 	</Appenders>
 	<Loggers>
+		<Logger name="com.zaxxer.hikari" level="warn" additivity="false">
+			<AppenderRef ref="Sentry" />
+			<AppenderRef ref="Console" />
+		</Logger>
+
 		<Root level="trace">
 			<AppenderRef ref="Sentry" />
 			<AppenderRef ref="Console" />
