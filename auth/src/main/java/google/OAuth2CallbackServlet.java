@@ -63,7 +63,6 @@ public class OAuth2CallbackServlet extends HttpServlet {
 		REDIRECT_URL = stateJson.getString("redirect");
 		HttpSession session = request.getSession(false);
 		if (session == null || session.getAttribute("oauth_state") == null || !session.getAttribute("oauth_state").equals(stateJson.getString("csrf"))) {
-
 			redirectToFailure(response, "Invalid state parameter. Please try again.");
 			return;
 		}
@@ -200,8 +199,14 @@ public class OAuth2CallbackServlet extends HttpServlet {
 			}
 
 			conn.commit();
-			String encodedMessage = URLEncoder.encode("Logged in successfully", StandardCharsets.UTF_8);
-			response.sendRedirect(REDIRECT_URL + "?type=success&message=" + encodedMessage);
+			String message;
+			switch (source) {
+				case "glink" -> message = "User linked Google account";
+				case "login" -> message = "Logged in with Google Successfully";
+				case "register" -> message = "User registered with Google Successfully";
+				default -> message = "Logged in successfully";
+			}
+			response.sendRedirect(REDIRECT_URL + "?type=success&message=" + message);
 		} catch (SQLException e) {
 			log.catching(e);
 		}

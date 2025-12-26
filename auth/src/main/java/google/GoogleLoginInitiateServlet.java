@@ -11,7 +11,6 @@ import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
-
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.json.JSONObject;
@@ -37,10 +36,7 @@ public class GoogleLoginInitiateServlet extends HttpServlet {
 	public void init() throws ServletException {
 		super.init();
 		try {
-			flow = new GoogleAuthorizationCodeFlow.Builder(new NetHttpTransport(),
-					GsonFactory.getDefaultInstance(), dbAuth.CLIENT_ID, dbAuth.CLIENT_SECRET,
-					SCOPES).setAccessType("offline")
-					.setApprovalPrompt("no".equals(dbAuth.PROD) ? "force" : "auto").build();
+			flow = new GoogleAuthorizationCodeFlow.Builder(new NetHttpTransport(), GsonFactory.getDefaultInstance(), dbAuth.CLIENT_ID, dbAuth.CLIENT_SECRET, SCOPES).setAccessType("offline").setApprovalPrompt("force").build();
 		} catch (Exception e) {
 			log.catching(e);
 			throw new ServletException("Failed to initialize Google OAuth flow", e);
@@ -53,23 +49,19 @@ public class GoogleLoginInitiateServlet extends HttpServlet {
 		String redirect = request.getParameter("redirect");
 		String source = request.getParameter("source");
 		if (redirect == null || redirect.isBlank() || source == null || source.isBlank()) {
-			HttpUtil.sendJson(response, HttpServletResponse.SC_BAD_REQUEST, "error",
-					"Blank or non-existent redirect or source param");
+			HttpUtil.sendJson(response, HttpServletResponse.SC_BAD_REQUEST, "error", "Blank or non-existent redirect or source param");
 			return;
 		}
 
-		JSONObject stateJSon = GoogleUtil.genStateJson(GoogleUtil.generateSecureRandomString(), redirect,
-				source);
+		JSONObject stateJSon = GoogleUtil.genStateJson(GoogleUtil.generateSecureRandomString(), redirect, source);
 		HttpSession session = request.getSession(true);
 		if (!stateJSon.has("csrf")) {
-			HttpUtil.sendJson(response, HttpServletResponse.SC_INTERNAL_SERVER_ERROR, "error",
-					"Failed to generate CSRF token");
+			HttpUtil.sendJson(response, HttpServletResponse.SC_INTERNAL_SERVER_ERROR, "error", "Failed to generate CSRF token");
 			return;
 		}
 		session.setAttribute("oauth_state", stateJSon.getString("csrf"));
 
-		GoogleAuthorizationCodeRequestUrl authUrl = flow.newAuthorizationUrl().setRedirectUri(REDIRECT_URI)
-				.setState(URLEncoder.encode(stateJSon.toString(), StandardCharsets.UTF_8));
+		GoogleAuthorizationCodeRequestUrl authUrl = flow.newAuthorizationUrl().setRedirectUri(REDIRECT_URI).setState(URLEncoder.encode(stateJSon.toString(), StandardCharsets.UTF_8));
 
 		response.sendRedirect(authUrl.build());
 	}
