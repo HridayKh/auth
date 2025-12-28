@@ -200,6 +200,8 @@ public class UsersInfoManager {
 	private static JSONObject deepMerge(JSONObject source, JSONObject target) {
 		if (source == null)
 			return target;
+		log.debug("DEBUG: org.json Source: " +
+				org.json.JSONObject.class.getProtectionDomain().getCodeSource().getLocation());
 		for (String key : source.keySet()) {
 			Object sourceValue = source.get(key);
 			if (sourceValue == JSONObject.NULL || sourceValue == null) {

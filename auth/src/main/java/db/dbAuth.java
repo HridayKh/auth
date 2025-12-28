@@ -8,7 +8,7 @@ import com.zaxxer.hikari.HikariDataSource;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-public class dbAuth  {
+public class dbAuth {
 	public final static String DB_URL = "jdbc:mysql://db.hridaykh.in:3306/Auth_Db";
 	public final static String DB_USER = System.getenv("AUTH_DB_USER");
 	public final static String DB_PASSWORD = System.getenv("AUTH_DB_PASSWORD");
@@ -26,19 +26,24 @@ public class dbAuth  {
 
 	private static final HikariDataSource dataSource;
 	static {
-		HikariConfig config = new HikariConfig();
-		// config.setDataSourceClassName("com.mysql.cj.jdbc.MysqlDataSource");
-		config.setDriverClassName("com.mysql.cj.jdbc.Driver");
-		config.setJdbcUrl(DB_URL);
-		config.setUsername(DB_USER);
-		config.setPassword(DB_PASSWORD);
+		try {
+			HikariConfig config = new HikariConfig();
+			// config.setDataSourceClassName("com.mysql.cj.jdbc.MysqlDataSource");
+			config.setDriverClassName("com.mysql.cj.jdbc.Driver");
+			config.setJdbcUrl(DB_URL);
+			config.setUsername(DB_USER);
+			config.setPassword(DB_PASSWORD);
 
-		config.setMaximumPoolSize(10);
-		config.setMinimumIdle(5);
+			config.setMaximumPoolSize(10);
+			config.setMinimumIdle(5);
 
-		config.setPoolName("SecretsHikariCP");
-		dataSource = new HikariDataSource(config);
-		log.info("Database connection pool initiated.");
+			config.setPoolName("SecretsHikariCP");
+			dataSource = new HikariDataSource(config);
+			log.info("Database connection pool initiated.");
+		} catch (Exception e) {
+			log.fatal("Failed to initialize database connection pool.", e);
+			throw new ExceptionInInitializerError(e);
+		}
 	}
 
 	public static Connection getConnection() throws SQLException {
