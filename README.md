@@ -1,3 +1,5 @@
+# ARCHIVED
+# USING OAUTH PER PROJECT IS EASIER THAN USING THIS SERVICE WHIHC DEFEATS ITS WHOLE POINT
 # HridayKh.in Authentication Service API Documentation
 
 *Last Updated: November 7, 2025*
